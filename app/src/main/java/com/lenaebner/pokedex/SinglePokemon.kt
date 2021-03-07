@@ -7,16 +7,21 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import androidx.navigation.compose.navigate
 import androidx.navigation.compose.rememberNavController
 
 import com.lenaebner.pokedex.ui.theme.PokedexTheme
 
+@Preview
+@Composable
+fun pokemonPreview() {
+
+}
 
 @Composable
-fun SinglePokemonScreen(pokemonName: String?) {
+fun SinglePokemonScreen(pokemonName: String?, navController: NavController) {
 
-    val navController  = rememberNavController()
     PokedexTheme() {
         Surface {
             Column(modifier = Modifier.fillMaxWidth()) {
@@ -25,7 +30,9 @@ fun SinglePokemonScreen(pokemonName: String?) {
                     color = MaterialTheme.colors.secondaryVariant,
                     style = MaterialTheme.typography.h3,
                     maxLines = 1,
-                    modifier = Modifier.padding(8.dp).weight(0.2f),
+                    modifier = Modifier
+                        .padding(8.dp)
+                        .weight(0.2f),
                 )
                 Spacer(modifier = Modifier.size(16.dp))
 
@@ -51,10 +58,4 @@ fun SinglePokemonScreen(pokemonName: String?) {
         }
     }
 
-}
-
-@Preview
-@Composable
-fun pokemonPreview() {
-    SinglePokemonScreen(pokemonName = "pikachu")
 }

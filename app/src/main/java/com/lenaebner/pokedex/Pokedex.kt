@@ -13,15 +13,26 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.compose.navArgument
 import androidx.navigation.compose.navigate
 import androidx.navigation.compose.rememberNavController
 import com.lenaebner.pokedex.data.Pokemon
 import com.lenaebner.pokedex.ui.theme.PokedexTheme
 
 
+@Preview
 @Composable
-fun Pokedex () {
-    val navController = rememberNavController()
+fun PokedexPreview() {
+
+    PokedexTheme {
+        Navigation()
+    }
+}
+
+@Composable
+fun Pokedex (navController: NavController) {
+
     Scaffold (
         topBar = {
             TopAppBar() {
@@ -50,12 +61,12 @@ fun Pokedex () {
                 }
             }
                  },
-        content = { AllPokemons() }
+        content = { AllPokemons(navController = navController) }
     )
 }
 
 @Composable
-fun AllPokemons() {
+fun AllPokemons( navController: NavController) {
     val pokemons = readData()
     val listState = rememberLazyListState()
 
@@ -63,7 +74,10 @@ fun AllPokemons() {
         items(items = pokemons) { p ->
             FeaturedPokemon(
                 pokemon = p,
-                modifier = Modifier.padding(16.dp).background(MaterialTheme.colors.background)
+                navController = navController,
+                modifier = Modifier
+                    .padding(16.dp)
+                    .background(MaterialTheme.colors.background)
             )
             Spacer(modifier = Modifier.size(4.dp))
         }
@@ -73,9 +87,9 @@ fun AllPokemons() {
 @Composable
 fun FeaturedPokemon(
     pokemon: Pokemon,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    navController: NavController
 ) {
-    val navController = rememberNavController()
 
     Card(
         elevation = 2.dp,
@@ -127,13 +141,5 @@ fun FeaturedPokemon(
             )
             Spacer(Modifier.height(16.dp))
         }
-    }
-}
-
-@Preview
-@Composable
-fun PokedexPreview() {
-    PokedexTheme {
-        Pokedex()
     }
 }

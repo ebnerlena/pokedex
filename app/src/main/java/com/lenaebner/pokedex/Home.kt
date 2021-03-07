@@ -19,70 +19,65 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavType
+import androidx.navigation.NavController
 import androidx.navigation.compose.*
 import com.lenaebner.pokedex.ui.theme.PokedexTheme
 
+//use for deployment
+@Preview
+@Composable
+fun TestPreview(){
 
+    PokedexTheme() {
+        Navigation()
+    }
+}
+
+//just for visual preview - cause nav not working like that
 @Preview
 @Composable
 fun HomePreview() {
     PokedexTheme {
-        Home()
+        Home(navController = rememberNavController() )
     }
 }
 
 @Composable
-fun Navigation() {
-    val navController = rememberNavController()
-
-    NavHost(navController, startDestination = "home") {
-        composable("home") { Home() }
-        composable("pokedex") { Pokedex() }
-        composable("pokemon/{pokemonName}",
-            arguments = mutableStateListOf(navArgument("pokemonName") { type = NavType.StringType })
-        ) { backStackEntry ->
-            SinglePokemonScreen(pokemonName = backStackEntry.arguments?.getString("pokemonName") )
-        }
-    }
-}
-
-@Composable
-fun Home() {
+fun Home(navController: NavController) {
 
     Scaffold(
         topBar = { AppBar() }
     ){
-        Categories()
+        //implement a search bar here ?
+
+        Categories(navController = navController)
     }
-
-
 }
 
-
 @Composable
-fun Categories(categories: List<String> = mutableStateListOf("Pokedex", "Moves", "Abilities", "Items","Locations", "Type Chars")) {
+fun Categories(
+    navController: NavController,
+    categories: List<String> = mutableStateListOf("Pokedex", "Moves", "Abilities", "Items","Locations", "Type Chars")) {
     Column(modifier = Modifier.fillMaxWidth()) {
-        CategoriesList(categories = categories, Modifier.weight(1f))
-
+        CategoriesList(navController = navController, categories = categories, Modifier.weight(1f))
     }
 }
 
 @Composable
-fun CategoriesList(categories: List<String>, modifier: Modifier = Modifier) {
+fun CategoriesList(navController: NavController, categories: List<String>, modifier: Modifier = Modifier) {
     LazyColumn(modifier = modifier
         .fillMaxWidth()
         .padding(8.dp)) {
         items(items = categories) { categorie ->
-            Category(name = categorie, modifier = modifier)
+            Category(name = categorie, modifier = modifier, navController = navController)
             Spacer(modifier = Modifier.size(3.dp))
         }
     }
 }
 
 @Composable
-fun Category(name: String, modifier: Modifier) {
-    val navController = rememberNavController()
+fun Category(name: String, modifier: Modifier, navController: NavController) {
+
     Card(
         elevation = 2.dp,
         modifier = modifier,
@@ -92,10 +87,7 @@ fun Category(name: String, modifier: Modifier) {
         Row(
             modifier = Modifier
                 .clickable {
-                    navController.navigate("pokedex") {
-                        popUpTo = navController.graph.startDestination
-                        launchSingleTop = true
-                    }
+                    navController.navigate("pokedex")
                 },
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
@@ -123,7 +115,7 @@ fun Category(name: String, modifier: Modifier) {
 private fun AppBar() {
     TopAppBar(
         navigationIcon = {
-            Icon(
+            Image(
                 painter = painterResource(id = R.drawable.pokeball),
                 contentDescription = null,
                 modifier = Modifier
@@ -142,6 +134,8 @@ private fun AppBar() {
         backgroundColor = MaterialTheme.colors.primary,
     )
 }
+
+
 
 
 

@@ -5,6 +5,10 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.material.*
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.rememberNavController
+import com.lenaebner.pokedex.ui.theme.PokedexTheme
 
 
 class MainActivity : AppCompatActivity() {
@@ -13,12 +17,17 @@ class MainActivity : AppCompatActivity() {
 
         setContent {
             Surface {
-                Home()
+                MyApp()
             }
 
         }
     }
 }
 
+@Composable
+fun MyApp() {
 
-
+    PokedexTheme {
+        Navigation()
+    }
+}
