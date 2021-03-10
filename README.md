@@ -8,7 +8,7 @@ An app to find pokemons
 ## Deployment Note
 Use TestPreview for Deployment!!! Otherwise Navigation not working
 
-## Feature
+## Features
 - Home Screen
 - Pokedex Screen
 - Single Pokemon Screen
