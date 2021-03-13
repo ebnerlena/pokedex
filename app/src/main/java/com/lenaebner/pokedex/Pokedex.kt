@@ -26,43 +26,45 @@ import com.lenaebner.pokedex.ui.theme.PokedexTheme
 fun PokedexPreview() {
 
     PokedexTheme {
-        Navigation()
+        Pokedex(navController = rememberNavController())
     }
 }
 
 @Composable
 fun Pokedex (navController: NavController) {
-
+    
     Scaffold (
         topBar = {
-            TopAppBar() {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    IconButton(
-                        onClick = { navController.navigate("home") {
-                            launchSingleTop = true
-                            popUpTo = navController.graph.startDestination
-                        } }) {
-                        Image(
-                            painter = painterResource(R.drawable.arrow_left),
-                            contentDescription = null,
-                            modifier = Modifier
-                                .height(50.dp)
-                                .width(50.dp)
-                                .padding(8.dp)
-                        )
-                    }
-
-                    Text(
-                        text = "Pokedex",
-                        color = MaterialTheme.colors.secondaryVariant,
-                        style = MaterialTheme.typography.h1,
-                        modifier = Modifier.padding(8.dp)
-                    )
-                }
-            }
+            Header(navController = navController,
+                textColor = MaterialTheme.colors.secondaryVariant,
+                backgroundColor = Color.White,
+                title = "Pokedex",
+                icon = R.drawable.arrow_left_long_grey)
                  },
-        content = { AllPokemons(navController = navController) }
+        content = { PokemonsGrid(navController = navController) }
     )
+}
+
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun PokemonsGrid(navController: NavController) {
+    val pokemons = readData()
+    val listState = rememberLazyListState()
+    LazyVerticalGrid(
+        cells = GridCells.Fixed(2)
+    ) {
+        items(pokemons) { p ->
+            FeaturedPokemon(
+                pokemon = p,
+                navController = navController,
+                modifier = Modifier
+                    .padding(16.dp)
+                    .background(MaterialTheme.colors.background)
+            )
+            Spacer(modifier = Modifier.size(4.dp))
+        }
+    }
 }
 
 @Composable

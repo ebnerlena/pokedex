@@ -64,25 +64,36 @@ fun Hom2ePreview() {
 fun Home(navController: NavController) {
 
     Scaffold(
-        topBar = { AppBar() }
+        topBar = { 
+            Row {
+                Text(
+                    text = "What Pokemon are you looking for?",
+                    color = MaterialTheme.colors.secondaryVariant,
+                    style = MaterialTheme.typography.h2,
+                    modifier = Modifier
+                        .padding(8.dp)
+                        .paddingFromBaseline(32.dp)
+                )
+            }
+        }
     ){
-        //implement a search bar here
-        Categories(navController = navController)
+
+        Column() {
+            Searchbar(navController = navController)
+            Spacer(modifier = Modifier.height(8.dp))
+            Categories(navController = navController)
+        }
     }
 }
 
 
 @Composable
 fun Searchbar(navController: NavController) {
-    Column {
-        Surface(
-            modifier = Modifier
-                .fillMaxWidth(),
-            color = MaterialTheme.colors.onSecondary,
-            elevation = 8.dp,
-            contentColor = contentColorFor(backgroundColor = MaterialTheme.colors.onSecondary)
-        ){
-            Row(modifier = Modifier.fillMaxWidth()){
+    Column() {
+
+            Row(modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)){
                 OutlinedTextField(
                     value = "query", onValueChange = { /*TODO*/ }, label = { Text(text = "Search") },
                     keyboardOptions = KeyboardOptions(
@@ -95,12 +106,10 @@ fun Searchbar(navController: NavController) {
                     modifier = Modifier
                         .fillMaxWidth()
                         .background(
-                            color = MaterialTheme.colors.onSecondary,
-                            shape = MaterialTheme.shapes.large
+                            color = MaterialTheme.colors.onSecondary
                         )
                 )
             }
-        }
 
         LazyColumn {
            /* itemsIndexed(
@@ -131,7 +140,7 @@ fun CategoriesList(navController: NavController, categories: List<String>, modif
         items(items = categories) { categorie ->
             Row(modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp), horizontalArrangement = Arrangement.Center,
+                .padding(8.dp), horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically) {
                 Category(name = categorie, modifier = modifier, navController = navController)
                 Spacer(modifier = Modifier.size(3.dp))
@@ -181,29 +190,6 @@ fun Category(name: String, modifier: Modifier, navController: NavController) {
     }
 }
 
-@Composable
-private fun AppBar() {
-    TopAppBar(
-        navigationIcon = {
-            Image(
-                painter = painterResource(id = R.drawable.pokeball),
-                contentDescription = null,
-                modifier = Modifier
-                    .padding(horizontal = 12.dp)
-                    .height(30.dp)
-                    .width(30.dp),
-            )
-        },
-        title = {
-            Text(
-                text = stringResource(R.string.app_name),
-                color = MaterialTheme.colors.secondaryVariant,
-                style = MaterialTheme.typography.h2
-            )
-        },
-        backgroundColor = MaterialTheme.colors.primary,
-    )
-}
 
 
 
