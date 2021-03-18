@@ -70,7 +70,7 @@ val PokedexTypography = Typography (
     ),
     body2 = TextStyle(
         fontFamily = Montserrat,
-        fontSize = 14.sp
+        fontSize = 12.sp
     ),
     button = TextStyle(
         fontFamily = Montserrat,
