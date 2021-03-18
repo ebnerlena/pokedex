@@ -64,21 +64,9 @@ fun SinglePokemonScreen(pokemonName: String?, navController: NavController) {
                             .build()
                         val result = imageLoader.enqueue(request = request)
                     }
-                    LazyColumn(content = {
-                        item {
-                            ExpandingCard(title = "Base Stats", content = { Stats() })
-                        }
-                        item {
-                            ExpandingCard(title = "About", content = { Description() })
-                        }
-                        item {
-                            ExpandingCard(title = "Types", content = { Types() })
-                        }
-                        item {
-                            ExpandingCard(title = "Evolution Chain", content = { EvolutionChain() })
-                        }
-                    })
-
+                    Row {
+                        CardNavigation("stats")
+                    }
                 }
 
             }
@@ -101,12 +89,12 @@ fun CardNavPreview() {
 @Composable
 fun CardNavigation(page: String) {
     Card(modifier = Modifier
-        .padding(8.dp)
+        .padding(0.dp,16.dp,0.dp,0.dp)
         .fillMaxWidth()
-        .fillMaxHeight(), backgroundColor = Color.White, shape = MaterialTheme.shapes.medium) {
+        .fillMaxHeight(), backgroundColor = Color.White, shape = MaterialTheme.shapes.large) {
         var currentPage by rememberSaveable { mutableStateOf(page) }
         Column {
-            Row(horizontalArrangement = Arrangement.SpaceEvenly, modifier = Modifier.fillMaxWidth()) {
+            Row(horizontalArrangement = Arrangement.SpaceEvenly, modifier = Modifier.fillMaxWidth().padding(0.dp,8.dp,0.dp,0.dp)) {
                 TextButton(onClick = { currentPage = "about" }) {
                     var textColor =  if (currentPage == "about") MaterialTheme.colors.primary else MaterialTheme.colors.secondaryVariant
                     Text(text = "About", color = textColor)
@@ -119,12 +107,14 @@ fun CardNavigation(page: String) {
                     var textColor =  if (currentPage == "evolution") MaterialTheme.colors.primary else MaterialTheme.colors.secondaryVariant
                     Text(text = "Evolution", color = textColor)
                 }
-                TextButton(onClick = { currentPage = "Types" }) {
+                TextButton(onClick = { currentPage = "types" }) {
                     var textColor =  if (currentPage == "types") MaterialTheme.colors.primary else MaterialTheme.colors.secondaryVariant
                     Text(text = "Types", color = textColor)
                 }
             }
-            Divider(modifier = Modifier.height(3.dp).padding(3.dp), color = MaterialTheme.colors.secondaryVariant)
+            Divider(modifier = Modifier
+                .height(3.dp)
+                .padding(3.dp).background(MaterialTheme.colors.secondaryVariant), color = MaterialTheme.colors.secondaryVariant)
             Row() {
                 Crossfade(targetState = currentPage) { screen ->
                     when (screen) {
@@ -142,13 +132,25 @@ fun CardNavigation(page: String) {
 
 @Composable
 fun Stats() {
-    Column() {
-        SingleStat(name = "HP", value = 35)
-        SingleStat(name = "Attack", value = 55)
-        SingleStat(name = "Defense", value = 40)
-        SingleStat(name = "Special Attack", value = 50)
-        SingleStat(name = "Special Defense", value = 50)
-        SingleStat(name = "Speed", value = 90)
+    LazyColumn() {
+        item {
+            SingleStat(name = "HP", value = 35)
+        }
+        item {
+            SingleStat(name = "Attack", value = 55)
+        }
+        item {
+            SingleStat(name = "Defense", value = 40)
+        }
+        item {
+            SingleStat(name = "Special Attack", value = 50)
+        }
+        item {
+            SingleStat(name = "Special Defense", value = 50)
+        }
+        item {
+            SingleStat(name = "Speed", value = 90)
+        }
     }
 }
 
@@ -157,7 +159,7 @@ fun SingleStat(name: String, value: Int, max: Int = 100) {
     Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier
         .padding(8.dp)
         .fillMaxWidth()
-        .height(50.dp)) {
+        .height(35.dp)) {
 
         Column(modifier = Modifier
             .weight(3f)
@@ -174,7 +176,7 @@ fun SingleStat(name: String, value: Int, max: Int = 100) {
             Text(
                 text = value.toString(),
                 color = MaterialTheme.colors.secondaryVariant,
-                style = MaterialTheme.typography.body1,
+                style = MaterialTheme.typography.body2,
                 modifier = Modifier.padding(8.dp),
                 fontWeight = FontWeight.Bold
             )
