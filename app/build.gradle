@@ -58,6 +58,18 @@ dependencies {
     implementation "io.coil-kt:coil:1.1.1"
     implementation "com.google.accompanist:accompanist-coil:0.6.2"
 
+    //okhttp is the networking client implementation handling the connection
+    implementation "com.squareup.okhttp3:okhttp:4.9.0"
+
+    //moshi is a library that transforms json Strings into objects
+    implementation "com.squareup.moshi:moshi-kotlin:1.11.0"
+
+    //retrofit is a library that uses okhttp to generate requests based on an Interface
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+
+    //Retrofit can automatically do object deserialization with moshi
+    implementation 'com.squareup.retrofit2:converter-moshi:2.9.0'
+
     implementation 'org.jetbrains.kotlin:kotlin-reflect:1.4.30'
     implementation 'androidx.palette:palette-ktx:1.0.0'
     testImplementation 'junit:junit:4.+'

@@ -34,7 +34,11 @@ import coil.ImageLoader
 import coil.request.ImageRequest
 import coil.transform.CircleCropTransformation
 import com.google.accompanist.coil.CoilImage
+import com.lenaebner.pokedex.api.models.Pokemon
 import com.lenaebner.pokedex.ui.theme.PokedexTheme
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 
 @Preview
@@ -47,20 +51,34 @@ fun pokemonPreview() {
 @Composable
 fun SinglePokemonScreen(pokemonName: String?, navController: NavController) {
 
+    val scope = rememberCoroutineScope()
+    var pokemon: Pokemon? = null
+
+
     PokedexTheme() {
+
+        scope.launch {
+            pokemon = withContext(Dispatchers.IO){
+                ApiController.pokeApi.getPokemon(26)
+            }
+            Log.d("foo", "Pokemon found "+pokemon?.name.orEmpty().capitalize()+" "+pokemon?.sprites)
+        }
         Scaffold (
+
             topBar = {
                 Header(navController = navController,
                     textColor = Color.White,
                     backgroundColor = MaterialTheme.colors.primary,
-                    title = pokemonName.orEmpty(),
+                    title = pokemon?.name ?: "Pikachu",
                     icon = Icons.Default.ArrowBack,
                 )
             },
             content = {
                 Column(modifier = Modifier.fillMaxWidth()) {
                     Row(
-                        modifier = Modifier.weight(1f).align(Alignment.CenterHorizontally)
+                        modifier = Modifier
+                            .weight(1f)
+                            .align(Alignment.CenterHorizontally)
                     ) {
                         CoilImage(
                             data = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png",
@@ -97,13 +115,13 @@ fun CardNavPreview() {
 @Composable
 fun CardNavigation(page: String) {
     Card(modifier = Modifier
-        .padding(top=16.dp)
+        .padding(top = 16.dp)
         .fillMaxSize(), backgroundColor = Color.White, shape = MaterialTheme.shapes.large) {
         var currentPage by rememberSaveable { mutableStateOf(page) }
         Column {
             Row(horizontalArrangement = Arrangement.SpaceEvenly, modifier = Modifier
                 .fillMaxWidth()
-                .padding(top=8.dp)
+                .padding(top = 8.dp)
                 .weight(1f)) {
                 TextButton(onClick = { currentPage = "about" }) {
                     var textColor =  if (currentPage == "about") MaterialTheme.colors.primary else MaterialTheme.colors.secondaryVariant
@@ -254,6 +272,5 @@ fun ExpandingCard(title: String, content: @Composable () -> Unit) {
                 }
             }
         }
-
     }
 }

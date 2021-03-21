@@ -12,13 +12,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavType
 import androidx.navigation.compose.*
-import com.lenaebner.pokedex.data.Pokemon
+import com.lenaebner.pokedex.api.models.Pokemon
 import com.lenaebner.pokedex.ui.theme.PokedexTheme
 import org.json.JSONObject
 
@@ -111,7 +110,7 @@ fun AppBar(textColor: Color, backgroundColor: Color, title: String, icon: Int) {
     )
 }
 
-
+/*
 fun readData(): SnapshotStateList<Pokemon> {
 
     val pokemons = mutableStateListOf<Pokemon>()
@@ -132,4 +131,4 @@ fun readData(): SnapshotStateList<Pokemon> {
         Log.d("foo", ex.localizedMessage)
     }
     return pokemons
-}
+} */

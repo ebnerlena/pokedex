@@ -16,10 +16,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.navigation.compose.navArgument
 import androidx.navigation.compose.navigate
 import androidx.navigation.compose.rememberNavController
-import com.lenaebner.pokedex.data.Pokemon
+import com.lenaebner.pokedex.api.models.Pokemon
 import com.lenaebner.pokedex.ui.theme.PokedexTheme
 
 
@@ -41,6 +40,7 @@ fun Pokedex (navController: NavController) {
                 textColor = MaterialTheme.colors.secondaryVariant,
                 backgroundColor = Color.White,
                 title = "Pokedex",
+                iconTint = MaterialTheme.colors.secondaryVariant,
                 icon = Icons.Default.ArrowBack)
                  },
         content = { PokemonsGrid(navController = navController) }
@@ -51,9 +51,9 @@ fun Pokedex (navController: NavController) {
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun PokemonsGrid(navController: NavController) {
-    val pokemons = readData()
+    //val pokemons = readData()
     val listState = rememberLazyListState()
-    LazyVerticalGrid(
+    /*LazyVerticalGrid(
         cells = GridCells.Fixed(2)
     ) {
         items(pokemons) { p ->
@@ -66,26 +66,7 @@ fun PokemonsGrid(navController: NavController) {
             )
             Spacer(modifier = Modifier.size(4.dp))
         }
-    }
-}
-
-@Composable
-fun AllPokemons( navController: NavController) {
-    val pokemons = readData()
-    val listState = rememberLazyListState()
-
-    LazyColumn(state = listState, modifier = Modifier.padding(16.dp)) {
-        items(items = pokemons) { p ->
-            FeaturedPokemon(
-                pokemon = p,
-                navController = navController,
-                modifier = Modifier
-                    .padding(16.dp)
-                    .background(MaterialTheme.colors.background)
-            )
-            Spacer(modifier = Modifier.size(4.dp))
-        }
-    }
+    } */
 }
 
 @Composable
@@ -134,12 +115,6 @@ fun FeaturedPokemon(
             Text(
                 text = pokemon.name,
                 style = MaterialTheme.typography.h6,
-                color = MaterialTheme.colors.secondary,
-                modifier = padding
-            )
-            Text(
-                text = pokemon.url,
-                style = MaterialTheme.typography.body2,
                 color = MaterialTheme.colors.secondary,
                 modifier = padding
             )
