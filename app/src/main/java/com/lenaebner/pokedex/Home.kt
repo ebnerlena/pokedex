@@ -30,6 +30,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.*
+import coil.transform.CircleCropTransformation
+import com.google.accompanist.coil.CoilImage
 import com.lenaebner.pokedex.ui.theme.PokedexTheme
 import com.lenaebner.pokedex.ui.theme.backgroundColorLight
 
@@ -101,7 +103,11 @@ fun Searchbar(navController: NavController) {
                         imeAction = ImeAction.Done,
                     ),
                     leadingIcon = {
-                        Icon(painter = painterResource(id = R.drawable.search), contentDescription = null )
+                        Icon(
+                            imageVector = Icons.Default.Search,
+                            contentDescription = "Search Icon",
+                            tint = MaterialTheme.colors.secondaryVariant
+                        )
                     },
                     modifier = Modifier
                         .fillMaxWidth()

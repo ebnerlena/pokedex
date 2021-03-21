@@ -6,10 +6,13 @@ import android.widget.Space
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
@@ -17,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.layout.AlignmentLine
 import androidx.compose.ui.platform.LocalContext
@@ -29,6 +33,7 @@ import androidx.navigation.compose.rememberNavController
 import coil.ImageLoader
 import coil.request.ImageRequest
 import coil.transform.CircleCropTransformation
+import com.google.accompanist.coil.CoilImage
 import com.lenaebner.pokedex.ui.theme.PokedexTheme
 
 
@@ -49,30 +54,34 @@ fun SinglePokemonScreen(pokemonName: String?, navController: NavController) {
                     textColor = Color.White,
                     backgroundColor = MaterialTheme.colors.primary,
                     title = pokemonName.orEmpty(),
-                    icon = R.drawable.arrow_left_long_white )
+                    icon = Icons.Default.ArrowBack,
+                )
             },
             content = {
                 Column(modifier = Modifier.fillMaxWidth()) {
-                    Row(horizontalArrangement = Arrangement.End, verticalAlignment = Alignment.CenterVertically) {
-
-                        val imageLoader = ImageLoader(context = LocalContext.current)
-                        val request = ImageRequest.Builder(context = LocalContext.current)
-                            .data("https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png")
-                            .placeholder(R.drawable.pokemon2)
-                            .transformations(CircleCropTransformation())
-                            .crossfade(true)
-                            .build()
-                        val result = imageLoader.enqueue(request = request)
+                    Row(
+                        modifier = Modifier.weight(1f).align(Alignment.CenterHorizontally)
+                    ) {
+                        CoilImage(
+                            data = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png",
+                            contentDescription = "Pikachu",
+                            loading = {
+                                Image(
+                                    painter = painterResource(id = R.drawable.pokemon3),
+                                    contentDescription = "Fallback Image"
+                                )
+                            },
+                            requestBuilder = {
+                                transformations(CircleCropTransformation())
+                            })
                     }
-                    Row {
+                    Row(modifier = Modifier.weight(3f)){
                         CardNavigation("stats")
                     }
                 }
-
             }
         )
     }
-
 }
 
 @Preview
@@ -82,19 +91,20 @@ fun CardNavPreview() {
         Scaffold() {
             CardNavigation("stats")
         }
-
     }
 }
 
 @Composable
 fun CardNavigation(page: String) {
     Card(modifier = Modifier
-        .padding(0.dp,16.dp,0.dp,0.dp)
-        .fillMaxWidth()
-        .fillMaxHeight(), backgroundColor = Color.White, shape = MaterialTheme.shapes.large) {
+        .padding(top=16.dp)
+        .fillMaxSize(), backgroundColor = Color.White, shape = MaterialTheme.shapes.large) {
         var currentPage by rememberSaveable { mutableStateOf(page) }
         Column {
-            Row(horizontalArrangement = Arrangement.SpaceEvenly, modifier = Modifier.fillMaxWidth().padding(0.dp,8.dp,0.dp,0.dp)) {
+            Row(horizontalArrangement = Arrangement.SpaceEvenly, modifier = Modifier
+                .fillMaxWidth()
+                .padding(top=8.dp)
+                .weight(1f)) {
                 TextButton(onClick = { currentPage = "about" }) {
                     var textColor =  if (currentPage == "about") MaterialTheme.colors.primary else MaterialTheme.colors.secondaryVariant
                     Text(text = "About", color = textColor)
@@ -114,8 +124,9 @@ fun CardNavigation(page: String) {
             }
             Divider(modifier = Modifier
                 .height(3.dp)
-                .padding(3.dp).background(MaterialTheme.colors.secondaryVariant), color = MaterialTheme.colors.secondaryVariant)
-            Row() {
+                .padding(3.dp)
+                .background(MaterialTheme.colors.secondaryVariant), color = MaterialTheme.colors.secondaryVariant)
+            Row(Modifier.weight(5f)) {
                 Crossfade(targetState = currentPage) { screen ->
                     when (screen) {
                         "about" -> Description()
@@ -132,25 +143,13 @@ fun CardNavigation(page: String) {
 
 @Composable
 fun Stats() {
-    LazyColumn() {
-        item {
-            SingleStat(name = "HP", value = 35)
-        }
-        item {
-            SingleStat(name = "Attack", value = 55)
-        }
-        item {
-            SingleStat(name = "Defense", value = 40)
-        }
-        item {
-            SingleStat(name = "Special Attack", value = 50)
-        }
-        item {
-            SingleStat(name = "Special Defense", value = 50)
-        }
-        item {
-            SingleStat(name = "Speed", value = 90)
-        }
+    Column() {
+        SingleStat(name = "HP", value = 35)
+        SingleStat(name = "Attack", value = 55)
+        SingleStat(name = "Defense", value = 40)
+        SingleStat(name = "Special Attack", value = 50)
+        SingleStat(name = "Special Defense", value = 50)
+        SingleStat(name = "Speed", value = 90)
     }
 }
 
@@ -184,18 +183,17 @@ fun SingleStat(name: String, value: Int, max: Int = 100) {
         Column(modifier = Modifier
             .weight(4f)
             .fillMaxHeight(), horizontalAlignment = Alignment.CenterHorizontally) {
+
             Canvas(modifier = Modifier
                 .fillMaxSize()
                 .height(30.dp)){
-                val canvasSize = Size(value.toFloat(), 30F)
-                rotate(degrees = 0F) {
-                    drawRect(
-                        color = Color.Gray,
-                        Offset(0F,10F),
-                        size = canvasSize
-                    )
-                }
-
+                var width = value/(max/200.0)
+                val canvasSize = Size((width.toFloat()), 30F)
+                drawRect(
+                    color = Color.Gray,
+                    Offset(0F,10F),
+                    size = canvasSize
+                )
             }
         }
     }
