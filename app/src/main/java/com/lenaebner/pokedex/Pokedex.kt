@@ -5,6 +5,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -39,7 +41,7 @@ fun Pokedex (navController: NavController) {
                 textColor = MaterialTheme.colors.secondaryVariant,
                 backgroundColor = Color.White,
                 title = "Pokedex",
-                icon = R.drawable.arrow_left_long_grey)
+                icon = Icons.Default.ArrowBack)
                  },
         content = { PokemonsGrid(navController = navController) }
     )

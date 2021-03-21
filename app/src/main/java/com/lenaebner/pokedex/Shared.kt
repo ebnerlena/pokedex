@@ -3,16 +3,14 @@ package com.lenaebner.pokedex
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -45,7 +43,7 @@ fun Navigation() {
 }
 
 @Composable
-fun Header(navController: NavController, textColor: Color, backgroundColor: Color, title: String, icon: Int) {
+fun Header(navController: NavController, textColor: Color, backgroundColor: Color, title: String, icon: ImageVector, iconTint: Color = Color.White) {
 
     TopAppBar(modifier = Modifier.height(100.dp), backgroundColor = backgroundColor) {
         Column() {
@@ -57,13 +55,10 @@ fun Header(navController: NavController, textColor: Color, backgroundColor: Colo
                             popUpTo = navController.graph.startDestination
                         }
                     }) {
-                    Image(
-                        painter = painterResource(icon),
+                    Icon(
+                        imageVector = icon,
                         contentDescription = null,
-                        modifier = Modifier
-                            .height(50.dp)
-                            .width(50.dp)
-                            .padding(8.dp)
+                        tint = iconTint
                     )
                 }
             }
