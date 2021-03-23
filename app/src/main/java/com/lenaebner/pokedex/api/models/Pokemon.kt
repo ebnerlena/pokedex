@@ -1,7 +1,7 @@
 package com.lenaebner.pokedex.api.models
 
 data class Pokemon(
-    val id: Int,
-    val name: String,
-    val sprites: PokemonSprite
+    val id: Int = 1,
+    val name: String = "Pikachu",
+    val sprites: PokemonSprite? = null
 )

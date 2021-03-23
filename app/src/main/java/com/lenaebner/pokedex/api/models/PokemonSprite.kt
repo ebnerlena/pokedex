@@ -3,7 +3,7 @@ package com.lenaebner.pokedex.api.models
 import com.squareup.moshi.Json
 
 data class PokemonSprite(
-    val other: DreamWorldSprite
+    val other: ArtworkSprite
 )
 
 data class DreamWorldSprite(

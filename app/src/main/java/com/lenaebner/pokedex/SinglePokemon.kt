@@ -43,7 +43,7 @@ import kotlinx.coroutines.withContext
 
 @Preview
 @Composable
-fun pokemonPreview() {
+fun PokemonPreview() {
     val navC = rememberNavController()
     SinglePokemonScreen(pokemonName = "Pikachu", navController = navC)
 }
@@ -52,24 +52,23 @@ fun pokemonPreview() {
 fun SinglePokemonScreen(pokemonName: String?, navController: NavController) {
 
     val scope = rememberCoroutineScope()
-    var pokemon: Pokemon? = null
+    val pokemon: MutableState<Pokemon> = mutableStateOf(Pokemon())
 
 
     PokedexTheme() {
 
         scope.launch {
-            pokemon = withContext(Dispatchers.IO){
-                ApiController.pokeApi.getPokemon(26)
+            pokemon.value = withContext(Dispatchers.IO){
+                ApiController.pokeApi.getPokemon(pokemonName ?: "pikachu")
             }
-            Log.d("foo", "Pokemon found "+pokemon?.name.orEmpty().capitalize()+" "+pokemon?.sprites)
         }
         Scaffold (
 
             topBar = {
                 Header(navController = navController,
-                    textColor = Color.White,
+                    textColor = White,
                     backgroundColor = MaterialTheme.colors.primary,
-                    title = pokemon?.name ?: "Pikachu",
+                    title = pokemon.value.name.capitalize(),
                     icon = Icons.Default.ArrowBack,
                 )
             },
@@ -80,18 +79,19 @@ fun SinglePokemonScreen(pokemonName: String?, navController: NavController) {
                             .weight(1f)
                             .align(Alignment.CenterHorizontally)
                     ) {
-                        CoilImage(
-                            data = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png",
-                            contentDescription = "Pikachu",
-                            loading = {
-                                Image(
-                                    painter = painterResource(id = R.drawable.pokemon3),
-                                    contentDescription = "Fallback Image"
-                                )
-                            },
-                            requestBuilder = {
-                                transformations(CircleCropTransformation())
-                            })
+                            CoilImage(
+                                data = pokemon.value.sprites?.other?.artwork?.sprite.orEmpty(),
+                                contentDescription = "Pikachu",
+                                loading = {
+                                    Image(
+                                        painter = painterResource(id = R.drawable.pokemon3),
+                                        contentDescription = "Fallback Image"
+                                    )
+                                },
+                                requestBuilder = {
+                                    transformations(CircleCropTransformation())
+                                },modifier = Modifier.width(100.dp))
+
                     }
                     Row(modifier = Modifier.weight(3f)){
                         CardNavigation("stats")
@@ -116,7 +116,7 @@ fun CardNavPreview() {
 fun CardNavigation(page: String) {
     Card(modifier = Modifier
         .padding(top = 16.dp)
-        .fillMaxSize(), backgroundColor = Color.White, shape = MaterialTheme.shapes.large) {
+        .fillMaxSize(), backgroundColor = White, shape = MaterialTheme.shapes.large) {
         var currentPage by rememberSaveable { mutableStateOf(page) }
         Column {
             Row(horizontalArrangement = Arrangement.SpaceEvenly, modifier = Modifier
@@ -124,19 +124,19 @@ fun CardNavigation(page: String) {
                 .padding(top = 8.dp)
                 .weight(1f)) {
                 TextButton(onClick = { currentPage = "about" }) {
-                    var textColor =  if (currentPage == "about") MaterialTheme.colors.primary else MaterialTheme.colors.secondaryVariant
+                    val textColor =  if (currentPage == "about") MaterialTheme.colors.primary else MaterialTheme.colors.secondaryVariant
                     Text(text = "About", color = textColor)
                 }
                 TextButton(onClick = { currentPage = "stats" }) {
-                    var textColor =  if (currentPage == "stats") MaterialTheme.colors.primary else MaterialTheme.colors.secondaryVariant
+                    val textColor =  if (currentPage == "stats") MaterialTheme.colors.primary else MaterialTheme.colors.secondaryVariant
                     Text(text = "Base Stats", color = textColor)
                 }
                 TextButton(onClick = { currentPage = "evolution" }) {
-                    var textColor =  if (currentPage == "evolution") MaterialTheme.colors.primary else MaterialTheme.colors.secondaryVariant
+                    val textColor =  if (currentPage == "evolution") MaterialTheme.colors.primary else MaterialTheme.colors.secondaryVariant
                     Text(text = "Evolution", color = textColor)
                 }
                 TextButton(onClick = { currentPage = "types" }) {
-                    var textColor =  if (currentPage == "types") MaterialTheme.colors.primary else MaterialTheme.colors.secondaryVariant
+                    val textColor =  if (currentPage == "types") MaterialTheme.colors.primary else MaterialTheme.colors.secondaryVariant
                     Text(text = "Types", color = textColor)
                 }
             }
