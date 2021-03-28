@@ -44,7 +44,7 @@ fun Navigation() {
 @Composable
 fun Header(navController: NavController, textColor: Color, backgroundColor: Color, title: String, icon: ImageVector, iconTint: Color = Color.White) {
 
-    TopAppBar(modifier = Modifier.height(100.dp), backgroundColor = backgroundColor) {
+    TopAppBar(modifier = Modifier.height(90.dp), backgroundColor = backgroundColor) {
         Column() {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 IconButton(
@@ -66,7 +66,7 @@ fun Header(navController: NavController, textColor: Color, backgroundColor: Colo
                     text = title,
                     color = textColor,
                     style = MaterialTheme.typography.h1,
-                    modifier = Modifier.padding(8.dp)
+                    modifier = Modifier.padding(start=8.dp, bottom = 8.dp)
                 )
             }
         }
@@ -109,26 +109,3 @@ fun AppBar(textColor: Color, backgroundColor: Color, title: String, icon: Int) {
         backgroundColor = backgroundColor,
     )
 }
-
-/*
-fun readData(): SnapshotStateList<Pokemon> {
-
-    val pokemons = mutableStateListOf<Pokemon>()
-    try {
-        val jsonObject = JSONObject(apiResponse)
-        val result = jsonObject.getJSONArray("results")
-        for(i in 0 until result.length()) {
-            val poke = result.getJSONObject(i)
-            pokemons.add(
-                Pokemon(
-                    poke.getString("name"),
-                    poke.getString("url")
-                )
-            )
-        }
-    }
-    catch (ex: Exception) {
-        Log.d("foo", ex.localizedMessage)
-    }
-    return pokemons
-} */

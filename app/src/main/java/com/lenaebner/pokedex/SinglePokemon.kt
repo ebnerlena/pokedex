@@ -45,7 +45,7 @@ import kotlinx.coroutines.withContext
 @Composable
 fun PokemonPreview() {
     val navC = rememberNavController()
-    SinglePokemonScreen(pokemonName = "Pikachu", navController = navC)
+    SinglePokemonScreen(pokemonName = "pikachu", navController = navC)
 }
 
 @Composable
@@ -54,13 +54,13 @@ fun SinglePokemonScreen(pokemonName: String?, navController: NavController) {
     val scope = rememberCoroutineScope()
     val pokemon: MutableState<Pokemon> = mutableStateOf(Pokemon())
 
-
     PokedexTheme() {
 
         scope.launch {
             pokemon.value = withContext(Dispatchers.IO){
                 ApiController.pokeApi.getPokemon(pokemonName ?: "pikachu")
             }
+            Log.d("foo", pokemon.value.height.toString() +" " +pokemon.value.types[0].type.name)
         }
         Scaffold (
 

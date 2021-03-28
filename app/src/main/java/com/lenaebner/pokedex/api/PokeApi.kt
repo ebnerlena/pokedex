@@ -1,7 +1,6 @@
 package com.lenaebner.pokedex.api
 
-import com.lenaebner.pokedex.api.models.Pokemon
-import com.lenaebner.pokedex.api.models.PokemonList
+import com.lenaebner.pokedex.api.models.*
 import retrofit2.http.GET
 import retrofit2.http.Path
 
@@ -15,4 +14,10 @@ interface PokeApi {
 
     @GET("pokemon/?limit=50")
     suspend fun getPokemons(): PokemonList
+
+    @GET("pokemon-species/{id}")
+    suspend fun getPokemonSpecies(@Path("id") id: Int): PokemonSpecies
+
+    @GET("pokemon-species/{id}")
+    suspend fun getPokemonColor(@Path("id") id: Int): PokemonColor
 }
