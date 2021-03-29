@@ -20,4 +20,7 @@ interface PokeApi {
 
     @GET("pokemon-species/{id}")
     suspend fun getPokemonColor(@Path("id") id: Int): PokemonColor
+
+    @GET("evolution-chain/{id}")
+    suspend fun getEvolutionChain(@Path("id") id: Int): EvolutionChainDetails
 }

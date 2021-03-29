@@ -1,7 +1,7 @@
 package com.lenaebner.pokedex.api.models
 
 data class EvolutionChain(
-    val url: String
+    val url: String = ""
 )
 
 data class EvolutionChainDetails(
@@ -9,21 +9,29 @@ data class EvolutionChainDetails(
 )
 
 data class EvolutionChainDetail(
-    val min_level: Int,
-    val trigger: Trigger
+    val min_level: Int?,
+    val min_happiness: Int?,
+    val trigger: Trigger,
+    val item: Item?
 )
 
 data class Chain(
-    val envolves_to: EnvolveEntry?,
-    val species: Species
+    val evolves_to: List<EvolveEntry> = emptyList(),
+    val species: Species? = null,
+    val is_baby: Boolean = false
 )
 
 data class Trigger(
     val name: String
 )
 
-data class EnvolveEntry(
+data class EvolveEntry(
     val species: Species,
-    val evolution_details: EvolutionChainDetail
+    val evolution_details: List<EvolutionChainDetail> = emptyList(),
+    val evolves_to: List<EvolveEntry> = emptyList(),
+    val is_baby: Boolean = false
+)
 
+data class Item(
+    val name: String
 )

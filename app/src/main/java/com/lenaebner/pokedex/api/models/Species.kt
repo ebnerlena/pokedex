@@ -1,26 +1,27 @@
 package com.lenaebner.pokedex.api.models
 
+import androidx.versionedparcelable.ParcelField
+import androidx.versionedparcelable.VersionedParcelize
+
 data class Species(
     val name: String = "",
     val url: String = ""
 )
-
 data class PokemonSpecies(
-    val color: Color,
-    val egg_groups: List<EggGroup>,
-    val evolution_chain: EvolutionChain,
-    val flavor_text_entries: List<FlavorTextEntry>
+    val color: ColorName = ColorName(),
+    val egg_groups: List<EggGroup> = emptyList(),
+    val evolution_chain: EvolutionChain = EvolutionChain(),
+    val flavor_text_entries: List<FlavorTextEntry> = emptyList()
 )
 
-data class Color(
-    val name: String
+data class ColorName(
+    val name: String = "red"
 )
 
 data class EggGroup(
-    val name: String,
-    val url: String
+    val name: String = "",
 )
 
 data class FlavorTextEntry(
-    val flavor_text: String
+    val flavor_text: String = ""
 )

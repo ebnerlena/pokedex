@@ -42,7 +42,7 @@ fun Navigation() {
 }
 
 @Composable
-fun Header(navController: NavController, textColor: Color, backgroundColor: Color, title: String, icon: ImageVector, iconTint: Color = Color.White) {
+fun Header(navController: NavController, textColor: Color, backgroundColor: Color, title: String, icon: ImageVector, iconTint: Color = Color.White, pokemon: Pokemon? = null) {
 
     TopAppBar(modifier = Modifier.height(90.dp), backgroundColor = backgroundColor) {
         Column() {
@@ -61,13 +61,22 @@ fun Header(navController: NavController, textColor: Color, backgroundColor: Colo
                     )
                 }
             }
-            Row() {
+            Row(modifier = Modifier.fillMaxWidth().align(Alignment.CenterHorizontally),
+                verticalAlignment = Alignment.CenterVertically) {
                 Text(
                     text = title,
                     color = textColor,
                     style = MaterialTheme.typography.h1,
-                    modifier = Modifier.padding(start=8.dp, bottom = 8.dp)
+                    modifier = Modifier.padding(start=8.dp, bottom = 8.dp).weight(5f)
                 )
+                if(pokemon != null) {
+                    Text(
+                        text = '#'+pokemon.id.toString(),
+                        color = textColor,
+                        style = MaterialTheme.typography.h5,
+                        modifier = Modifier.padding(end=8.dp, bottom = 8.dp).weight(1f)
+                    )
+                }
             }
         }
     }

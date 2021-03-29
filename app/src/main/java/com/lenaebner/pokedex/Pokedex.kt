@@ -112,16 +112,7 @@ fun FeaturedPokemon(
         elevation = 2.dp,
         modifier = modifier,
         shape = RoundedCornerShape(16.dp),
-        backgroundColor = when(pokemon.color.color.name) {
-            "yellow" -> pokeYellow
-            "blue" -> pokeBlue
-            "red" -> pokeRed
-            "green" -> pokeGreen
-            "purple" -> pokeLila
-            "brown" -> pokeBrown
-            "pink" -> pokePink
-            else -> pokeGrey
-        }
+        backgroundColor = ConvertStringToPokeColor(pokemon.color.color.name)
     ) {
         Column(
             modifier = Modifier
