@@ -7,11 +7,13 @@ data class Species(
     val name: String = "",
     val url: String = ""
 )
+
 data class PokemonSpecies(
     val color: ColorName = ColorName(),
     val egg_groups: List<EggGroup> = emptyList(),
     val evolution_chain: EvolutionChain = EvolutionChain(),
-    val flavor_text_entries: List<FlavorTextEntry> = emptyList()
+    val flavor_text_entries: List<FlavorTextEntry> = emptyList(),
+    val genera: List<GeneraEntry> = emptyList(),
 )
 
 data class ColorName(
@@ -24,4 +26,8 @@ data class EggGroup(
 
 data class FlavorTextEntry(
     val flavor_text: String = ""
+)
+
+data class GeneraEntry(
+    val genus: String = ""
 )

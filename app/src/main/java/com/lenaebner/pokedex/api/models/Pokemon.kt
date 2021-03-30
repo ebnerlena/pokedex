@@ -8,6 +8,7 @@ data class Pokemon(
     val weight: Int = 0,
     val moves: List<Move> = emptyList(),
     val types: List<Type> = emptyList(),
+    val abilities: List<Ability> = emptyList(),
     val stats: List<Stat> = emptyList(),
     val species: Species = Species(),
     val base_experience: Int = 0

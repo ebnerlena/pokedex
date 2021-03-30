@@ -24,8 +24,12 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.filled.ArrowForward
+import androidx.compose.ui.graphics.Color.Companion.Black
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.font.FontWeight.Companion.Bold
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -39,6 +43,7 @@ import com.lenaebner.pokedex.ui.theme.transparentWhite
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import okhttp3.internal.wait
 
 
 @Preview
@@ -65,7 +70,6 @@ fun SinglePokemonScreen(pokemonName: String?, navController: NavController) {
         }
         evolutionChain = withContext(Dispatchers.IO){
             val id = species.evolution_chain.url.split("/").get(6).toInt()
-            Log.d("foo", " id: "+id.toString())
             ApiController.pokeApi.getEvolutionChain(id)
         }
     }
@@ -88,9 +92,19 @@ fun SinglePokemonScreen(pokemonName: String?, navController: NavController) {
                     .background(ConvertStringToPokeColor(species.color.name))) {
                     Row(modifier = Modifier
                         .padding(top=8.dp, start=16.dp)) {
-                        pokemon?.types?.forEach { type ->
-                            Type(type = type)
+                        Row(modifier = Modifier.weight(2f)) {
+                            pokemon?.types?.forEach { type ->
+                                Type(type = type)
+                            }
                         }
+
+                        Text(
+                            text = if (species?.genera.size > 0) species.genera.get(7)?.genus else "Type",
+                            color = White,
+                            style = MaterialTheme.typography.body2,
+                            modifier = Modifier.padding(start= 16.dp).weight(1f),
+                            fontWeight = FontWeight.Bold
+                        )
                     }
                     Row(
                         modifier = Modifier
@@ -163,10 +177,14 @@ fun CardNavigation(
                     Text(text = "Moves", color = textColor)
                 }
             }
+
             Divider(modifier = Modifier
                 .height(3.dp)
                 .padding(3.dp)
-                .background(MaterialTheme.colors.secondaryVariant), color = MaterialTheme.colors.secondaryVariant)
+                .background(MaterialTheme.colors.secondaryVariant),
+                color = MaterialTheme.colors.secondaryVariant
+            )
+
             Row(Modifier.weight(5f)) {
                 Crossfade(targetState = currentPage) { screen ->
                     when (screen) {
@@ -194,7 +212,7 @@ fun Stats(pokemon: Pokemon) {
 @Composable
 fun SingleStat(name: String, value: Int, max: Int = 100) {
     Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier
-        .padding(vertical = 5.dp, horizontal = 8.dp)
+        .padding(vertical = 2.dp, horizontal = 8.dp)
         .fillMaxWidth()
         .height(35.dp)) {
 
@@ -224,7 +242,7 @@ fun SingleStat(name: String, value: Int, max: Int = 100) {
 
             Canvas(modifier = Modifier
                 .fillMaxSize()
-                .height(30.dp)){
+                .height(25.dp)){
                 var width = value/(max/200.0)
                 val canvasSize = Size((width.toFloat()), 30F)
                 drawRect(
@@ -250,17 +268,29 @@ fun Moves(pokemon: Pokemon) {
 fun EvolutionChain(evolutionChainDetails: EvolutionChainDetails) {
     var evolves = evolutionChainDetails.chain.evolves_to
     var species = evolutionChainDetails.chain.species
-    var cnt = 0;
+
     LazyColumn() {
+        item {
+            Text(text = "Evolution Chain",
+                color = MaterialTheme.colors.secondaryVariant,
+                fontWeight = FontWeight.Bold,
+                style = MaterialTheme.typography.h6,
+                modifier = Modifier
+                    .padding(vertical = 5.dp, horizontal = 16.dp)
+            )
+        }
         item {
             while(evolves.size > 0) {
                 EvolutionEntry(evolveEntry = evolves.get(0), speciesName = species?.name.toString())
-                if(evolves.get(0).evolves_to.size > 0) {
-                    species = evolves.get(0).species
-                    evolves = evolves.get(0).evolves_to
-                    cnt++
-                } else break
+                species = evolves.get(0).species
+                evolves = evolves.get(0).evolves_to
 
+                if(evolves.size > 0) {
+                    Divider(modifier = Modifier
+                        .height(2.dp)
+                        .padding(horizontal = 32.dp)
+                        .fillMaxWidth(), color = transparentGrey)
+                }
             }
         }
     }
@@ -268,40 +298,103 @@ fun EvolutionChain(evolutionChainDetails: EvolutionChainDetails) {
 
 @Composable
 fun EvolutionEntry(evolveEntry: EvolveEntry, speciesName: String) {
-    Row() {
-        Text(text = speciesName.capitalize(),
-            color = MaterialTheme.colors.secondaryVariant,
-            style = MaterialTheme.typography.h5,
-            modifier = Modifier
-                .padding(8.dp)
-                .weight(1f)
-        )
-        val text = if (evolveEntry.evolution_details.get(0).min_level != null) {
-            evolveEntry.evolution_details.get(0).min_level.toString() +" Min Level" }
-        else {
-            evolveEntry.evolution_details.get(0).min_happiness?.toString() + "Min Happiness"
+
+    val details = evolveEntry.evolution_details.get(0)
+    var triggerText = when(details.trigger.name) {
+        "level-up" -> if(details.min_happiness != null) "Hpy: "+details.min_happiness else "Lvl: "+evolveEntry.evolution_details.get(0).min_level
+        "use-item" -> details.item?.name?.capitalize()
+        else -> "Level up"
+    }
+    var pokeFrom  by remember { mutableStateOf(Pokemon()) }
+    var pokeTo by remember { mutableStateOf(Pokemon()) }
+
+    val scope = rememberCoroutineScope()
+    scope.launch {
+        pokeFrom = withContext(Dispatchers.IO) {
+            ApiController.pokeApi.getPokemon(speciesName)
+        }
+        pokeTo = withContext(Dispatchers.IO) {
+            ApiController.pokeApi.getPokemon(evolveEntry.species.name)
+        }
+    }
+
+    Row(modifier = Modifier.padding(16.dp)) {
+        Column(modifier = Modifier.weight(1f)) {
+            Row(modifier = Modifier.align(Alignment.CenterHorizontally)) {
+                CoilImage(
+                    data = pokeFrom.sprites?.other?.artwork?.sprite.orEmpty(),
+                    contentDescription = "Pokemon From",
+                    loading = {
+                        Image(
+                            painter = painterResource(id = R.drawable.pokemon1),
+                            contentDescription = "Fallback Image"
+                        )
+                    },
+                    requestBuilder = {
+                        transformations(CircleCropTransformation())
+                    },modifier = Modifier
+                        .width(60.dp)
+                )
+            }
+            Row(modifier = Modifier.align(Alignment.CenterHorizontally)) {
+                Text(text = speciesName.capitalize(),
+                    color = MaterialTheme.colors.secondaryVariant,
+                    style = MaterialTheme.typography.h6,
+                    modifier = Modifier
+                        .padding(8.dp)
+                )
+            }
+
         }
         Column(modifier = Modifier
             .padding(8.dp)
-            .weight(1f)) {
-            Text(text = text,
-                color = MaterialTheme.colors.secondaryVariant,
-                style = MaterialTheme.typography.h6,
-                modifier = Modifier.padding(8.dp)
-            )
-            Text(text = evolveEntry.evolution_details.get(0).trigger.name.capitalize(),
-                color = MaterialTheme.colors.secondaryVariant,
-                style = MaterialTheme.typography.h6,
-                modifier = Modifier.padding(8.dp)
-            )
+            .weight(1f)
+            .fillMaxHeight()
+            .align(Alignment.CenterVertically)) {
+            Row(modifier = Modifier.align(Alignment.CenterHorizontally)) {
+                Icon(
+                    imageVector = Icons.Default.ArrowForward,
+                    contentDescription = null,
+                    tint = transparentGrey
+                )
+            }
+            Row(modifier = Modifier.align(Alignment.CenterHorizontally)){
+                Text(text = triggerText.toString(),
+                    color = MaterialTheme.colors.secondaryVariant,
+                    fontWeight = FontWeight.Bold,
+                    style = MaterialTheme.typography.caption,
+                    modifier = Modifier.padding(8.dp)
+                )
+            }
+
         }
-        Text(text = evolveEntry.species.name.capitalize(),
-            color = MaterialTheme.colors.secondaryVariant,
-            style = MaterialTheme.typography.h5,
-            modifier = Modifier
-                .padding(8.dp)
-                .weight(1f)
-        )
+        Column(modifier = Modifier.weight(1f)) {
+            Row(modifier = Modifier.align(Alignment.CenterHorizontally)) {
+                CoilImage(
+                    data = pokeTo.sprites?.other?.artwork?.sprite.orEmpty(),
+                    contentDescription = "Pokemon From",
+                    loading = {
+                        Image(
+                            painter = painterResource(id = R.drawable.pokemon1),
+                            contentDescription = "Fallback Image"
+                        )
+                    },
+                    requestBuilder = {
+                        transformations(CircleCropTransformation())
+                    },modifier = Modifier
+                        .width(60.dp)
+                )
+            }
+            Row(modifier = Modifier.align(Alignment.CenterHorizontally)) {
+                Text(text = evolveEntry.species.name.capitalize(),
+                    color = MaterialTheme.colors.secondaryVariant,
+                    style = MaterialTheme.typography.h6,
+                    modifier = Modifier
+                        .padding(8.dp)
+                )
+            }
+
+        }
     }
 }
 
@@ -323,21 +416,51 @@ fun Description(pokemon: Pokemon, species:  PokemonSpecies) {
         }
         item {
             Row() {
-                Text(text = "Egg Groups:",
+                Text(
+                    text = "Egg Groups:",
                     color = transparentGrey,
-                    style = MaterialTheme.typography.h6,
-                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+                    style = MaterialTheme.typography.body2,
+                    modifier = Modifier
+                        .padding(horizontal = 16.dp, vertical = 8.dp)
+                        .weight(1.2f)
                 )
-                species.egg_groups.forEach {
-                    Text(text = it.name.capitalize(),
-                        color = MaterialTheme.colors.secondaryVariant,
-                        style = MaterialTheme.typography.body2,
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier.padding(vertical = 8.dp, horizontal = 2.dp)
-                    )
+                Row(modifier = Modifier.weight(2f)) {
+                    species.egg_groups.forEach {
+                        Text(
+                            text = it.name.capitalize(),
+                            color = MaterialTheme.colors.secondaryVariant,
+                            style = MaterialTheme.typography.body2,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.padding(vertical = 8.dp, horizontal = 2.dp)
+                        )
+                    }
+                }
+
+            }
+        }
+
+        item {
+            Row() {
+                Text(
+                    text = "Abilities:",
+                    color = transparentGrey,
+                    style = MaterialTheme.typography.body2,
+                    modifier = Modifier
+                        .padding(horizontal = 16.dp, vertical = 8.dp)
+                        .weight(1.2f)
+                )
+                Row(modifier = Modifier.weight(2f)) {
+                    pokemon.abilities.forEach {
+                        Text(
+                            text = it.ability.name.capitalize(),
+                            color = MaterialTheme.colors.secondaryVariant,
+                            style = MaterialTheme.typography.body2,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.padding(vertical = 8.dp, horizontal = 2.dp)
+                        )
+                    }
                 }
             }
-
         }
     }
 }
