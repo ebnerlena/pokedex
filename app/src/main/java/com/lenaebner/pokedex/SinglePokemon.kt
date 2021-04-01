@@ -2,12 +2,14 @@ package com.lenaebner.pokedex
 
 import android.service.autofill.OnClickAction
 import android.util.Log
+import android.widget.GridLayout
 import android.widget.Space
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -26,10 +28,12 @@ import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.ui.graphics.Color.Companion.Black
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.font.FontWeight.Companion.Bold
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -46,6 +50,7 @@ import kotlinx.coroutines.withContext
 import okhttp3.internal.wait
 
 
+@ExperimentalMaterialApi
 @Preview
 @Composable
 fun PokemonPreview() {
@@ -53,6 +58,7 @@ fun PokemonPreview() {
     SinglePokemonScreen(pokemonName = "pikachu", navController = navC)
 }
 
+@ExperimentalMaterialApi
 @Composable
 fun SinglePokemonScreen(pokemonName: String?, navController: NavController) {
 
@@ -92,7 +98,7 @@ fun SinglePokemonScreen(pokemonName: String?, navController: NavController) {
                     .background(ConvertStringToPokeColor(species.color.name))) {
                     Row(modifier = Modifier
                         .padding(top=8.dp, start=16.dp)) {
-                        Row(modifier = Modifier.weight(2f)) {
+                        Row(modifier = Modifier.weight(1f)) {
                             pokemon?.types?.forEach { type ->
                                 Type(type = type)
                             }
@@ -102,7 +108,8 @@ fun SinglePokemonScreen(pokemonName: String?, navController: NavController) {
                             text = if (species?.genera.size > 0) species.genera.get(7)?.genus else "Type",
                             color = White,
                             style = MaterialTheme.typography.body2,
-                            modifier = Modifier.padding(start= 16.dp).weight(1f),
+                            modifier = Modifier.padding(end = 16.dp).weight(1f),
+                            textAlign = TextAlign.End,
                             fontWeight = FontWeight.Bold
                         )
                     }
@@ -139,6 +146,7 @@ fun SinglePokemonScreen(pokemonName: String?, navController: NavController) {
     }
 }
 
+@ExperimentalMaterialApi
 @Composable
 fun CardNavigation(
     page: String,
@@ -146,11 +154,14 @@ fun CardNavigation(
     species: PokemonSpecies,
     evolutionChainDetails: EvolutionChainDetails
 ) {
-
     Card(modifier = Modifier
         .padding(top = 0.dp)
         .offset(y = 10.dp)
-        .fillMaxSize(), backgroundColor = White, shape = MaterialTheme.shapes.large, elevation = -2.dp) {
+        .fillMaxSize(),
+        backgroundColor = White,
+        shape = MaterialTheme.shapes.large,
+        elevation = 2.dp
+    ) {
 
         var currentPage by rememberSaveable { mutableStateOf(page) }
 
@@ -467,10 +478,10 @@ fun Description(pokemon: Pokemon, species:  PokemonSpecies) {
 
 @Composable
 fun HeightWidth(pokemon: Pokemon) {
-    Card( modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp), elevation = 2.dp, shape = RoundedCornerShape(16.dp)) {
+    Card( modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp), elevation = 2.dp, backgroundColor = White, shape = RoundedCornerShape(16.dp)) {
         Row(modifier = Modifier
             .padding(8.dp)
-            .fillMaxWidth()) {
+            .fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
             Column(Modifier.weight(1f)) {
                 Text(text = "Height",
                     color = transparentGrey,

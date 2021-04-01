@@ -12,7 +12,7 @@ data class EvolutionChainDetail(
     val min_level: Int?,
     val min_happiness: Int?,
     val trigger: Trigger,
-    val item: Item?
+    val item: EvolutionItem?
 )
 
 data class Chain(
@@ -32,6 +32,6 @@ data class EvolveEntry(
     val is_baby: Boolean = false
 )
 
-data class Item(
-    val name: String
+data class EvolutionItem(
+    val name: String = ""
 )

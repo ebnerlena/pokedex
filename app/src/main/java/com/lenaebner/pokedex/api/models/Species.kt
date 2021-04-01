@@ -9,6 +9,7 @@ data class Species(
 )
 
 data class PokemonSpecies(
+    val name: String = "",
     val color: ColorName = ColorName(),
     val egg_groups: List<EggGroup> = emptyList(),
     val evolution_chain: EvolutionChain = EvolutionChain(),
@@ -22,10 +23,6 @@ data class ColorName(
 
 data class EggGroup(
     val name: String = "",
-)
-
-data class FlavorTextEntry(
-    val flavor_text: String = ""
 )
 
 data class GeneraEntry(
