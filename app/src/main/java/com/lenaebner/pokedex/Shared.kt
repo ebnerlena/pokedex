@@ -1,6 +1,7 @@
 package com.lenaebner.pokedex
 
 import android.util.Log
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -21,6 +22,7 @@ import com.lenaebner.pokedex.api.models.Pokemon
 import com.lenaebner.pokedex.ui.theme.PokedexTheme
 import org.json.JSONObject
 
+@ExperimentalFoundationApi
 @ExperimentalMaterialApi
 @Composable
 fun Navigation() {
@@ -50,6 +52,15 @@ fun Navigation() {
         ) { backStackEntry ->
             SingleGeneration(
                 name = backStackEntry.arguments?.getString("name"),
+                navController = navController
+            )
+        }
+        composable(
+            "item/{name}",
+            arguments = mutableStateListOf(navArgument("name") { type = NavType.StringType })
+        ) { backStackEntry ->
+            SingleItem(
+                itemName = backStackEntry.arguments?.getString("name"),
                 navController = navController
             )
         }

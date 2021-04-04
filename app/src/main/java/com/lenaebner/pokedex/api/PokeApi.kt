@@ -3,6 +3,7 @@ package com.lenaebner.pokedex.api
 import com.lenaebner.pokedex.api.models.*
 import retrofit2.http.GET
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface PokeApi {
 
@@ -12,8 +13,8 @@ interface PokeApi {
     @GET("pokemon/{name}")
     suspend fun getPokemon(@Path("name") name: String): Pokemon
 
-    @GET("pokemon/?limit=50")
-    suspend fun getPokemons(): PokemonList
+    @GET("pokemon")
+    suspend fun getPokemons(@Query("offset") offset: Int?, @Query("limit") limit: Int?): PokemonList
 
     @GET("pokemon-species/{id}")
     suspend fun getPokemonSpecies(@Path("id") id: Int): PokemonSpecies
@@ -24,8 +25,8 @@ interface PokeApi {
     @GET("evolution-chain/{id}")
     suspend fun getEvolutionChain(@Path("id") id: Int): EvolutionChainDetails
 
-    @GET("item?limit={limit}")
-    suspend fun getItems(@Path("limit") limit: Int): ItemsList
+    @GET("item")
+    suspend fun getItems(@Query("offset") offset: Int?, @Query("limit") limit: Int?): ItemsList
 
     @GET("item/{id}")
     suspend fun getItem(@Path("id") id: Int): Item
@@ -42,8 +43,8 @@ interface PokeApi {
     @GET("generation/{name}")
     suspend fun getGeneration(@Path("name") name: String): Generation
 
-    @GET("move?limit={limit}")
-    suspend fun getMoves(@Path("limit") limit: Int): MoveList
+    @GET("move")
+    suspend fun getMoves(@Query("offset") offset: Int?, @Query("limit") limit: Int?): MoveList
 
     @GET("move/{id}")
     suspend fun getMove(@Path("id") id: Int): Move

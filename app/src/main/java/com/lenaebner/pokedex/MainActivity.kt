@@ -22,6 +22,7 @@ import java.util.concurrent.TimeUnit
 
 class MainActivity : AppCompatActivity() {
 
+    @ExperimentalMaterialApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -34,16 +35,11 @@ class MainActivity : AppCompatActivity() {
     }
 }
 
+@ExperimentalMaterialApi
 @Composable
 fun MyApp() {
 
     PokedexTheme {
         Navigation()
-    }
-
-    val scope = rememberCoroutineScope()
-
-    scope.launch(Dispatchers.IO){
-
     }
 }

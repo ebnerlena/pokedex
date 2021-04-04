@@ -8,10 +8,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -49,22 +46,24 @@ fun Pokedex (navController: NavController) {
     
     Scaffold (
         topBar = {
-            Header(navController = navController,
+            Header(
+                navController = navController,
                 textColor = MaterialTheme.colors.secondaryVariant,
                 backgroundColor = Color.White,
                 title = "Pokedex",
                 iconTint = MaterialTheme.colors.secondaryVariant,
-                icon = Icons.Default.ArrowBack)
+                icon = Icons.Default.ArrowBack
+            )
                  },
-        content = { PokemonsGrid(navController = navController, pokemons = emptyList()) }
+        content = {
+
+            PokemonsGrid(navController = navController, pokemons = emptyList())
+        }
     )
 }
 
-
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun PokemonsGrid(navController: NavController, pokemons: List<Pokemon>?) {
-
+fun fetchPokemons(offset: Int, limit: Int, pokemons: List<Pokemon>?) : MutableState<List<PokemonWithColor>> {
     val scope = rememberCoroutineScope()
     var list: MutableState<List<Pokemon>> = mutableStateOf(emptyList())
     var pokemonsWithColors: MutableState<List<PokemonWithColor>> = mutableStateOf(emptyList())
@@ -73,7 +72,7 @@ fun PokemonsGrid(navController: NavController, pokemons: List<Pokemon>?) {
 
     val task = scope.launch {
         val pokemons = withContext(Dispatchers.IO) {
-            ApiController.pokeApi.getPokemons()
+            ApiController.pokeApi.getPokemons(offset = offset,limit = limit)
         }
 
         if (list.value.isEmpty()) {
@@ -91,6 +90,21 @@ fun PokemonsGrid(navController: NavController, pokemons: List<Pokemon>?) {
             }
         }
     }
+    return pokemonsWithColors
+}
+
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun PokemonsGrid(navController: NavController, pokemons: List<Pokemon>?) {
+
+    var pokemonsWithColors: MutableState<List<PokemonWithColor>> = mutableStateOf(
+        emptyList()
+    )
+
+   pokemonsWithColors = fetchPokemons(offset = 0, limit = 20, pokemons = pokemons)
+
+    //pokemonsWithColors.value.addAll(list2.value)
 
     LazyVerticalGrid(
         cells = GridCells.Fixed(2), modifier = Modifier.padding(4.dp)
@@ -154,17 +168,23 @@ fun FeaturedPokemon(
             Row(
                 modifier = Modifier
                     .height(80.dp)
-                    .align(Alignment.End).padding(bottom = 6.dp),
+                    .align(Alignment.End)
+                    .padding(bottom = 6.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                Column(modifier = Modifier.weight(2f).padding(start = 8.dp, end = 4.dp, top = 16.dp).align(
-                    Alignment.Top
-                )) {
+                Column(modifier = Modifier
+                    .weight(2f)
+                    .padding(start = 8.dp, end = 4.dp, top = 16.dp)
+                    .align(
+                        Alignment.Top
+                    )) {
                     pokemon.pokemon?.types?.forEach { type ->
                         Type(type = type)
                     }
                 }
-                Column(modifier = Modifier.weight(3f).padding(2.dp)) {
+                Column(modifier = Modifier
+                    .weight(3f)
+                    .padding(2.dp)) {
                     CoilImage(
                         data = pokemon.pokemon?.sprites?.other?.artwork?.sprite.orEmpty(),
                         contentDescription = "Pikachu",

@@ -1,16 +1,16 @@
 package com.lenaebner.pokedex.api.models
 
 data class Item(
-    val attributes: List<Attribute>,
-    val category: Category,
-    val cost: Int,
-    val name: String,
-    val id: Int,
-    val fling_power: Int?,
-    val fling_effect: String?,
-    val effect_entries: List<EffectEntry>,
-    val flavor_text_entries: List<FlavorTextEntryItem>,
-    val sprites: ItemSprite
+    val attributes: List<Attribute> = emptyList(),
+    val category: Category = Category(name = ""),
+    val cost: Int = 0,
+    val name: String ="",
+    val id: Int = 1,
+    val fling_power: Int? = null,
+    val fling_effect: String? = null,
+    val effect_entries: List<EffectEntry> = emptyList(),
+    val flavor_text_entries: List<FlavorTextEntryItem> = emptyList(),
+    val sprites: ItemSprite = ItemSprite()
 )
 
 data class ItemPreview(
@@ -30,5 +30,5 @@ data class Attribute(
 )
 
 data class ItemSprite(
-    val default: String
+    val default: String = ""
 )

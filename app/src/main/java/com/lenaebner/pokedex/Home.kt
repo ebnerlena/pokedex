@@ -1,5 +1,6 @@
 package com.lenaebner.pokedex
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -30,6 +31,7 @@ import androidx.navigation.compose.*
 import com.lenaebner.pokedex.ui.theme.PokedexTheme
 
 //use for deployment
+@ExperimentalFoundationApi
 @ExperimentalMaterialApi
 @Preview
 @Composable

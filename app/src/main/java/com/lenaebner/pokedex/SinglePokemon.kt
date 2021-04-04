@@ -1,18 +1,10 @@
 package com.lenaebner.pokedex
 
-import android.service.autofill.OnClickAction
-import android.util.Log
-import android.widget.GridLayout
-import android.widget.Space
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.animateContentSize
-import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -25,18 +17,14 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.White
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.filled.ArrowForward
-import androidx.compose.ui.graphics.Color.Companion.Black
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.font.FontWeight.Companion.Bold
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.navigation.compose.navigate
 import androidx.navigation.compose.rememberNavController
 import coil.transform.CircleCropTransformation
 import com.google.accompanist.coil.CoilImage
@@ -47,9 +35,8 @@ import com.lenaebner.pokedex.ui.theme.transparentWhite
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import okhttp3.internal.wait
 
-
+@ExperimentalFoundationApi
 @ExperimentalMaterialApi
 @Preview
 @Composable
@@ -58,6 +45,7 @@ fun PokemonPreview() {
     SinglePokemonScreen(pokemonName = "pikachu", navController = navC)
 }
 
+@ExperimentalFoundationApi
 @ExperimentalMaterialApi
 @Composable
 fun SinglePokemonScreen(pokemonName: String?, navController: NavController) {
@@ -75,12 +63,12 @@ fun SinglePokemonScreen(pokemonName: String?, navController: NavController) {
             ApiController.pokeApi.getPokemonSpecies(pokemon.id)
         }
         evolutionChain = withContext(Dispatchers.IO){
-            val id = species.evolution_chain.url.split("/").get(6).toInt()
+            val id = species.evolution_chain.url.split("/")[6].toInt()
             ApiController.pokeApi.getEvolutionChain(id)
         }
     }
 
-    PokedexTheme() {
+    PokedexTheme {
 
         Scaffold (
             topBar = {
@@ -99,13 +87,13 @@ fun SinglePokemonScreen(pokemonName: String?, navController: NavController) {
                     Row(modifier = Modifier
                         .padding(top=8.dp, start=16.dp)) {
                         Row(modifier = Modifier.weight(1f)) {
-                            pokemon?.types?.forEach { type ->
+                            pokemon.types.forEach { type ->
                                 Type(type = type)
                             }
                         }
 
                         Text(
-                            text = if (species?.genera.size > 0) species.genera.get(7)?.genus else "Type",
+                            text = if (species.genera.isNotEmpty()) species.genera[7].genus else "Type",
                             color = White,
                             style = MaterialTheme.typography.body2,
                             modifier = Modifier.padding(end = 16.dp).weight(1f),
@@ -138,7 +126,7 @@ fun SinglePokemonScreen(pokemonName: String?, navController: NavController) {
                             )
                         }
                     Row(modifier = Modifier.weight(3f)){
-                        CardNavigation("about", pokemon = pokemon, species = species, evolutionChainDetails = evolutionChain)
+                        CardNavigation("about", pokemon = pokemon, species = species, evolutionChainDetails = evolutionChain, navController = navController)
                     }
                 }
             }
@@ -146,13 +134,15 @@ fun SinglePokemonScreen(pokemonName: String?, navController: NavController) {
     }
 }
 
+@ExperimentalFoundationApi
 @ExperimentalMaterialApi
 @Composable
 fun CardNavigation(
     page: String,
     pokemon: Pokemon,
     species: PokemonSpecies,
-    evolutionChainDetails: EvolutionChainDetails
+    evolutionChainDetails: EvolutionChainDetails,
+    navController: NavController
 ) {
     Card(modifier = Modifier
         .padding(top = 0.dp)
@@ -202,7 +192,7 @@ fun CardNavigation(
                         "about" -> Description(pokemon = pokemon, species = species)
                         "stats" -> Stats(pokemon)
                         "moves" -> Moves(pokemon)
-                        "evolution" -> EvolutionChain(evolutionChainDetails)
+                        "evolution" -> EvolutionChain(evolutionChainDetails, navController = navController)
                     }
                 }
             }
@@ -254,7 +244,7 @@ fun SingleStat(name: String, value: Int, max: Int = 100) {
             Canvas(modifier = Modifier
                 .fillMaxSize()
                 .height(25.dp)){
-                var width = value/(max/200.0)
+                val width = value/(max/200.0)
                 val canvasSize = Size((width.toFloat()), 30F)
                 drawRect(
                     color = Color.Gray,
@@ -266,21 +256,31 @@ fun SingleStat(name: String, value: Int, max: Int = 100) {
     }
 }
 
+@ExperimentalFoundationApi
 @Composable
 fun Moves(pokemon: Pokemon) {
-
-    Text(text = "TODO: include Moves",
-        color = MaterialTheme.colors.secondaryVariant,
-        style = MaterialTheme.typography.h5,
-        modifier = Modifier.padding(8.dp))
+    LazyVerticalGrid(
+        cells = GridCells.Fixed(2), modifier = Modifier.padding(4.dp)
+    ) {
+        items(pokemon.moves) { m ->
+            Text(text = m.move.name.toUpperCase(),
+                color = MaterialTheme.colors.secondaryVariant,
+                style = MaterialTheme.typography.body2,
+                modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp)
+                    .background(MaterialTheme.colors.background)
+                    ,textAlign = TextAlign.Center
+            )
+            Spacer(modifier = Modifier.size(4.dp))
+        }
+    }
 }
 
 @Composable
-fun EvolutionChain(evolutionChainDetails: EvolutionChainDetails) {
+fun EvolutionChain(evolutionChainDetails: EvolutionChainDetails, navController: NavController) {
     var evolves = evolutionChainDetails.chain.evolves_to
     var species = evolutionChainDetails.chain.species
 
-    LazyColumn() {
+    LazyColumn {
         item {
             Text(text = "Evolution Chain",
                 color = MaterialTheme.colors.secondaryVariant,
@@ -291,12 +291,12 @@ fun EvolutionChain(evolutionChainDetails: EvolutionChainDetails) {
             )
         }
         item {
-            while(evolves.size > 0) {
-                EvolutionEntry(evolveEntry = evolves.get(0), speciesName = species?.name.toString())
-                species = evolves.get(0).species
-                evolves = evolves.get(0).evolves_to
+            while(evolves.isNotEmpty()) {
+                EvolutionEntry(evolveEntry = evolves[0], speciesName = species?.name.toString(), navController = navController)
+                species = evolves[0].species
+                evolves = evolves[0].evolves_to
 
-                if(evolves.size > 0) {
+                if(evolves.isNotEmpty()) {
                     Divider(modifier = Modifier
                         .height(2.dp)
                         .padding(horizontal = 32.dp)
@@ -308,11 +308,11 @@ fun EvolutionChain(evolutionChainDetails: EvolutionChainDetails) {
 }
 
 @Composable
-fun EvolutionEntry(evolveEntry: EvolveEntry, speciesName: String) {
+fun EvolutionEntry(evolveEntry: EvolveEntry, speciesName: String, navController: NavController) {
 
-    val details = evolveEntry.evolution_details.get(0)
-    var triggerText = when(details.trigger.name) {
-        "level-up" -> if(details.min_happiness != null) "Hpy: "+details.min_happiness else "Lvl: "+evolveEntry.evolution_details.get(0).min_level
+    val details = evolveEntry.evolution_details[0]
+    val triggerText = when(details.trigger.name) {
+        "level-up" -> if(details.min_happiness != null) "Hpy: "+details.min_happiness else "Lvl: "+evolveEntry.evolution_details[0].min_level
         "use-item" -> details.item?.name?.capitalize()
         else -> "Level up"
     }
@@ -330,7 +330,9 @@ fun EvolutionEntry(evolveEntry: EvolveEntry, speciesName: String) {
     }
 
     Row(modifier = Modifier.padding(16.dp)) {
-        Column(modifier = Modifier.weight(1f)) {
+        Column(modifier = Modifier.weight(1f).clickable {
+            navController.navigate("pokemon/${speciesName}")
+        }) {
             Row(modifier = Modifier.align(Alignment.CenterHorizontally)) {
                 CoilImage(
                     data = pokeFrom.sprites?.other?.artwork?.sprite.orEmpty(),
@@ -361,7 +363,8 @@ fun EvolutionEntry(evolveEntry: EvolveEntry, speciesName: String) {
             .padding(8.dp)
             .weight(1f)
             .fillMaxHeight()
-            .align(Alignment.CenterVertically)) {
+            .align(Alignment.CenterVertically)
+         ) {
             Row(modifier = Modifier.align(Alignment.CenterHorizontally)) {
                 Icon(
                     imageVector = Icons.Default.ArrowForward,
@@ -379,8 +382,11 @@ fun EvolutionEntry(evolveEntry: EvolveEntry, speciesName: String) {
             }
 
         }
-        Column(modifier = Modifier.weight(1f)) {
-            Row(modifier = Modifier.align(Alignment.CenterHorizontally)) {
+        Column(modifier = Modifier.weight(1f).clickable {  navController.navigate("pokemon/"+evolveEntry.species.name) }
+        ) {
+            Row(
+                modifier = Modifier.align(Alignment.CenterHorizontally),
+            ) {
                 CoilImage(
                     data = pokeTo.sprites?.other?.artwork?.sprite.orEmpty(),
                     contentDescription = "Pokemon From",
@@ -412,7 +418,7 @@ fun EvolutionEntry(evolveEntry: EvolveEntry, speciesName: String) {
 @Composable
 fun Description(pokemon: Pokemon, species:  PokemonSpecies) {
     val text = if (species.flavor_text_entries.isNotEmpty()) {
-        species.flavor_text_entries.get(7).flavor_text.replace("[\n\r]".toRegex(), " ") }
+        species.flavor_text_entries[7].flavor_text.replace("[\n\r]".toRegex(), " ") }
     else "loading..."
     LazyColumn(modifier = Modifier.padding(8.dp)) {
        item {
@@ -426,7 +432,7 @@ fun Description(pokemon: Pokemon, species:  PokemonSpecies) {
             HeightWidth(pokemon = pokemon)
         }
         item {
-            Row() {
+            Row {
                 Text(
                     text = "Egg Groups:",
                     color = transparentGrey,
@@ -451,7 +457,7 @@ fun Description(pokemon: Pokemon, species:  PokemonSpecies) {
         }
 
         item {
-            Row() {
+            Row {
                 Text(
                     text = "Abilities:",
                     color = transparentGrey,
@@ -460,6 +466,7 @@ fun Description(pokemon: Pokemon, species:  PokemonSpecies) {
                         .padding(horizontal = 16.dp, vertical = 8.dp)
                         .weight(1.2f)
                 )
+
                 Row(modifier = Modifier.weight(2f)) {
                     pokemon.abilities.forEach {
                         Text(
@@ -486,14 +493,14 @@ fun HeightWidth(pokemon: Pokemon) {
                 Text(text = "Height",
                     color = transparentGrey,
                     style = MaterialTheme.typography.h6,
-                    modifier = Modifier.padding(8.dp)
+                    modifier = Modifier.padding(8.dp).weight(1f)
                 )
 
                 Text(text = (pokemon.height/10.0).toString() + " cm",
                     color = MaterialTheme.colors.secondaryVariant,
                     style = MaterialTheme.typography.body2,
                     fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(horizontal = 8.dp)
+                    modifier = Modifier.padding(horizontal = 8.dp).weight(1f)
                 )
 
             }
@@ -501,14 +508,14 @@ fun HeightWidth(pokemon: Pokemon) {
                 Text(text = "Weight",
                     color = transparentGrey,
                     style = MaterialTheme.typography.h6,
-                    modifier = Modifier.padding(horizontal = 8.dp)
+                    modifier = Modifier.padding(horizontal = 8.dp).weight(1f)
                 )
 
                 Text(text = (pokemon.weight/10.0).toString()+" kg",
                     color = MaterialTheme.colors.secondaryVariant,
                     style = MaterialTheme.typography.body2,
                     fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(8.dp)
+                    modifier = Modifier.padding(8.dp).weight(1f)
                 )
 
             }
@@ -522,7 +529,7 @@ fun ExpandingCard(title: String, content: @Composable () -> Unit) {
     var expanded = remember { mutableStateOf(false)}
     Card (modifier = Modifier
         .padding(8.dp)
-        .fillMaxWidth(), backgroundColor = Color.White, shape = MaterialTheme.shapes.medium) {
+        .fillMaxWidth(), backgroundColor = White, shape = MaterialTheme.shapes.medium) {
         Column(
             Modifier
                 .animateContentSize()
