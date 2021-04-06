@@ -22,8 +22,6 @@ import com.lenaebner.pokedex.api.models.Pokemon
 import com.lenaebner.pokedex.ui.theme.PokedexTheme
 import org.json.JSONObject
 
-@ExperimentalFoundationApi
-@ExperimentalMaterialApi
 @Composable
 fun Navigation() {
     val navController = rememberNavController()

@@ -39,8 +39,7 @@ fun ItemPreview() {
     SingleItem(itemName = "master-ball", navController = navC)
 }
 
-@ExperimentalFoundationApi
-@ExperimentalMaterialApi
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun SingleItem(itemName: String?, navController: NavController) {
 
@@ -49,7 +48,7 @@ fun SingleItem(itemName: String?, navController: NavController) {
 
     scope.launch {
         item = withContext(Dispatchers.IO){
-            ApiController.pokeApi.getItem(itemName ?: "master-ball")
+            ApiController.itemsApi.getItem(itemName ?: "master-ball")
         }
     }
 
@@ -141,7 +140,7 @@ fun SingleItem(itemName: String?, navController: NavController) {
                                         )
                                         item.effect_entries.forEach {
                                             Text(
-                                                text = it.short_effect,
+                                                text = it.shortEffect,
                                                 color = MaterialTheme.colors.secondaryVariant,
                                                 style = MaterialTheme.typography.body2,
                                                 modifier = Modifier.padding(vertical = 8.dp, horizontal = 8.dp)

@@ -35,9 +35,7 @@ import com.lenaebner.pokedex.api.models.Pokemon
 import com.lenaebner.pokedex.api.models.PokemonWithColor
 import com.lenaebner.pokedex.ui.theme.transparentGrey
 import com.lenaebner.pokedex.ui.theme.transparentWhite
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 
 @Composable
 fun Items (navController: NavController) {
@@ -64,12 +62,12 @@ fun fetchItems(offset: Int, limit: Int) : MutableState<List<Item>> {
 
     val task = scope.launch {
         val list = withContext(Dispatchers.IO) {
-            ApiController.pokeApi.getItems(offset = offset,limit = limit)
+            ApiController.itemsApi.getItems(offset = offset,limit = limit)
         }
 
         items.value = list.results.map {
-            ApiController.pokeApi.getItem(it.name)
-        }
+            async { ApiController.itemsApi.getItem(it.name) }
+        }.awaitAll()
     }
     return items
 }

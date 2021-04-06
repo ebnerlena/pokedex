@@ -36,8 +36,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-@ExperimentalFoundationApi
-@ExperimentalMaterialApi
+
 @Preview
 @Composable
 fun PokemonPreview() {
@@ -45,8 +44,6 @@ fun PokemonPreview() {
     SinglePokemonScreen(pokemonName = "pikachu", navController = navC)
 }
 
-@ExperimentalFoundationApi
-@ExperimentalMaterialApi
 @Composable
 fun SinglePokemonScreen(pokemonName: String?, navController: NavController) {
 
@@ -74,7 +71,7 @@ fun SinglePokemonScreen(pokemonName: String?, navController: NavController) {
             topBar = {
                 Header(navController = navController,
                     textColor = White,
-                    backgroundColor = ConvertStringToPokeColor(species.color.name),
+                    backgroundColor = species.color.name.asPokeColor(),
                     title = pokemon.name.capitalize(),
                     icon = Icons.Default.ArrowBack,
                     pokemon = pokemon
@@ -83,7 +80,7 @@ fun SinglePokemonScreen(pokemonName: String?, navController: NavController) {
             content = {
                 Column(modifier = Modifier
                     .fillMaxWidth()
-                    .background(ConvertStringToPokeColor(species.color.name))) {
+                    .background(species.color.name.asPokeColor())) {
                     Row(modifier = Modifier
                         .padding(top=8.dp, start=16.dp)) {
                         Row(modifier = Modifier.weight(1f)) {
@@ -134,8 +131,6 @@ fun SinglePokemonScreen(pokemonName: String?, navController: NavController) {
     }
 }
 
-@ExperimentalFoundationApi
-@ExperimentalMaterialApi
 @Composable
 fun CardNavigation(
     page: String,
@@ -256,7 +251,7 @@ fun SingleStat(name: String, value: Int, max: Int = 100) {
     }
 }
 
-@ExperimentalFoundationApi
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun Moves(pokemon: Pokemon) {
     LazyVerticalGrid(

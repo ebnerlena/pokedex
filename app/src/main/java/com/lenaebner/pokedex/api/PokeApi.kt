@@ -14,7 +14,7 @@ interface PokeApi {
     suspend fun getPokemon(@Path("name") name: String): Pokemon
 
     @GET("pokemon")
-    suspend fun getPokemons(@Query("offset") offset: Int?, @Query("limit") limit: Int?): PokemonList
+    suspend fun getPokemons(@Query("offset") offset: Int? = null, @Query("limit") limit: Int? = null): PokemonList
 
     @GET("pokemon-species/{id}")
     suspend fun getPokemonSpecies(@Path("id") id: Int): PokemonSpecies
@@ -24,15 +24,6 @@ interface PokeApi {
 
     @GET("evolution-chain/{id}")
     suspend fun getEvolutionChain(@Path("id") id: Int): EvolutionChainDetails
-
-    @GET("item")
-    suspend fun getItems(@Query("offset") offset: Int?, @Query("limit") limit: Int?): ItemsList
-
-    @GET("item/{id}")
-    suspend fun getItem(@Path("id") id: Int): Item
-
-    @GET("item/{name}")
-    suspend fun getItem(@Path("name") name: String): Item
 
     @GET("generation")
     suspend fun getGenerations(): GenerationsList
@@ -44,7 +35,7 @@ interface PokeApi {
     suspend fun getGeneration(@Path("name") name: String): Generation
 
     @GET("move")
-    suspend fun getMoves(@Query("offset") offset: Int?, @Query("limit") limit: Int?): MoveList
+    suspend fun getMoves(@Query("offset") offset: Int? = null, @Query("limit") limit: Int? = null): MoveList
 
     @GET("move/{id}")
     suspend fun getMove(@Path("id") id: Int): Move
