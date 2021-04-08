@@ -20,13 +20,13 @@ fun HeightWidth(pokemon: Pokemon) {
     Card( modifier = Modifier.padding(horizontal = 8.dp, vertical = 8.dp), elevation = 2.dp, backgroundColor = Color.White, shape = RoundedCornerShape(16.dp)) {
         Row(modifier = Modifier
             .padding(8.dp)
-            .height(60.dp)) {
+            .fillMaxSize(), verticalAlignment = Alignment.CenterVertically) {
             Column(Modifier.weight(1f).align(Alignment.CenterVertically)) {
                 Text(text = "Height",
                     color = transparentGrey,
                     style = MaterialTheme.typography.h6,
                     modifier = Modifier
-                        .padding(8.dp)
+                        .padding(start=32.dp, bottom = 8.dp)
                 )
 
                 Text(text = (pokemon.height/10.0).toString() + " cm",
@@ -34,7 +34,7 @@ fun HeightWidth(pokemon: Pokemon) {
                     style = MaterialTheme.typography.body2,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier
-                        .padding(horizontal = 8.dp)
+                        .padding(start=32.dp)
                 )
 
             }
@@ -43,7 +43,7 @@ fun HeightWidth(pokemon: Pokemon) {
                     color = transparentGrey,
                     style = MaterialTheme.typography.h6,
                     modifier = Modifier
-                        .padding(horizontal = 8.dp)
+                        .padding(start=32.dp, bottom = 8.dp)
                 )
 
                 Text(text = (pokemon.weight/10.0).toString()+" kg",
@@ -51,7 +51,7 @@ fun HeightWidth(pokemon: Pokemon) {
                     style = MaterialTheme.typography.body2,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier
-                        .padding(8.dp)
+                        .padding(start=32.dp)
                 )
 
             }
