@@ -1,5 +1,6 @@
 package com.lenaebner.pokedex
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -20,9 +21,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
@@ -30,12 +28,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.*
-import coil.transform.CircleCropTransformation
-import com.google.accompanist.coil.CoilImage
 import com.lenaebner.pokedex.ui.theme.PokedexTheme
-import com.lenaebner.pokedex.ui.theme.backgroundColorLight
 
 //use for deployment
+@ExperimentalFoundationApi
+@ExperimentalMaterialApi
 @Preview
 @Composable
 fun TestPreview(){
@@ -66,7 +63,7 @@ fun Hom2ePreview() {
 fun Home(navController: NavController) {
 
     Scaffold(
-        topBar = { 
+        topBar = {
             Row {
                 Text(
                     text = "What Pokemon are you looking for?",
@@ -93,38 +90,38 @@ fun Home(navController: NavController) {
 fun Searchbar(navController: NavController) {
     Column() {
 
-            Row(modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)){
-                OutlinedTextField(
-                    value = "query", onValueChange = { /*TODO*/ }, label = { Text(text = "Search") },
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Text,
-                        imeAction = ImeAction.Done,
-                    ),
-                    leadingIcon = {
-                        Icon(
-                            imageVector = Icons.Default.Search,
-                            contentDescription = "Search Icon",
-                            tint = MaterialTheme.colors.secondaryVariant
-                        )
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(
-                            color = MaterialTheme.colors.onSecondary
-                        )
-                )
-            }
+        Row(modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)){
+            OutlinedTextField(
+                value = "query", onValueChange = { /*TODO*/ }, label = { Text(text = "Search") },
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Text,
+                    imeAction = ImeAction.Done,
+                ),
+                leadingIcon = {
+                    Icon(
+                        imageVector = Icons.Default.Search,
+                        contentDescription = "Search Icon",
+                        tint = MaterialTheme.colors.secondaryVariant
+                    )
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(
+                        color = MaterialTheme.colors.onSecondary
+                    )
+            )
+        }
 
         LazyColumn {
-           /* itemsIndexed(
-                items = items retrieved from query
-                https://morioh.com/p/74d132a326d7
-                https://github.com/mitchtabian/MVVMRecipeApp/tree/searchview-toolbar
-            ){index, recipe ->
-                RecipeCard(recipe = recipe, onClick = {})
-            } */
+            /* itemsIndexed(
+                 items = items retrieved from query
+                 https://morioh.com/p/74d132a326d7
+                 https://github.com/mitchtabian/MVVMRecipeApp/tree/searchview-toolbar
+             ){index, recipe ->
+                 RecipeCard(recipe = recipe, onClick = {})
+             } */
         }
     }
 }
@@ -132,7 +129,7 @@ fun Searchbar(navController: NavController) {
 @Composable
 fun Categories(
     navController: NavController,
-    categories: List<String> = mutableStateListOf("Pokedex", "Moves", "Abilities", "Items","Locations")) {
+    categories: List<String> = mutableStateListOf("Pokedex", "Moves", "Generations", "Items")) {
     Column(modifier = Modifier.fillMaxWidth()) {
         CategoriesList(navController = navController, categories = categories, Modifier.weight(1f))
     }
@@ -161,14 +158,14 @@ fun Category(name: String, modifier: Modifier, navController: NavController) {
 
     Card(
         elevation = 2.dp,
-        modifier = modifier,
+        modifier = modifier.padding(horizontal = 32.dp),
         shape = RoundedCornerShape(16.dp),
         backgroundColor = MaterialTheme.colors.secondary,
     ) {
         Row(
             modifier = Modifier
                 .clickable {
-                    navController.navigate("pokedex")
+                    navController.navigate(name.toLowerCase())
                 },
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
@@ -176,7 +173,7 @@ fun Category(name: String, modifier: Modifier, navController: NavController) {
         ) {
             Text(
                 text = name,
-                style = MaterialTheme.typography.h3,
+                style = MaterialTheme.typography.h4,
                 color = Color.White,
                 modifier = Modifier
                     .padding(8.dp)
@@ -188,17 +185,11 @@ fun Category(name: String, modifier: Modifier, navController: NavController) {
                 contentDescription = null,
                 contentScale = ContentScale.Fit,
                 modifier = Modifier
-                    .heightIn(min = 20.dp, max = 80.dp)
+                    .heightIn(min = 20.dp, max = 70.dp)
                     .padding(8.dp)
                     .weight(1f)
             )
         }
     }
 }
-
-
-
-
-
-
 

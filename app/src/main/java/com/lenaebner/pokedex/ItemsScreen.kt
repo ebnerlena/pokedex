@@ -1,111 +1,91 @@
 package com.lenaebner.pokedex
 
-import androidx.compose.foundation.*
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.*
+import androidx.compose.foundation.lazy.GridCells
+import androidx.compose.foundation.lazy.LazyVerticalGrid
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
+import androidx.compose.material.Card
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Scaffold
+import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.navigate
-import androidx.navigation.compose.rememberNavController
 import coil.transform.CircleCropTransformation
 import com.google.accompanist.coil.CoilImage
-import com.lenaebner.pokedex.api.models.*
-import com.lenaebner.pokedex.ui.theme.*
+import com.lenaebner.pokedex.api.models.Item
+import com.lenaebner.pokedex.api.models.ItemPreview
+import com.lenaebner.pokedex.api.models.Pokemon
+import com.lenaebner.pokedex.api.models.PokemonWithColor
+import com.lenaebner.pokedex.ui.theme.transparentGrey
+import com.lenaebner.pokedex.ui.theme.transparentWhite
 import kotlinx.coroutines.*
 
-
-@Preview
 @Composable
-fun PokedexPreview() {
+fun Items (navController: NavController) {
 
-    PokedexTheme {
-        Pokedex(navController = rememberNavController())
-    }
-}
-
-@Composable
-fun Pokedex (navController: NavController) {
-    
     Scaffold (
         topBar = {
-            Header(
-                navController = navController,
+            Header(navController = navController,
                 textColor = MaterialTheme.colors.secondaryVariant,
                 backgroundColor = Color.White,
-                title = "Pokedex",
+                title = "Items",
                 iconTint = MaterialTheme.colors.secondaryVariant,
-                icon = Icons.Default.ArrowBack
-            )
-                 },
-        content = {
-
-            PokemonsGrid(navController = navController, pokemons = emptyList())
-        }
+                icon = Icons.Default.ArrowBack)
+        },
+        content = { ItemsGrid(navController = navController) }
     )
 }
 
 @Composable
-fun fetchPokemons(offset: Int, limit: Int, pokemons: List<Pokemon>?) : MutableState<List<PokemonWithColor>> {
-    val scope = rememberCoroutineScope()
-    val list: MutableState<List<Pokemon>> = mutableStateOf(emptyList())
-    val pokemonsWithColors: MutableState<List<PokemonWithColor>> = mutableStateOf(emptyList())
+fun fetchItems(offset: Int, limit: Int) : MutableState<List<Item>> {
 
-    list.value = pokemons ?: emptyList()
+    val scope = rememberCoroutineScope()
+    var items: MutableState<List<Item>> = mutableStateOf(emptyList())
+
 
     val task = scope.launch {
-        val pokemons = withContext(Dispatchers.IO) {
-            ApiController.pokeApi.getPokemons(offset = offset,limit = limit)
+        val list = withContext(Dispatchers.IO) {
+            ApiController.itemsApi.getItems(offset = offset,limit = limit)
         }
 
-        if (list.value.isEmpty()) {
-            list.value = pokemons.results.map {
-                async { ApiController.pokeApi.getPokemon(it.name) }
-            }.awaitAll()
-        }
-
-        withContext(Dispatchers.IO){
-            pokemonsWithColors.value = list.value.map {
-                PokemonWithColor(
-                    it,
-                    ApiController.pokeApi.getPokemonColor(it.id)
-                )
-            }
-        }
+        items.value = list.results.map {
+            async { ApiController.itemsApi.getItem(it.name) }
+        }.awaitAll()
     }
-    return pokemonsWithColors
+    return items
 }
 
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun PokemonsGrid(navController: NavController, pokemons: List<Pokemon>?) {
+fun ItemsGrid(navController: NavController) {
 
-    var pokemonsWithColors: MutableState<List<PokemonWithColor>> = mutableStateOf(
-        emptyList()
-    )
+    var items: MutableState<List<Item>> = fetchItems(offset = 0, limit = 20)
 
-   pokemonsWithColors = fetchPokemons(offset = 0, limit = 30, pokemons = pokemons)
-
-    //pokemonsWithColors.value.addAll(list2.value)
 
     LazyVerticalGrid(
         cells = GridCells.Fixed(2), modifier = Modifier.padding(4.dp)
     ) {
-        items(pokemonsWithColors.value) { p ->
-            FeaturedPokemon(
-                pokemon = p,
+        items(items.value) { item ->
+            FeaturedItem(
+                item = item,
                 navController = navController,
                 modifier = Modifier
                     .padding(vertical = 6.dp, horizontal = 6.dp)
@@ -117,8 +97,8 @@ fun PokemonsGrid(navController: NavController, pokemons: List<Pokemon>?) {
 }
 
 @Composable
-fun FeaturedPokemon(
-    pokemon: PokemonWithColor,
+fun FeaturedItem(
+    item: Item,
     modifier: Modifier = Modifier,
     navController: NavController
 ) {
@@ -127,13 +107,13 @@ fun FeaturedPokemon(
         elevation = 2.dp,
         modifier = modifier,
         shape = RoundedCornerShape(16.dp),
-        backgroundColor = pokemon.color.color.name.asPokeColor()
+        backgroundColor = transparentGrey
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .clickable {
-                    navController.navigate("pokemon/${pokemon.pokemon?.name}") {
+                    navController.navigate("item/${item.name}") {
                         popUpTo = navController.graph.startDestination
                         launchSingleTop = true
                     }
@@ -143,7 +123,7 @@ fun FeaturedPokemon(
                 .align(Alignment.CenterHorizontally),
                 verticalAlignment = Alignment.CenterVertically) {
                 Text(
-                    text = pokemon.pokemon?.name.toString().capitalize(),
+                    text = item.name.toString().capitalize(),
                     style = MaterialTheme.typography.h6,
                     color = Color.White,
                     modifier = Modifier
@@ -151,9 +131,9 @@ fun FeaturedPokemon(
                         .padding(top = 6.dp, start = 12.dp)
                 )
                 Text(
-                    text = '#'+pokemon.pokemon?.id.toString(),
+                    text = '#'+item.id.toString(),
                     style = MaterialTheme.typography.body2,
-                    color = transparentGrey,
+                    color = Color.White,
                     modifier = Modifier
                         .weight(1f)
                         .padding(top = 6.dp)
@@ -172,16 +152,21 @@ fun FeaturedPokemon(
                     .align(
                         Alignment.Top
                     )) {
-                    pokemon.pokemon?.types?.forEach { type ->
-                        Type(type = type)
-                    }
+                    Text(
+                        text = item.cost.toString()+" Cost",
+                        style = MaterialTheme.typography.body2,
+                        color = Color.White,
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(top = 6.dp)
+                    )
                 }
                 Column(modifier = Modifier
                     .weight(3f)
                     .padding(2.dp)) {
                     CoilImage(
-                        data = pokemon.pokemon?.sprites?.other?.artwork?.sprite.orEmpty(),
-                        contentDescription = "Pikachu",
+                        data = item.sprites.default,
+                        contentDescription = "Item",
                         loading = {
                             Image(
                                 painter = painterResource(id = R.drawable.pokemon1),
@@ -202,15 +187,5 @@ fun FeaturedPokemon(
                 }
             }
         }
-    }
-}
-
-@Composable
-fun Type(type: Type) {
-    Card(shape= MaterialTheme.shapes.medium, modifier = Modifier
-        .padding(1.dp),
-        backgroundColor= transparentWhite) {
-        Text(text = type.type.name.capitalize(), color = White, modifier = Modifier
-            .padding(vertical = 3.dp, horizontal = 6.dp), style = MaterialTheme.typography.caption,)
     }
 }

@@ -51,7 +51,7 @@ val PokedexTypography = Typography (
     h6 = TextStyle(
         fontFamily = Montserrat,
         fontWeight = FontWeight.W600,
-        fontSize = 15.sp
+        fontSize = 14.sp
     ),
     subtitle1 = TextStyle(
         fontFamily = Montserrat,
@@ -80,7 +80,7 @@ val PokedexTypography = Typography (
     caption = TextStyle(
         fontFamily = Montserrat,
         fontWeight = FontWeight.Normal,
-        fontSize = 12.sp
+        fontSize = 8.sp
     ),
     overline = TextStyle(
         fontFamily = Montserrat,

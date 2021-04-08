@@ -1,6 +1,7 @@
 package com.lenaebner.pokedex
 
 import android.util.Log
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -12,17 +13,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavType
 import androidx.navigation.compose.*
-import com.lenaebner.pokedex.data.Pokemon
+import com.lenaebner.pokedex.api.models.Pokemon
 import com.lenaebner.pokedex.ui.theme.PokedexTheme
 import org.json.JSONObject
-
-private const val apiResponse = "{\"count\":1118,\"next\":\"https://pokeapi.co/api/v2/pokemon/?offset=20&limit=20\",\"previous\":null,\"results\":[{\"name\":\"bulbasaur\",\"url\":\"https://pokeapi.co/api/v2/pokemon/1/\"},{\"name\":\"ivysaur\",\"url\":\"https://pokeapi.co/api/v2/pokemon/2/\"},{\"name\":\"venusaur\",\"url\":\"https://pokeapi.co/api/v2/pokemon/3/\"},{\"name\":\"charmander\",\"url\":\"https://pokeapi.co/api/v2/pokemon/4/\"},{\"name\":\"charmeleon\",\"url\":\"https://pokeapi.co/api/v2/pokemon/5/\"},{\"name\":\"charizard\",\"url\":\"https://pokeapi.co/api/v2/pokemon/6/\"},{\"name\":\"squirtle\",\"url\":\"https://pokeapi.co/api/v2/pokemon/7/\"},{\"name\":\"wartortle\",\"url\":\"https://pokeapi.co/api/v2/pokemon/8/\"},{\"name\":\"blastoise\",\"url\":\"https://pokeapi.co/api/v2/pokemon/9/\"},{\"name\":\"caterpie\",\"url\":\"https://pokeapi.co/api/v2/pokemon/10/\"},{\"name\":\"metapod\",\"url\":\"https://pokeapi.co/api/v2/pokemon/11/\"},{\"name\":\"butterfree\",\"url\":\"https://pokeapi.co/api/v2/pokemon/12/\"},{\"name\":\"weedle\",\"url\":\"https://pokeapi.co/api/v2/pokemon/13/\"},{\"name\":\"kakuna\",\"url\":\"https://pokeapi.co/api/v2/pokemon/14/\"},{\"name\":\"beedrill\",\"url\":\"https://pokeapi.co/api/v2/pokemon/15/\"},{\"name\":\"pidgey\",\"url\":\"https://pokeapi.co/api/v2/pokemon/16/\"},{\"name\":\"pidgeotto\",\"url\":\"https://pokeapi.co/api/v2/pokemon/17/\"},{\"name\":\"pidgeot\",\"url\":\"https://pokeapi.co/api/v2/pokemon/18/\"},{\"name\":\"rattata\",\"url\":\"https://pokeapi.co/api/v2/pokemon/19/\"},{\"name\":\"raticate\",\"url\":\"https://pokeapi.co/api/v2/pokemon/20/\"}]}"
 
 @Composable
 fun Navigation() {
@@ -34,18 +32,43 @@ fun Navigation() {
     ) {
         composable("home") { Home(navController = navController) }
         composable("pokedex") { Pokedex(navController = navController) }
-        composable("pokemon/{pokemonName}",
+        composable("generations") { Generations(navController = navController) }
+        composable("moves") { Moves(navController = navController) }
+        composable("items") { Items(navController = navController) }
+        composable(
+            "pokemon/{pokemonName}",
             arguments = mutableStateListOf(navArgument("pokemonName") { type = NavType.StringType })
         ) { backStackEntry ->
-            SinglePokemonScreen(pokemonName = backStackEntry.arguments?.getString("pokemonName"), navController = navController )
+            SinglePokemonScreen(
+                pokemonName = backStackEntry.arguments?.getString("pokemonName"),
+                navController = navController
+            )
+        }
+        composable(
+            "generation/{name}",
+            arguments = mutableStateListOf(navArgument("name") { type = NavType.StringType })
+        ) { backStackEntry ->
+            SingleGeneration(
+                name = backStackEntry.arguments?.getString("name"),
+                navController = navController
+            )
+        }
+        composable(
+            "item/{name}",
+            arguments = mutableStateListOf(navArgument("name") { type = NavType.StringType })
+        ) { backStackEntry ->
+            SingleItem(
+                itemName = backStackEntry.arguments?.getString("name"),
+                navController = navController
+            )
         }
     }
 }
 
 @Composable
-fun Header(navController: NavController, textColor: Color, backgroundColor: Color, title: String, icon: ImageVector, iconTint: Color = Color.White) {
+fun Header(navController: NavController, textColor: Color, backgroundColor: Color, title: String, icon: ImageVector, iconTint: Color = Color.White, pokemon: Pokemon? = null) {
 
-    TopAppBar(modifier = Modifier.height(100.dp), backgroundColor = backgroundColor) {
+    TopAppBar(modifier = Modifier.height(90.dp), backgroundColor = backgroundColor) {
         Column() {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 IconButton(
@@ -62,13 +85,22 @@ fun Header(navController: NavController, textColor: Color, backgroundColor: Colo
                     )
                 }
             }
-            Row() {
+            Row(modifier = Modifier.fillMaxWidth().align(Alignment.CenterHorizontally),
+                verticalAlignment = Alignment.CenterVertically) {
                 Text(
                     text = title,
                     color = textColor,
                     style = MaterialTheme.typography.h1,
-                    modifier = Modifier.padding(8.dp)
+                    modifier = Modifier.padding(start=8.dp, bottom = 8.dp).weight(5f)
                 )
+                if(pokemon != null) {
+                    Text(
+                        text = '#'+pokemon.id.toString(),
+                        color = textColor,
+                        style = MaterialTheme.typography.h5,
+                        modifier = Modifier.padding(end=8.dp, bottom = 8.dp).weight(1f)
+                    )
+                }
             }
         }
     }
@@ -109,27 +141,4 @@ fun AppBar(textColor: Color, backgroundColor: Color, title: String, icon: Int) {
         },
         backgroundColor = backgroundColor,
     )
-}
-
-
-fun readData(): SnapshotStateList<Pokemon> {
-
-    val pokemons = mutableStateListOf<Pokemon>()
-    try {
-        val jsonObject = JSONObject(apiResponse)
-        val result = jsonObject.getJSONArray("results")
-        for(i in 0 until result.length()) {
-            val poke = result.getJSONObject(i)
-            pokemons.add(
-                Pokemon(
-                    poke.getString("name"),
-                    poke.getString("url")
-                )
-            )
-        }
-    }
-    catch (ex: Exception) {
-        Log.d("foo", ex.localizedMessage)
-    }
-    return pokemons
 }

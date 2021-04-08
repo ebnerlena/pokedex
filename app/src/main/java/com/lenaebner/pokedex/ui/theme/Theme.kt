@@ -15,18 +15,18 @@ private val DarkColorPalette = darkColors(
     onSecondary = Color.White,
     onPrimary =  Color.Black,
     secondaryVariant = textColorDark,
-    surface = backgroundColorDark
+    surface = backgroundColorDark,
 )
 
 private val LightColorPalette = lightColors(
     primary = primaryColorLight,
     primaryVariant = accentColorLight,
     secondary = secondaryColorLight,
-    background = backgroundColorLight,
+    background = Color.White,
     onPrimary = primaryColorLight,
     onSecondary = Color.White,
     surface = backgroundColorLight,
-    onBackground = backgroundColorLight,
+    onBackground = Color.White,
     secondaryVariant = textColorLight
 
 

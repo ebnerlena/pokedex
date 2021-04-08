@@ -30,3 +30,16 @@ val secondaryColorDark = Color(0xff92817a)
 val accentColorDark = Color(0xff8db596)
 val backgroundColorDark = Color(0xff707070)
 val textColorDark = Color(0xffeae3c8)
+
+//pokemon colors
+val pokeGreen = Color(0xff48D0B0)
+val pokeYellow = Color(0xFFFFCA6F)
+val pokeRed = Color(0xFFFC8181)
+val pokeBlue = Color(0xFF83CDFF)
+val pokeBrown = Color(0xffb1736C)
+val pokeLila = Color(0xFFA57EB4)
+val pokePink = Color(0xFFFFB8D0)
+val pokeGrey = Color(0xFFC4BEC0)
+
+val transparentWhite = Color(0x32FDFDFD)
+val transparentGrey = Color(0x4B3F3F3F)
