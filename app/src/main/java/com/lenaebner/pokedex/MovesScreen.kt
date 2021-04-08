@@ -7,6 +7,8 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavController
+import com.lenaebner.pokedex.PokedexScreen.PokemonsGrid
+import com.lenaebner.pokedex.shared.Header
 
 @Composable
 fun Moves (navController: NavController) {

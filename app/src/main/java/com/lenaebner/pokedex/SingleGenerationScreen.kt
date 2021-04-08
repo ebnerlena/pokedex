@@ -26,6 +26,7 @@ import androidx.navigation.compose.rememberNavController
 import coil.transform.CircleCropTransformation
 import com.google.accompanist.coil.CoilImage
 import com.lenaebner.pokedex.api.models.*
+import com.lenaebner.pokedex.shared.Header
 import com.lenaebner.pokedex.ui.theme.*
 import com.squareup.moshi.Types
 import kotlinx.coroutines.Dispatchers

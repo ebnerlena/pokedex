@@ -33,6 +33,7 @@ import com.lenaebner.pokedex.api.models.Item
 import com.lenaebner.pokedex.api.models.ItemPreview
 import com.lenaebner.pokedex.api.models.Pokemon
 import com.lenaebner.pokedex.api.models.PokemonWithColor
+import com.lenaebner.pokedex.shared.Header
 import com.lenaebner.pokedex.ui.theme.transparentGrey
 import com.lenaebner.pokedex.ui.theme.transparentWhite
 import kotlinx.coroutines.*

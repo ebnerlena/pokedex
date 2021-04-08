@@ -9,6 +9,7 @@ import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import com.lenaebner.pokedex.api.PokeApi
+import com.lenaebner.pokedex.shared.Navigation
 import com.lenaebner.pokedex.ui.theme.PokedexTheme
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory

@@ -1,120 +1,30 @@
-package com.lenaebner.pokedex
+package com.lenaebner.pokedex.PokedexScreen
 
-import androidx.compose.foundation.*
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.runtime.*
+import androidx.compose.material.Card
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
+import com.lenaebner.pokedex.R
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.navigate
-import androidx.navigation.compose.rememberNavController
 import coil.transform.CircleCropTransformation
 import com.google.accompanist.coil.CoilImage
-import com.lenaebner.pokedex.api.models.*
-import com.lenaebner.pokedex.ui.theme.*
-import kotlinx.coroutines.*
+import com.lenaebner.pokedex.api.models.PokemonWithColor
+import com.lenaebner.pokedex.asPokeColor
+import com.lenaebner.pokedex.ui.theme.transparentGrey
+import com.lenaebner.pokedex.ui.theme.transparentWhite
 
-
-@Preview
-@Composable
-fun PokedexPreview() {
-
-    PokedexTheme {
-        Pokedex(navController = rememberNavController())
-    }
-}
-
-@Composable
-fun Pokedex (navController: NavController) {
-    
-    Scaffold (
-        topBar = {
-            Header(
-                navController = navController,
-                textColor = MaterialTheme.colors.secondaryVariant,
-                backgroundColor = Color.White,
-                title = "Pokedex",
-                iconTint = MaterialTheme.colors.secondaryVariant,
-                icon = Icons.Default.ArrowBack
-            )
-                 },
-        content = {
-
-            PokemonsGrid(navController = navController, pokemons = emptyList())
-        }
-    )
-}
-
-@Composable
-fun fetchPokemons(offset: Int, limit: Int, pokemons: List<Pokemon>?) : MutableState<List<PokemonWithColor>> {
-    val scope = rememberCoroutineScope()
-    val list: MutableState<List<Pokemon>> = mutableStateOf(emptyList())
-    val pokemonsWithColors: MutableState<List<PokemonWithColor>> = mutableStateOf(emptyList())
-
-    list.value = pokemons ?: emptyList()
-
-    val task = scope.launch {
-        val pokemons = withContext(Dispatchers.IO) {
-            ApiController.pokeApi.getPokemons(offset = offset,limit = limit)
-        }
-
-        if (list.value.isEmpty()) {
-            list.value = pokemons.results.map {
-                async { ApiController.pokeApi.getPokemon(it.name) }
-            }.awaitAll()
-        }
-
-        withContext(Dispatchers.IO){
-            pokemonsWithColors.value = list.value.map {
-                PokemonWithColor(
-                    it,
-                    ApiController.pokeApi.getPokemonColor(it.id)
-                )
-            }
-        }
-    }
-    return pokemonsWithColors
-}
-
-
-@OptIn(ExperimentalFoundationApi::class)
-@Composable
-fun PokemonsGrid(navController: NavController, pokemons: List<Pokemon>?) {
-
-    var pokemonsWithColors: MutableState<List<PokemonWithColor>> = mutableStateOf(
-        emptyList()
-    )
-
-   pokemonsWithColors = fetchPokemons(offset = 0, limit = 30, pokemons = pokemons)
-
-    //pokemonsWithColors.value.addAll(list2.value)
-
-    LazyVerticalGrid(
-        cells = GridCells.Fixed(2), modifier = Modifier.padding(4.dp)
-    ) {
-        items(pokemonsWithColors.value) { p ->
-            FeaturedPokemon(
-                pokemon = p,
-                navController = navController,
-                modifier = Modifier
-                    .padding(vertical = 6.dp, horizontal = 6.dp)
-                    .background(MaterialTheme.colors.background)
-            )
-            Spacer(modifier = Modifier.size(4.dp))
-        }
-    }
-}
 
 @Composable
 fun FeaturedPokemon(
@@ -202,15 +112,5 @@ fun FeaturedPokemon(
                 }
             }
         }
-    }
-}
-
-@Composable
-fun Type(type: Type) {
-    Card(shape= MaterialTheme.shapes.medium, modifier = Modifier
-        .padding(1.dp),
-        backgroundColor= transparentWhite) {
-        Text(text = type.type.name.capitalize(), color = White, modifier = Modifier
-            .padding(vertical = 3.dp, horizontal = 6.dp), style = MaterialTheme.typography.caption,)
     }
 }
