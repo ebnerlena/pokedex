@@ -1,30 +1,31 @@
 package com.lenaebner.pokedex.PokedexScreen
 
+
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Card
+import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.lenaebner.pokedex.ApiController
-import com.lenaebner.pokedex.api.models.Pokemon
+import com.lenaebner.pokedex.ScreenStates.PokedexScreenState
 import com.lenaebner.pokedex.api.models.PokemonWithColor
-import com.lenaebner.pokedex.api.models.Type
 import com.lenaebner.pokedex.shared.Header
+import com.lenaebner.pokedex.shared.loadingSpinner
 import com.lenaebner.pokedex.ui.theme.PokedexTheme
-import com.lenaebner.pokedex.ui.theme.transparentWhite
-import kotlinx.coroutines.*
+import com.lenaebner.pokedex.viewmodels.PokedexViewModel
 
 
 @Preview
@@ -32,12 +33,12 @@ import kotlinx.coroutines.*
 fun PokedexPreview() {
 
     PokedexTheme {
-        Pokedex(navController = rememberNavController())
+        PokedexScreen(navController = rememberNavController())
     }
 }
 
 @Composable
-fun Pokedex (navController: NavController) {
+fun Pokedex (pokemons: List<PokemonWithColor>, navController: NavController) {
 
     Scaffold (
         topBar = {
@@ -52,38 +53,39 @@ fun Pokedex (navController: NavController) {
         },
         content = {
 
-            PokemonsGrid(navController = navController, pokemons = emptyList())
+            PokemonsGrid(navController = navController, pokemons = pokemons)
         }
     )
 }
 
 @Composable
-fun fetchPokemons(offset: Int, limit: Int, pokemons: List<Pokemon>?) : MutableState<List<PokemonWithColor>> {
-    val scope = rememberCoroutineScope()
-    val list: MutableState<List<Pokemon>> = mutableStateOf(emptyList())
-    val pokemonsWithColors: MutableState<List<PokemonWithColor>> = mutableStateOf(emptyList())
+fun PokedexScreen(navController: NavController) {
 
-    list.value = pokemons ?: emptyList()
+    val vm: PokedexViewModel = viewModel()
+    
+    val uiState = vm.uiState.observeAsState(initial = PokedexScreenState.Loading).value
+    if (uiState is PokedexScreenState.Loading) vm.fetchPokemons()
+    
+    PokedexScreen(state = uiState, navController = navController)
+}
 
-    val task = scope.launch {
-        val pokemons = withContext(Dispatchers.IO) {
-            ApiController.pokeApi.getPokemons(offset = offset,limit = limit)
-        }
+@Composable
+fun PokedexScreen(state: PokedexScreenState, navController: NavController) {
 
-        if (list.value.isEmpty()) {
-            list.value = pokemons.results.map {
-                async { ApiController.pokeApi.getPokemon(it.name) }
-            }.awaitAll()
-        }
-
-        withContext(Dispatchers.IO){
-            pokemonsWithColors.value = list.value.map {
-                PokemonWithColor(
-                    it,
-                    ApiController.pokeApi.getPokemonColor(it.id)
-                )
+    when(state) {
+        is PokedexScreenState.Content -> Pokedex(
+            pokemons = state.pokemonsWithColor,
+            navController = navController
+        )
+        is PokedexScreenState.Loading -> loadingSpinner()
+        is PokedexScreenState.Error -> Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(space = 8.dp)
+        ) {
+            Text(state.message)
+            Button(state.retry) {
+                Text("Retry", color = MaterialTheme.colors.secondaryVariant)
             }
         }
     }
-    return pokemonsWithColors
 }

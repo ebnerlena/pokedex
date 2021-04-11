@@ -22,20 +22,13 @@ import com.lenaebner.pokedex.api.models.PokemonWithColor
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun PokemonsGrid(navController: NavController, pokemons: List<Pokemon>?) {
+fun PokemonsGrid(navController: NavController, pokemons: List<PokemonWithColor>) {
 
-    var pokemonsWithColors: MutableState<List<PokemonWithColor>> = mutableStateOf(
-        emptyList()
-    )
-
-    pokemonsWithColors = fetchPokemons(offset = 0, limit = 30, pokemons = pokemons)
-
-    //pokemonsWithColors.value.addAll(list2.value)
 
     LazyVerticalGrid(
         cells = GridCells.Fixed(2), modifier = Modifier.padding(4.dp)
     ) {
-        items(pokemonsWithColors.value) { p ->
+        items(pokemons) { p ->
             FeaturedPokemon(
                 pokemon = p,
                 navController = navController,
