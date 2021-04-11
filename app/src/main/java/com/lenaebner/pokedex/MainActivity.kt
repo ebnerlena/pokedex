@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.tooling.preview.Preview
 import com.lenaebner.pokedex.api.PokeApi
 import com.lenaebner.pokedex.shared.Navigation
 import com.lenaebner.pokedex.ui.theme.PokedexTheme
@@ -41,6 +42,15 @@ class MainActivity : AppCompatActivity() {
 fun MyApp() {
 
     PokedexTheme {
+        Navigation()
+    }
+}
+
+@Preview
+@Composable
+fun AppPreview(){
+
+    PokedexTheme() {
         Navigation()
     }
 }

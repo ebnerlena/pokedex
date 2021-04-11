@@ -3,6 +3,7 @@ package com.lenaebner.pokedex.SinglePokemon
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
@@ -19,53 +20,65 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil.transform.CircleCropTransformation
 import com.google.accompanist.coil.CoilImage
 import com.lenaebner.pokedex.*
 import com.lenaebner.pokedex.PokedexScreen.Type
-import com.lenaebner.pokedex.api.models.EvolutionChainDetails
+import com.lenaebner.pokedex.ScreenStates.PokemonScreenState
+import com.lenaebner.pokedex.api.models.EvolvingPokemons
 import com.lenaebner.pokedex.api.models.Pokemon
 import com.lenaebner.pokedex.api.models.PokemonSpecies
 import com.lenaebner.pokedex.shared.Header
 import com.lenaebner.pokedex.shared.loadingSpinner
 import com.lenaebner.pokedex.ui.theme.PokedexTheme
 import com.lenaebner.pokedex.ui.theme.transparentWhite
-import com.lenaebner.pokedex.viewmodels.PokeViewModel
-import com.lenaebner.pokedex.viewmodels.PokemonScreenState
+import com.lenaebner.pokedex.viewmodels.PokemonViewModel
 
 @Preview
 @Composable
-fun SinglePokemonScreenPreview() {
+fun PokemonScreenPreview() {
     val navC = rememberNavController()
-    SinglePokemonScreen(pokemonName = "pikachu", navController = navC)
+    SinglePokemonScreen(state= PokemonScreenState.Loading, navController = navC)
 }
+
 
 @Composable
 fun SinglePokemonScreen(pokemonName: String?, navController: NavController) {
 
-    val vm : PokeViewModel = PokeViewModel(pokemonName ?: "pikachu")
-    val state = vm.state.observeAsState().value
+    val vm : PokemonViewModel = viewModel()
+    val state = vm.uiState.observeAsState(initial = PokemonScreenState.Loading).value
+    if (state is PokemonScreenState.Loading)  vm.fetchPokemon(pokemonName ?: "pikachu")
     SinglePokemonScreen(navController = navController, state = state)
-    
 }
 
 @Composable
-fun SinglePokemonScreen(navController: NavController, state: PokemonScreenState?) {
+fun SinglePokemonScreen(navController: NavController, state: PokemonScreenState) {
 
     when (state) {
-        is PokemonScreenState.content -> PokemonScreen(
+        is PokemonScreenState.Content -> PokemonScreen(
             pokemon = state.pokemon,
             species = state.species,
-            evolutionChain = state.evolutionChain,
+            evolutionChainEntries = state.evolutionChainPokemons,
             navController = navController
         )
-        PokemonScreenState.loading -> loadingSpinner()
+        is PokemonScreenState.Loading -> loadingSpinner()
+        is PokemonScreenState.Error -> Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(space = 8.dp)
+        ) {
+            Text(state.message)
+            Button(state.retry) {
+                Text("Retry")
+            }
+        }
     }
 }
+
 @Composable
-fun PokemonScreen(navController: NavController, pokemon: Pokemon, species: PokemonSpecies, evolutionChain: EvolutionChainDetails) {
+fun PokemonScreen(navController: NavController, pokemon: Pokemon, species: PokemonSpecies, evolutionChainEntries: MutableList<EvolvingPokemons>) {
 
     PokedexTheme {
 
@@ -127,7 +140,13 @@ fun PokemonScreen(navController: NavController, pokemon: Pokemon, species: Pokem
                         )
                     }
                     Row(modifier = Modifier.weight(3f)){
-                        CardNavigation("about", pokemon = pokemon, species = species, evolutionChainDetails = evolutionChain, navController = navController)
+                        CardNavigation(
+                            page = "about",
+                            pokemon = pokemon,
+                            species = species,
+                            evolutionChainEntries = evolutionChainEntries,
+                            navController = navController
+                        )
                     }
                 }
             }

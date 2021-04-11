@@ -13,7 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.lenaebner.pokedex.api.models.EvolutionChainDetails
+import com.lenaebner.pokedex.api.models.EvolvingPokemons
 import com.lenaebner.pokedex.api.models.Pokemon
 import com.lenaebner.pokedex.api.models.PokemonSpecies
 
@@ -23,7 +23,7 @@ fun CardNavigation(
     page: String,
     pokemon: Pokemon,
     species: PokemonSpecies,
-    evolutionChainDetails: EvolutionChainDetails,
+    evolutionChainEntries: MutableList<EvolvingPokemons>,
     navController: NavController
 ) {
     Card(modifier = Modifier
@@ -74,7 +74,7 @@ fun CardNavigation(
                         "about" -> Description(pokemon = pokemon, species = species)
                         "stats" -> Stats(pokemon)
                         "moves" -> Moves(pokemon)
-                        "evolution" -> EvolutionChain(evolutionChainDetails, navController = navController)
+                        "evolution" -> EvolutionChain(evolutionChainEntries, navController = navController)
                     }
                 }
             }

@@ -10,6 +10,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navArgument
 import androidx.navigation.compose.rememberNavController
 import com.lenaebner.pokedex.*
+import com.lenaebner.pokedex.HomeScreen.Home
 import com.lenaebner.pokedex.PokedexScreen.Pokedex
 import com.lenaebner.pokedex.SinglePokemon.SinglePokemonScreen
 
