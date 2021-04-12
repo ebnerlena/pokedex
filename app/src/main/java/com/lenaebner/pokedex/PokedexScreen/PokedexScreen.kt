@@ -64,8 +64,6 @@ fun PokedexScreen(navController: NavController) {
     val vm: PokedexViewModel = viewModel()
     
     val uiState = vm.uiState.observeAsState(initial = PokedexScreenState.Loading).value
-    if (uiState is PokedexScreenState.Loading) vm.fetchPokemons()
-    
     PokedexScreen(state = uiState, navController = navController)
 }
 

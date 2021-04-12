@@ -11,7 +11,8 @@ import androidx.navigation.compose.navArgument
 import androidx.navigation.compose.rememberNavController
 import com.lenaebner.pokedex.*
 import com.lenaebner.pokedex.HomeScreen.Home
-import com.lenaebner.pokedex.PokedexScreen.Pokedex
+import com.lenaebner.pokedex.ItemsScreen.Items
+import com.lenaebner.pokedex.ItemsScreen.ItemsScreen
 import com.lenaebner.pokedex.PokedexScreen.PokedexScreen
 import com.lenaebner.pokedex.SinglePokemon.SinglePokemonScreen
 
@@ -27,7 +28,7 @@ fun Navigation() {
         composable("pokedex") { PokedexScreen(navController = navController) }
         composable("generations") { Generations(navController = navController) }
         composable("moves") { Moves(navController = navController) }
-        composable("items") { Items(navController = navController) }
+        composable("items") { ItemsScreen(navController = navController) }
         composable(
             "pokemon/{pokemonName}",
             arguments = mutableStateListOf(navArgument("pokemonName") { type = NavType.StringType })

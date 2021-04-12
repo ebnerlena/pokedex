@@ -25,7 +25,7 @@ import androidx.navigation.compose.navigate
 @Composable
 fun Categories(
     navController: NavController,
-    categories: List<String> = mutableStateListOf("Pokedex", "Moves", "Generations", "Items")
+    categories: List<String> = mutableStateListOf("Pokedex", "Moves", "Items")
 ) {
     Column(modifier = Modifier.fillMaxWidth()) {
         CategoriesList(navController = navController, categories = categories, Modifier.weight(1f))

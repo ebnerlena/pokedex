@@ -19,24 +19,27 @@ class PokedexViewModel: ViewModel() {
     val uiState : LiveData<PokedexScreenState> = _uiState
     private var _pokemonsWithColor: MutableList<PokemonWithColor> = mutableListOf()
 
-    fun createContentState(pokemons: MutableList<PokemonWithColor>) {
+    init {
+        fetchPokemons(0,10)
+        fetchPokemons(10,10)
+        fetchPokemons(20,20)
+        fetchPokemons(40,20)
+    }
 
-        _pokemonsWithColor = pokemons
+    fun createContentState() {
+
+        _pokemonsWithColor.sortBy { p -> p.pokemon?.id }
 
         _uiState.postValue(
             PokedexScreenState.Content(
-                pokemonsWithColor = pokemons
+                pokemonsWithColor = _pokemonsWithColor
             )
         )
     }
 
-    //TODO: increment loading after first 20 have been loaded to load it dynamically and decrease laoding time
-
-    fun fetchPokemons(offset: Int=0, limit: Int=25) {
+    fun fetchPokemons(offset: Int=0, limit: Int=20) {
 
         _uiState.postValue(PokedexScreenState.Loading)
-
-        var pokemonsWithColor: MutableList<PokemonWithColor> = mutableListOf()
 
         viewModelScope.launch {
 
@@ -54,7 +57,7 @@ class PokedexViewModel: ViewModel() {
                 }.awaitAll()
 
                 pokemons.forEach { p ->
-                    pokemonsWithColor.add(
+                    _pokemonsWithColor.add(
                         PokemonWithColor(
                             p,
                             withContext(Dispatchers.IO){
@@ -64,7 +67,7 @@ class PokedexViewModel: ViewModel() {
                     )
                 }
 
-                createContentState(pokemonsWithColor)
+                createContentState()
 
             } catch (exception: Throwable) {
 
