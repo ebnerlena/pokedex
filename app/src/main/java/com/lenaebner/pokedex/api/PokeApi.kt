@@ -25,15 +25,6 @@ interface PokeApi {
     @GET("evolution-chain/{id}")
     suspend fun getEvolutionChain(@Path("id") id: Int): EvolutionChainDetails
 
-    @GET("generation")
-    suspend fun getGenerations(): GenerationsList
-
-    @GET("generation/{id}")
-    suspend fun getGeneration(@Path("id") id: Int): Generation
-
-    @GET("generation/{name}")
-    suspend fun getGeneration(@Path("name") name: String): Generation
-
     @GET("move")
     suspend fun getMoves(@Query("offset") offset: Int? = null, @Query("limit") limit: Int? = null): MoveList
 

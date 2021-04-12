@@ -26,7 +26,6 @@ fun Navigation() {
     ) {
         composable("home") { Home(navController = navController) }
         composable("pokedex") { PokedexScreen(navController = navController) }
-        composable("generations") { Generations(navController = navController) }
         composable("moves") { Moves(navController = navController) }
         composable("items") { ItemsScreen(navController = navController) }
         composable(
@@ -39,20 +38,11 @@ fun Navigation() {
             )
         }
         composable(
-            "generation/{name}",
-            arguments = mutableStateListOf(navArgument("name") { type = NavType.StringType })
-        ) { backStackEntry ->
-            SingleGeneration(
-                name = backStackEntry.arguments?.getString("name"),
-                navController = navController
-            )
-        }
-        composable(
             "item/{name}",
             arguments = mutableStateListOf(navArgument("name") { type = NavType.StringType })
         ) { backStackEntry ->
-            SingleItem(
-                itemName = backStackEntry.arguments?.getString("name"),
+            ItemScreen(
+                name = backStackEntry.arguments?.getString("name") ?: "master-ball",
                 navController = navController
             )
         }

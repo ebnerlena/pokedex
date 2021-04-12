@@ -31,6 +31,7 @@ import com.lenaebner.pokedex.ScreenStates.PokemonScreenState
 import com.lenaebner.pokedex.api.models.EvolvingPokemons
 import com.lenaebner.pokedex.api.models.Pokemon
 import com.lenaebner.pokedex.api.models.PokemonSpecies
+import com.lenaebner.pokedex.shared.ErrorScreen
 import com.lenaebner.pokedex.shared.Header
 import com.lenaebner.pokedex.shared.loadingSpinner
 import com.lenaebner.pokedex.ui.theme.PokedexTheme
@@ -69,10 +70,7 @@ fun SinglePokemonScreen(navController: NavController, state: PokemonScreenState)
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(space = 8.dp)
         ) {
-            Text(state.message)
-            Button(state.retry) {
-                Text("Retry")
-            }
+            ErrorScreen(errorMessage = state.message, retry = state.retry)
         }
     }
 }

@@ -35,11 +35,11 @@ fun ItemImage(item: Item, modifier: Modifier) {
             },
             contentScale = ContentScale.Fit,
             modifier = Modifier
-                .heightIn(min = 20.dp, max = 80.dp)
+                .heightIn(min = 10.dp, max = 40.dp)
                 .fillMaxWidth()
                 .weight(2f)
                 .padding(top = 8.dp, start = 8.dp, end = 8.dp, bottom = 0.dp)
-                .background(transparentWhite)
+
         )
     }
 }

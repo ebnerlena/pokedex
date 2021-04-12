@@ -10,13 +10,11 @@ import androidx.compose.foundation.lazy.LazyVerticalGrid
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.lenaebner.pokedex.ItemsScreen.FeaturedItem
 import com.lenaebner.pokedex.api.models.Item
-import com.lenaebner.pokedex.fetchItems
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable

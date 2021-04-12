@@ -15,8 +15,8 @@ import com.lenaebner.pokedex.api.models.Item
 fun ItemCardHeader(item: Item, modifier: Modifier) {
     Row(modifier = modifier, verticalAlignment = Alignment.CenterVertically) {
         Text(
-            text = item.name.capitalize(),
-            style = MaterialTheme.typography.h6,
+            text = item.names[7].name,
+            style = MaterialTheme.typography.body2,
             color = Color.White,
             modifier = Modifier
                 .weight(3f)

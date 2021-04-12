@@ -18,6 +18,7 @@ import androidx.navigation.NavController
 import com.lenaebner.pokedex.ItemScreen.ItemsGrid
 import com.lenaebner.pokedex.ScreenStates.ItemsOverviewScreenState
 import com.lenaebner.pokedex.api.models.Item
+import com.lenaebner.pokedex.shared.ErrorScreen
 import com.lenaebner.pokedex.shared.Header
 import com.lenaebner.pokedex.shared.loadingSpinner
 import com.lenaebner.pokedex.viewmodels.ItemsViewModel
@@ -60,10 +61,7 @@ fun ItemsScreen(state: ItemsOverviewScreenState, navController: NavController) {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(space = 8.dp)
         ) {
-            Text(state.message)
-            Button(state.retry) {
-                Text("Retry", color = MaterialTheme.colors.secondaryVariant)
-            }
+            ErrorScreen(errorMessage = state.message, retry = state.retry)
         }
     }
 }

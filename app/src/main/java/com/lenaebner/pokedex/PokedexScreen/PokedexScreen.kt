@@ -22,6 +22,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.lenaebner.pokedex.ScreenStates.PokedexScreenState
 import com.lenaebner.pokedex.api.models.PokemonWithColor
+import com.lenaebner.pokedex.shared.ErrorScreen
 import com.lenaebner.pokedex.shared.Header
 import com.lenaebner.pokedex.shared.loadingSpinner
 import com.lenaebner.pokedex.ui.theme.PokedexTheme
@@ -80,10 +81,7 @@ fun PokedexScreen(state: PokedexScreenState, navController: NavController) {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(space = 8.dp)
         ) {
-            Text(state.message)
-            Button(state.retry) {
-                Text("Retry", color = MaterialTheme.colors.secondaryVariant)
-            }
+            ErrorScreen(errorMessage = state.message, retry = state.retry)
         }
     }
 }
