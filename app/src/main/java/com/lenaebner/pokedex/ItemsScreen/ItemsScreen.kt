@@ -24,37 +24,36 @@ import com.lenaebner.pokedex.shared.loadingSpinner
 import com.lenaebner.pokedex.viewmodels.ItemsViewModel
 
 @Composable
-fun Items(items: MutableList<Item>, navController: NavController) {
+fun Items(items: MutableList<Item>) {
 
     Scaffold (
         topBar = {
-            Header(navController = navController,
+            Header(
                 textColor = MaterialTheme.colors.secondaryVariant,
                 backgroundColor = Color.White,
                 title = "Items",
                 iconTint = MaterialTheme.colors.secondaryVariant,
                 icon = Icons.Default.ArrowBack)
         },
-        content = { ItemsGrid(items = items, navController = navController) }
+        content = { ItemsGrid(items = items) }
     )
 }
 
 @Composable
-fun ItemsScreen(navController: NavController) {
+fun ItemsScreen() {
 
     val vm: ItemsViewModel = viewModel()
 
     val uiState = vm.uiState.observeAsState(initial = ItemsOverviewScreenState.Loading).value
-   ItemsScreen(state = uiState, navController = navController)
+   ItemsScreen(state = uiState)
 }
 
 @Composable
-fun ItemsScreen(state: ItemsOverviewScreenState, navController: NavController) {
+fun ItemsScreen(state: ItemsOverviewScreenState) {
 
     when(state) {
         is ItemsOverviewScreenState.Content -> Items(
-            items = state.items,
-            navController = navController
+            items = state.items
         )
         is ItemsOverviewScreenState.Loading -> loadingSpinner()
         is ItemsOverviewScreenState.Error -> Column(

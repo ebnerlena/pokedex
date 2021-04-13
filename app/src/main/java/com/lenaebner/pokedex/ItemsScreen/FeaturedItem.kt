@@ -19,6 +19,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.navigate
 import coil.transform.CircleCropTransformation
 import com.google.accompanist.coil.CoilImage
+import com.lenaebner.pokedex.ActiveNavController
 import com.lenaebner.pokedex.api.models.Item
 import com.lenaebner.pokedex.ui.theme.transparentGrey
 import com.lenaebner.pokedex.ui.theme.transparentWhite
@@ -29,8 +30,8 @@ import com.lenaebner.pokedex.R
 fun FeaturedItem(
     item: Item,
     modifier: Modifier = Modifier,
-    navController: NavController
 ) {
+    val navController = ActiveNavController.current
 
     Card(
         elevation = 2.dp,

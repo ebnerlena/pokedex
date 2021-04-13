@@ -34,17 +34,16 @@ import com.lenaebner.pokedex.viewmodels.PokedexViewModel
 fun PokedexPreview() {
 
     PokedexTheme {
-        PokedexScreen(navController = rememberNavController())
+        PokedexScreen(state = PokedexScreenState.Loading)
     }
 }
 
 @Composable
-fun Pokedex (pokemons: List<PokemonWithColor>, navController: NavController) {
+fun Pokedex(pokemons: List<PokemonWithColor>) {
 
     Scaffold (
         topBar = {
             Header(
-                navController = navController,
                 textColor = MaterialTheme.colors.secondaryVariant,
                 backgroundColor = Color.White,
                 title = "Pokedex",
@@ -54,27 +53,26 @@ fun Pokedex (pokemons: List<PokemonWithColor>, navController: NavController) {
         },
         content = {
 
-            PokemonsGrid(navController = navController, pokemons = pokemons)
+            PokemonsGrid(pokemons = pokemons)
         }
     )
 }
 
 @Composable
-fun PokedexScreen(navController: NavController) {
+fun PokedexScreen() {
 
     val vm: PokedexViewModel = viewModel()
     
     val uiState = vm.uiState.observeAsState(initial = PokedexScreenState.Loading).value
-    PokedexScreen(state = uiState, navController = navController)
+    PokedexScreen(state = uiState)
 }
 
 @Composable
-fun PokedexScreen(state: PokedexScreenState, navController: NavController) {
+fun PokedexScreen(state: PokedexScreenState) {
 
     when(state) {
         is PokedexScreenState.Content -> Pokedex(
             pokemons = state.pokemonsWithColor,
-            navController = navController
         )
         is PokedexScreenState.Loading -> loadingSpinner()
         is PokedexScreenState.Error -> Column(

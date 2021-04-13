@@ -22,7 +22,7 @@ import androidx.navigation.NavController
 
 
 @Composable
-fun Searchbar(navController: NavController) {
+fun Searchbar() {
     Column() {
 
         Row(modifier = Modifier

@@ -34,19 +34,18 @@ import com.lenaebner.pokedex.viewmodels.ItemViewModel
 @Preview
 @Composable
 fun ItemPreview() {
-    val navC = rememberNavController()
-    ItemScreen(state = ItemScreenState.Loading, navController = navC)
+    ItemScreen(state = ItemScreenState.Loading)
 }
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun SingleItem(item: Item, navController: NavController) {
+fun SingleItem(item: Item) {
 
     PokedexTheme {
 
         Scaffold (
             topBar = {
-                Header(navController = navController,
+                Header(
                     textColor = Color.White,
                     backgroundColor = transparentGrey,
                     title = item.names[7].name,
@@ -73,17 +72,17 @@ fun SingleItem(item: Item, navController: NavController) {
 }
 
 @Composable
-fun ItemScreen(name: String, navController: NavController) {
+fun ItemScreen(name: String) {
     val vm: ItemViewModel = viewModel()
     val uiState = vm.uiState.observeAsState(initial = ItemScreenState.Loading).value
     if(uiState is ItemScreenState.Loading) vm.fetchItem(name)
-    ItemScreen(state = uiState , navController = navController)
+    ItemScreen(state = uiState)
 }
 @Composable
-fun ItemScreen(state: ItemScreenState, navController: NavController) {
+fun ItemScreen(state: ItemScreenState) {
     when(state) {
         is ItemScreenState.Content -> SingleItem(
-            item = state.item, navController = navController
+            item = state.item
         )
         is ItemScreenState.Loading -> loadingSpinner()
         is ItemScreenState.Error ->  Column(

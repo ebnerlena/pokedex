@@ -21,13 +21,14 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.navigate
 import coil.transform.CircleCropTransformation
 import com.google.accompanist.coil.CoilImage
+import com.lenaebner.pokedex.ActiveNavController
 import com.lenaebner.pokedex.R
 import com.lenaebner.pokedex.api.models.EvolvingPokemons
 import com.lenaebner.pokedex.api.models.Pokemon
 import com.lenaebner.pokedex.ui.theme.transparentGrey
 
 @Composable
-fun EvolutionChain(evolutionChainEntries: MutableList<EvolvingPokemons>, navController: NavController) {
+fun EvolutionChain(evolutionChainEntries: MutableList<EvolvingPokemons>) {
 
     LazyColumn {
         item {
@@ -41,7 +42,7 @@ fun EvolutionChain(evolutionChainEntries: MutableList<EvolvingPokemons>, navCont
         }
 
         itemsIndexed(evolutionChainEntries) {idx, entry->
-            EvolutionEntry(evolveEntry = entry, navController = navController)
+            EvolutionEntry(evolveEntry = entry)
 
             if(idx < evolutionChainEntries.size-1) {
                 Divider(modifier = Modifier
@@ -56,14 +57,13 @@ fun EvolutionChain(evolutionChainEntries: MutableList<EvolvingPokemons>, navCont
 
 
 @Composable
-fun EvolutionEntry(evolveEntry: EvolvingPokemons, navController: NavController) {
+fun EvolutionEntry(evolveEntry: EvolvingPokemons) {
 
     Row(modifier = Modifier.padding(16.dp)) {
         PokemonEvlove(
             pokemon = evolveEntry.from,
             modifier = Modifier
                 .weight(1f),
-            navController = navController
         )
         Trigger(
             triggerText = evolveEntry.trigger,
@@ -77,14 +77,16 @@ fun EvolutionEntry(evolveEntry: EvolvingPokemons, navController: NavController) 
         PokemonEvlove(
             pokemon = evolveEntry.to,
             modifier = Modifier
-                .weight(1f),
-            navController = navController
+                .weight(1f)
         )
     }
 }
 
 @Composable
-fun PokemonEvlove(pokemon: Pokemon, modifier: Modifier, navController: NavController) {
+fun PokemonEvlove(pokemon: Pokemon, modifier: Modifier) {
+
+    val navController = ActiveNavController.current
+
     Column(modifier = modifier
         .clickable { navController.navigate("pokemon/" + pokemon.name) }
     ) {

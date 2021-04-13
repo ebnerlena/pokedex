@@ -22,7 +22,7 @@ import com.lenaebner.pokedex.api.models.PokemonWithColor
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun PokemonsGrid(navController: NavController, pokemons: List<PokemonWithColor>) {
+fun PokemonsGrid(pokemons: List<PokemonWithColor>) {
 
 
     LazyVerticalGrid(
@@ -31,7 +31,6 @@ fun PokemonsGrid(navController: NavController, pokemons: List<PokemonWithColor>)
         items(pokemons) { p ->
             FeaturedPokemon(
                 pokemon = p,
-                navController = navController,
                 modifier = Modifier
                     .padding(vertical = 6.dp, horizontal = 6.dp)
                     .background(MaterialTheme.colors.background)

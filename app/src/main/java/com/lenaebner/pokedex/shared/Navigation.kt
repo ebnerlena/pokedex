@@ -1,8 +1,7 @@
 package com.lenaebner.pokedex.shared
 
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.compositionLocalOf
-import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.runtime.*
 import androidx.navigation.NavController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -16,42 +15,39 @@ import com.lenaebner.pokedex.ItemsScreen.ItemsScreen
 import com.lenaebner.pokedex.PokedexScreen.PokedexScreen
 import com.lenaebner.pokedex.SinglePokemon.SinglePokemonScreen
 
+@ExperimentalMaterialApi
 @Composable
 fun Navigation() {
+
     val navController = rememberNavController()
 
-    NavHost(
-        navController = navController,
-        startDestination = "home"
-    ) {
-        composable("home") { Home(navController = navController) }
-        composable("pokedex") { PokedexScreen(navController = navController) }
-        composable("moves") { Moves(navController = navController) }
-        composable("items") { ItemsScreen(navController = navController) }
-        composable(
-            "pokemon/{pokemonName}",
-            arguments = mutableStateListOf(navArgument("pokemonName") { type = NavType.StringType })
-        ) { backStackEntry ->
-            SinglePokemonScreen(
-                pokemonName = backStackEntry.arguments?.getString("pokemonName"),
-                navController = navController
-            )
-        }
-        composable(
-            "item/{name}",
-            arguments = mutableStateListOf(navArgument("name") { type = NavType.StringType })
-        ) { backStackEntry ->
-            ItemScreen(
-                name = backStackEntry.arguments?.getString("name") ?: "master-ball",
-                navController = navController
-            )
+    CompositionLocalProvider(ActiveNavController provides navController) {
+        NavHost(
+            navController = navController,
+            startDestination = "home"
+        ) {
+            composable("home") { Home() }
+            composable("pokedex") { PokedexScreen() }
+            composable("moves") { Moves() }
+            composable("items") { ItemsScreen() }
+            composable(
+                "pokemon/{pokemonName}",
+                arguments = mutableStateListOf(navArgument("pokemonName") { type = NavType.StringType })
+            ) { backStackEntry ->
+                SinglePokemonScreen(
+                    pokemonName = backStackEntry.arguments?.getString("pokemonName"),
+                )
+            }
+            composable(
+                "item/{name}",
+                arguments = mutableStateListOf(navArgument("name") { type = NavType.StringType })
+            ) { backStackEntry ->
+                ItemScreen(
+                    name = backStackEntry.arguments?.getString("name") ?: "master-ball"
+                )
+            }
         }
     }
 
-    val ActiveNavController = compositionLocalOf<NavController> {error("No navcontroller found") }
-    //TODO: fix to working
-    /*CompositionLocalProvider(ActiveNavController provides navController) {
-        Home()
-    } */
 
 }

@@ -24,7 +24,6 @@ fun CardNavigation(
     pokemon: Pokemon,
     species: PokemonSpecies,
     evolutionChainEntries: MutableList<EvolvingPokemons>,
-    navController: NavController
 ) {
     Card(modifier = Modifier
         .padding(top = 0.dp)
@@ -74,7 +73,7 @@ fun CardNavigation(
                         "about" -> Description(pokemon = pokemon, species = species)
                         "stats" -> Stats(pokemon)
                         "moves" -> Moves(pokemon)
-                        "evolution" -> EvolutionChain(evolutionChainEntries, navController = navController)
+                        "evolution" -> EvolutionChain(evolutionChainEntries)
                     }
                 }
             }

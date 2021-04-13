@@ -17,11 +17,11 @@ import com.lenaebner.pokedex.PokedexScreen.PokemonsGrid
 import com.lenaebner.pokedex.shared.Header
 
 @Composable
-fun Moves (navController: NavController) {
+fun Moves () {
 
     Scaffold (
         topBar = {
-            Header(navController = navController,
+            Header(
                 textColor = MaterialTheme.colors.secondaryVariant,
                 backgroundColor = Color.White,
                 title = "Moves",

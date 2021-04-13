@@ -18,7 +18,7 @@ import com.lenaebner.pokedex.api.models.Item
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun ItemsGrid(items: MutableList<Item>, navController: NavController) {
+fun ItemsGrid(items: MutableList<Item>) {
 
     LazyVerticalGrid(
         cells = GridCells.Fixed(2), modifier = Modifier.padding(4.dp)
@@ -26,7 +26,6 @@ fun ItemsGrid(items: MutableList<Item>, navController: NavController) {
         items(items) { item ->
             FeaturedItem(
                 item = item,
-                navController = navController,
                 modifier = Modifier
                     .padding(vertical = 6.dp, horizontal = 6.dp)
                     .background(MaterialTheme.colors.background)

@@ -8,8 +8,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.lenaebner.pokedex.ui.theme.PokedexTheme
 
 
@@ -18,7 +16,7 @@ import com.lenaebner.pokedex.ui.theme.PokedexTheme
 @Composable
 fun HomePreview() {
     PokedexTheme {
-        Home(navController = rememberNavController() )
+        Home()
     }
 }
 
@@ -26,13 +24,12 @@ fun HomePreview() {
 @Composable
 fun SearchbarPreview() {
     PokedexTheme {
-        Searchbar(navController = rememberNavController() )
+        Searchbar()
     }
 }
 
 @Composable
-fun Home(navController: NavController) {
-
+fun Home() {
     Scaffold(
         topBar = {
             Row {
@@ -49,9 +46,9 @@ fun Home(navController: NavController) {
     ){
 
         Column() {
-            Searchbar(navController = navController)
+            Searchbar()
             Spacer(modifier = Modifier.height(8.dp))
-            Categories(navController = navController)
+            Categories()
         }
     }
 }

@@ -20,6 +20,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.navigate
 import coil.transform.CircleCropTransformation
 import com.google.accompanist.coil.CoilImage
+import com.lenaebner.pokedex.ActiveNavController
 import com.lenaebner.pokedex.api.models.PokemonWithColor
 import com.lenaebner.pokedex.asPokeColor
 import com.lenaebner.pokedex.ui.theme.transparentGrey
@@ -30,9 +31,8 @@ import com.lenaebner.pokedex.ui.theme.transparentWhite
 fun FeaturedPokemon(
     pokemon: PokemonWithColor,
     modifier: Modifier = Modifier,
-    navController: NavController
 ) {
-
+    val navController = ActiveNavController.current
     Card(
         elevation = 2.dp,
         modifier = modifier,

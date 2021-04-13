@@ -18,22 +18,23 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.lenaebner.pokedex.R
-import androidx.navigation.NavController
 import androidx.navigation.compose.navigate
+import com.lenaebner.pokedex.ActiveNavController
+import com.lenaebner.pokedex.R
+
+
 
 @Composable
 fun Categories(
-    navController: NavController,
     categories: List<String> = mutableStateListOf("Pokedex", "Moves", "Items")
 ) {
     Column(modifier = Modifier.fillMaxWidth()) {
-        CategoriesList(navController = navController, categories = categories, Modifier.weight(1f))
+        CategoriesList(categories = categories, Modifier.weight(1f))
     }
 }
 
 @Composable
-fun CategoriesList(navController: NavController, categories: List<String>, modifier: Modifier = Modifier) {
+fun CategoriesList(categories: List<String>, modifier: Modifier = Modifier) {
     LazyColumn(modifier = modifier
         .fillMaxWidth()
         .padding(8.dp)) {
@@ -42,7 +43,7 @@ fun CategoriesList(navController: NavController, categories: List<String>, modif
                 .fillMaxWidth()
                 .padding(8.dp), horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically) {
-                Category(name = categorie, modifier = modifier, navController = navController)
+                Category(name = categorie, modifier = modifier)
                 Spacer(modifier = Modifier.size(3.dp))
             }
 
@@ -51,7 +52,10 @@ fun CategoriesList(navController: NavController, categories: List<String>, modif
 }
 
 @Composable
-fun Category(name: String, modifier: Modifier, navController: NavController) {
+fun Category(name: String, modifier: Modifier) {
+
+    val navController = ActiveNavController.current
+
 
     Card(
         elevation = 2.dp,

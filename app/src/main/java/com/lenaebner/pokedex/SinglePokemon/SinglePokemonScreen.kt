@@ -41,29 +41,27 @@ import com.lenaebner.pokedex.viewmodels.PokemonViewModel
 @Preview
 @Composable
 fun PokemonScreenPreview() {
-    val navC = rememberNavController()
-    SinglePokemonScreen(state= PokemonScreenState.Loading, navController = navC)
+    SinglePokemonScreen(state= PokemonScreenState.Loading)
 }
 
 
 @Composable
-fun SinglePokemonScreen(pokemonName: String?, navController: NavController) {
+fun SinglePokemonScreen(pokemonName: String?) {
 
     val vm : PokemonViewModel = viewModel()
     val state = vm.uiState.observeAsState(initial = PokemonScreenState.Loading).value
     if (state is PokemonScreenState.Loading)  vm.fetchPokemon(pokemonName ?: "pikachu")
-    SinglePokemonScreen(navController = navController, state = state)
+    SinglePokemonScreen(state = state)
 }
 
 @Composable
-fun SinglePokemonScreen(navController: NavController, state: PokemonScreenState) {
+fun SinglePokemonScreen(state: PokemonScreenState) {
 
     when (state) {
         is PokemonScreenState.Content -> PokemonScreen(
             pokemon = state.pokemon,
             species = state.species,
             evolutionChainEntries = state.evolutionChainPokemons,
-            navController = navController
         )
         is PokemonScreenState.Loading -> loadingSpinner()
         is PokemonScreenState.Error -> Column(
@@ -76,13 +74,13 @@ fun SinglePokemonScreen(navController: NavController, state: PokemonScreenState)
 }
 
 @Composable
-fun PokemonScreen(navController: NavController, pokemon: Pokemon, species: PokemonSpecies, evolutionChainEntries: MutableList<EvolvingPokemons>) {
+fun PokemonScreen(pokemon: Pokemon, species: PokemonSpecies, evolutionChainEntries: MutableList<EvolvingPokemons>) {
 
     PokedexTheme {
 
         Scaffold (
             topBar = {
-                Header(navController = navController,
+                Header(
                     textColor = Color.White,
                     backgroundColor = species.color.name.asPokeColor(),
                     title = pokemon.name.capitalize(),
@@ -142,8 +140,7 @@ fun PokemonScreen(navController: NavController, pokemon: Pokemon, species: Pokem
                             page = "about",
                             pokemon = pokemon,
                             species = species,
-                            evolutionChainEntries = evolutionChainEntries,
-                            navController = navController
+                            evolutionChainEntries = evolutionChainEntries
                         )
                     }
                 }
