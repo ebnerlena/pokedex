@@ -31,20 +31,16 @@ fun Navigation() {
             composable("moves") { Moves() }
             composable("items") { ItemsScreen() }
             composable(
-                "pokemon/{pokemonName}",
-                arguments = mutableStateListOf(navArgument("pokemonName") { type = NavType.StringType })
+                "pokemon/{name}",
+                arguments = mutableStateListOf(navArgument("name") { type = NavType.StringType })
             ) { backStackEntry ->
-                SinglePokemonScreen(
-                    pokemonName = backStackEntry.arguments?.getString("pokemonName"),
-                )
+                SinglePokemonScreen()
             }
             composable(
                 "item/{name}",
                 arguments = mutableStateListOf(navArgument("name") { type = NavType.StringType })
             ) { backStackEntry ->
-                ItemScreen(
-                    name = backStackEntry.arguments?.getString("name") ?: "master-ball"
-                )
+                ItemScreen()
             }
         }
     }

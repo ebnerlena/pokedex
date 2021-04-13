@@ -1,9 +1,6 @@
 package com.lenaebner.pokedex.viewmodels
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.lenaebner.pokedex.ApiController
 import com.lenaebner.pokedex.ScreenStates.ItemScreenState
 import com.lenaebner.pokedex.api.models.Item
@@ -12,12 +9,17 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 
-class ItemViewModel : ViewModel() {
+class ItemViewModel(private val savedStateHandle: SavedStateHandle) : ViewModel() {
 
     private val _uiState = MutableLiveData<ItemScreenState>()
     val uiState : LiveData<ItemScreenState> = _uiState
 
-    fun createContentState(item: Item) {
+    init {
+        val itemName : String = savedStateHandle["name"] ?: "master-ball"
+        fetchItem(itemName)
+    }
+
+    private fun createContentState(item: Item) {
         _uiState.postValue(
             ItemScreenState.Content(
                 item = item,
@@ -25,7 +27,7 @@ class ItemViewModel : ViewModel() {
         )
     }
 
-    fun fetchItem(name: String) {
+    private fun fetchItem(name: String) {
 
         _uiState.postValue(ItemScreenState.Loading)
 

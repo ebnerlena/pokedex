@@ -28,8 +28,8 @@ fun ErrorScreen(errorMessage: String, retry: () -> Unit) {
             ) {
                 Column(modifier = Modifier
                     .align(Alignment.CenterVertically).fillMaxWidth()) {
-                    Text(errorMessage, color = MaterialTheme.colors.secondaryVariant)
-                    Button(retry, modifier = Modifier.padding(8.dp).background(MaterialTheme.colors.primary)) {
+                    Text(errorMessage, color = MaterialTheme.colors.secondaryVariant, modifier = Modifier.align(Alignment.CenterHorizontally))
+                    Button(retry, modifier = Modifier.padding(8.dp).background(MaterialTheme.colors.primary).align(Alignment.CenterHorizontally)) {
                         Text("Retry", color = MaterialTheme.colors.secondaryVariant)
                     }
 

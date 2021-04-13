@@ -1,10 +1,7 @@
 package com.lenaebner.pokedex.viewmodels
 
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.lenaebner.pokedex.ApiController
 import com.lenaebner.pokedex.ScreenStates.PokemonScreenState
 import com.lenaebner.pokedex.api.models.EvolutionChainDetails
@@ -15,7 +12,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class PokemonViewModel : ViewModel() {
+class PokemonViewModel(private val savedStateHandle: SavedStateHandle) : ViewModel() {
 
     private val _uiState = MutableLiveData<PokemonScreenState>()
     val uiState : LiveData<PokemonScreenState> = _uiState
@@ -23,7 +20,12 @@ class PokemonViewModel : ViewModel() {
     private var _pokemon: Pokemon = Pokemon()
     private var _species: PokemonSpecies = PokemonSpecies()
 
-    fun createContentState(pokemon: Pokemon, species: PokemonSpecies) {
+    init {
+        val pokeName: String = savedStateHandle["pokemonName"] ?: "pikachu"
+        fetchPokemon(pokeName)
+    }
+
+    private fun createContentState(pokemon: Pokemon, species: PokemonSpecies) {
         _pokemon = pokemon
         _species = species
 
@@ -35,7 +37,7 @@ class PokemonViewModel : ViewModel() {
         )
     }
 
-    fun updateEvolutionChainState(entries: MutableList<EvolvingPokemons>) {
+    private fun updateEvolutionChainState(entries: MutableList<EvolvingPokemons>) {
 
         _uiState.postValue(
             PokemonScreenState.Content(
@@ -46,7 +48,7 @@ class PokemonViewModel : ViewModel() {
         )
     }
 
-    fun fetchPokemon(name: String) {
+    private fun fetchPokemon(name: String) {
 
         _uiState.postValue(
             PokemonScreenState.Loading
@@ -57,7 +59,7 @@ class PokemonViewModel : ViewModel() {
             try {
                 val pokemon = withContext(Dispatchers.IO){ ApiController.pokeApi.getPokemon(name)}
                 val species = withContext(Dispatchers.IO){  ApiController.pokeApi.getPokemonSpecies(pokemon.id)}
-                val id = species.evolution_chain.url.split("/").get(6).toInt()
+                val id = species.evolution_chain.url.split("/")[6].toInt()
                 val chain = withContext(Dispatchers.IO){  ApiController.pokeApi.getEvolutionChain(id)}
 
                 //update ui
@@ -80,7 +82,7 @@ class PokemonViewModel : ViewModel() {
 
     private fun fetchEvolutionChainPokemons(evolutionChainDetails: EvolutionChainDetails) {
 
-        var pokemons: MutableList<EvolvingPokemons> = mutableListOf<EvolvingPokemons>()
+        val pokemons: MutableList<EvolvingPokemons> = mutableListOf()
         var evolves = evolutionChainDetails.chain.evolves_to
         var species = evolutionChainDetails.chain.species
 

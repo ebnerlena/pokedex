@@ -1,14 +1,12 @@
 package com.lenaebner.pokedex.viewmodels
 
-import android.view.View
+
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.lenaebner.pokedex.ApiController
 import com.lenaebner.pokedex.ScreenStates.PokedexScreenState
-import com.lenaebner.pokedex.api.models.Pokemon
 import com.lenaebner.pokedex.api.models.PokemonWithColor
 import kotlinx.coroutines.*
 
@@ -21,12 +19,11 @@ class PokedexViewModel: ViewModel() {
 
     init {
         fetchPokemons(0,10)
-        fetchPokemons(10,10)
-        fetchPokemons(20,20)
-        fetchPokemons(40,20)
+        fetchPokemons(10,20)
+        fetchPokemons(30,20)
     }
 
-    fun createContentState() {
+    private fun createContentState() {
 
         _pokemonsWithColor.sortBy { p -> p.pokemon?.id }
 
@@ -37,7 +34,7 @@ class PokedexViewModel: ViewModel() {
         )
     }
 
-    fun fetchPokemons(offset: Int=0, limit: Int=20) {
+    private fun fetchPokemons(offset: Int=0, limit: Int=20) {
 
         _uiState.postValue(PokedexScreenState.Loading)
 
@@ -60,7 +57,7 @@ class PokedexViewModel: ViewModel() {
                     _pokemonsWithColor.add(
                         PokemonWithColor(
                             p,
-                            withContext(Dispatchers.IO){
+                             withContext(Dispatchers.IO){
                                 ApiController.pokeApi.getPokemonColor(p.id)
                             }
                         )

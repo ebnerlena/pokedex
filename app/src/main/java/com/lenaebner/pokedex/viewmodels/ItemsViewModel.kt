@@ -7,7 +7,6 @@ import androidx.lifecycle.viewModelScope
 import com.lenaebner.pokedex.ApiController
 import com.lenaebner.pokedex.ScreenStates.ItemsOverviewScreenState
 import com.lenaebner.pokedex.api.models.Item
-import com.lenaebner.pokedex.api.models.PokemonWithColor
 import kotlinx.coroutines.*
 
 class ItemsViewModel : ViewModel() {
@@ -20,10 +19,9 @@ class ItemsViewModel : ViewModel() {
         fetchItems(0,20)
         fetchItems(20,20)
         fetchItems(40,20)
-        fetchItems(60,20)
     }
 
-    fun createContentState() {
+    private fun createContentState() {
 
         _items.sortBy { item -> item.id }
 
@@ -34,7 +32,7 @@ class ItemsViewModel : ViewModel() {
         )
     }
 
-    fun fetchItems(offset: Int=0, limit: Int=20) {
+    private fun fetchItems(offset: Int=0, limit: Int=20) {
 
         _uiState.postValue(ItemsOverviewScreenState.Loading)
 

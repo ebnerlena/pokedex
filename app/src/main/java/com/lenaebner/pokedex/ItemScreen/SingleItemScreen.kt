@@ -72,10 +72,9 @@ fun SingleItem(item: Item) {
 }
 
 @Composable
-fun ItemScreen(name: String) {
+fun ItemScreen() {
     val vm: ItemViewModel = viewModel()
     val uiState = vm.uiState.observeAsState(initial = ItemScreenState.Loading).value
-    if(uiState is ItemScreenState.Loading) vm.fetchItem(name)
     ItemScreen(state = uiState)
 }
 @Composable
