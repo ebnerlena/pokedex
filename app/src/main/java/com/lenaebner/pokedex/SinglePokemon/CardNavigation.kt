@@ -22,7 +22,7 @@ import com.lenaebner.pokedex.api.models.PokemonSpecies
 fun CardNavigation(
     page: String,
     pokemon: Pokemon,
-    species: PokemonSpecies,
+    species: PokemonSpecies?,
     evolutionChainEntries: MutableList<EvolvingPokemons>,
 ) {
     Card(modifier = Modifier

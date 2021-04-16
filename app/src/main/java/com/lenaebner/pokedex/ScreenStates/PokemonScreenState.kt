@@ -9,8 +9,10 @@ sealed class PokemonScreenState {
     object Loading: PokemonScreenState()
     data class Content(
         val pokemon: Pokemon,
-        val species: PokemonSpecies,
-        val evolutionChainPokemons: MutableList<EvolvingPokemons> = mutableListOf()
+        val species: PokemonSpecies?,
+        val evolutionChainPokemons: MutableList<EvolvingPokemons> = mutableListOf(),
+        val pokemonClicked: () -> Unit,
+        val backClicked: () -> Unit
     ) : PokemonScreenState()
     data class Error(val message: String, val retry: () -> Unit): PokemonScreenState()
 }

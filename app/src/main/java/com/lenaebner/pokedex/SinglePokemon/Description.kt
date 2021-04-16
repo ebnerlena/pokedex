@@ -12,8 +12,8 @@ import com.lenaebner.pokedex.api.models.PokemonSpecies
 
 
 @Composable
-fun Description(pokemon: Pokemon, species: PokemonSpecies) {
-    val text = if (species.flavor_text_entries.isNotEmpty()) {
+fun Description(pokemon: Pokemon, species: PokemonSpecies?) {
+    val text = if (species?.flavor_text_entries?.isNotEmpty() == true) {
         species.flavor_text_entries[7].flavor_text.replace("[\n\r]".toRegex(), " ") }
     else "loading..."
     LazyColumn(modifier = Modifier.padding(8.dp)) {

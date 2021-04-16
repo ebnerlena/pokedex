@@ -20,6 +20,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.compose.navigate
 import coil.transform.CircleCropTransformation
 import com.google.accompanist.coil.CoilImage
 import com.lenaebner.pokedex.*
@@ -32,8 +33,12 @@ import com.lenaebner.pokedex.shared.ErrorScreen
 import com.lenaebner.pokedex.shared.Header
 import com.lenaebner.pokedex.shared.loadingSpinner
 import com.lenaebner.pokedex.ui.theme.PokedexTheme
+import com.lenaebner.pokedex.ui.theme.transparentGrey
 import com.lenaebner.pokedex.ui.theme.transparentWhite
+import com.lenaebner.pokedex.viewmodels.PokeScreenAction
 import com.lenaebner.pokedex.viewmodels.PokemonViewModel
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.consumeAsFlow
 
 @Preview
 @Composable
@@ -43,11 +48,21 @@ fun PokemonScreenPreview() {
 
 
 @Composable
-fun SinglePokemonScreen() {
+fun SinglePokemonScreen(vm: PokemonViewModel) {
 
-    val vm : PokemonViewModel = viewModel()
+    val navController = ActiveNavController.current
+    //val vm : PokemonViewModel = viewModel()
     val state = vm.uiState.observeAsState(initial = PokemonScreenState.Loading).value
     SinglePokemonScreen(state = state)
+
+    LaunchedEffect("actions"){
+        vm.actions.collect {
+            when(it) {
+                is PokeScreenAction.NavigateBack -> navController.navigate("pokedex")
+                is PokeScreenAction.pokemonClicked -> navController.navigate(it.destination)
+            }
+        }
+    }
 }
 
 @Composable
@@ -70,15 +85,16 @@ fun SinglePokemonScreen(state: PokemonScreenState) {
 }
 
 @Composable
-fun PokemonScreen(pokemon: Pokemon, species: PokemonSpecies, evolutionChainEntries: MutableList<EvolvingPokemons>) {
+fun PokemonScreen(pokemon: Pokemon, species: PokemonSpecies?, evolutionChainEntries: MutableList<EvolvingPokemons>) {
 
+    val color = if (species != null) species.color.name.asPokeColor() else transparentGrey
     PokedexTheme {
 
         Scaffold (
             topBar = {
                 Header(
                     textColor = Color.White,
-                    backgroundColor = species.color.name.asPokeColor(),
+                    backgroundColor = color,
                     title = pokemon.name.capitalize(),
                     icon = Icons.Default.ArrowBack,
                     pokemon = pokemon
@@ -87,7 +103,7 @@ fun PokemonScreen(pokemon: Pokemon, species: PokemonSpecies, evolutionChainEntri
             content = {
                 Column(modifier = Modifier
                     .fillMaxWidth()
-                    .background(species.color.name.asPokeColor())) {
+                    .background(color)) {
                     Row(modifier = Modifier
                         .padding(top=8.dp, start=16.dp)) {
                         Row(modifier = Modifier.weight(1f)) {
@@ -97,7 +113,7 @@ fun PokemonScreen(pokemon: Pokemon, species: PokemonSpecies, evolutionChainEntri
                         }
 
                         Text(
-                            text = if (species.genera.isNotEmpty()) species.genera[7].genus else "Type",
+                            text = if (species?.genera?.isNotEmpty() == true) species.genera[7].genus else "Type",
                             color = Color.White,
                             style = MaterialTheme.typography.body2,
                             modifier = Modifier

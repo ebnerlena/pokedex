@@ -12,7 +12,7 @@ import com.lenaebner.pokedex.api.models.PokemonSpecies
 import com.lenaebner.pokedex.ui.theme.transparentGrey
 
 @Composable
-fun EggGroups(species: PokemonSpecies) {
+fun EggGroups(species: PokemonSpecies?) {
     Row {
         Text(
             text = "Egg Groups:",
@@ -23,14 +23,17 @@ fun EggGroups(species: PokemonSpecies) {
                 .weight(1.2f)
         )
         Row(modifier = Modifier.weight(2f)) {
-            species.egg_groups.forEach {
-                Text(
-                    text = it.name.capitalize(),
-                    color = MaterialTheme.colors.secondaryVariant,
-                    style = MaterialTheme.typography.body2,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(vertical = 8.dp, horizontal = 2.dp)
-                )
+
+            if(species != null) {
+                species.egg_groups.forEach {
+                    Text(
+                        text = it.name.capitalize(),
+                        color = MaterialTheme.colors.secondaryVariant,
+                        style = MaterialTheme.typography.body2,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(vertical = 8.dp, horizontal = 2.dp)
+                    )
+                }
             }
         }
 
