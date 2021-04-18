@@ -10,9 +10,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.lenaebner.pokedex.api.models.Item
+import com.lenaebner.pokedex.viewmodels.ItemsViewModel
 
 @Composable
-fun ItemCardHeader(item: Item, modifier: Modifier) {
+fun ItemCardHeader(item: ItemsViewModel.ItemOverview, modifier: Modifier) {
     Row(modifier = modifier, verticalAlignment = Alignment.CenterVertically) {
         Text(
             text = item.names[7].name,

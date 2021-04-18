@@ -15,10 +15,11 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.lenaebner.pokedex.ItemsScreen.FeaturedItem
 import com.lenaebner.pokedex.api.models.Item
+import com.lenaebner.pokedex.viewmodels.ItemsViewModel
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun ItemsGrid(items: MutableList<Item>) {
+fun ItemsGrid(items: List<ItemsViewModel.ItemOverview>) {
 
     LazyVerticalGrid(
         cells = GridCells.Fixed(2), modifier = Modifier.padding(4.dp)

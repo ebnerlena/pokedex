@@ -24,11 +24,12 @@ import com.lenaebner.pokedex.api.models.Item
 import com.lenaebner.pokedex.ui.theme.transparentGrey
 import com.lenaebner.pokedex.ui.theme.transparentWhite
 import com.lenaebner.pokedex.R
+import com.lenaebner.pokedex.viewmodels.ItemsViewModel
 
 
 @Composable
 fun FeaturedItem(
-    item: Item,
+    item: ItemsViewModel.ItemOverview,
     modifier: Modifier = Modifier,
 ) {
     val navController = ActiveNavController.current
@@ -42,12 +43,13 @@ fun FeaturedItem(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .clickable {
+                .clickable(onClick = item.onClick)
+                /*.clickable {
                     navController.navigate("item/${item.name}") {
                         popUpTo = navController.graph.startDestination
                         launchSingleTop = true
                     }
-                }
+                } */
         ) {
             ItemCardHeader(
                 item = item,

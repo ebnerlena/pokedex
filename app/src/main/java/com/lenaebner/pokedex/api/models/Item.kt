@@ -11,7 +11,7 @@ data class Item(
     val effect_entries: List<EffectEntry> = emptyList(),
     val flavor_text_entries: List<FlavorTextEntryItem> = emptyList(),
     val sprites: ItemSprite = ItemSprite(),
-    val names: List<ItemName> = emptyList()
+    val names: List<ItemName> = emptyList(),
 )
 
 data class ItemPreview(

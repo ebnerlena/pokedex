@@ -35,10 +35,11 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            Surface {
-                MyApp()
+            MaterialTheme {
+                Surface {
+                    Navigation()
+                }
             }
-
         }
     }
 }

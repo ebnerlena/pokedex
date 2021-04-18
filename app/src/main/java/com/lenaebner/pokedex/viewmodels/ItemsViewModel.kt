@@ -1,21 +1,58 @@
 package com.lenaebner.pokedex.viewmodels
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import android.util.Log
+import androidx.lifecycle.*
 import com.lenaebner.pokedex.ApiController
 import com.lenaebner.pokedex.ScreenStates.ItemsOverviewScreenState
-import com.lenaebner.pokedex.api.models.Item
+import com.lenaebner.pokedex.api.models.*
 import kotlinx.coroutines.*
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.receiveAsFlow
 
 class ItemsViewModel : ViewModel() {
 
-    private val _uiState = MutableLiveData<ItemsOverviewScreenState>()
-    val uiState : LiveData<ItemsOverviewScreenState> = _uiState
-    private var _items: MutableList<Item> = mutableListOf()
+    private val _actions = Channel<ItemsAction>(Channel.BUFFERED)
+    val actions = _actions.receiveAsFlow()
 
-    init {
+    private val _items = flow{
+        emit(fetchItems())
+    }
+
+    private val itemsOverview = _items.map {
+        it.map{
+            ItemOverview(
+                id = it.id,
+                name = it.name,
+                category = it.category,
+                cost = it.cost,
+                sprites = it.sprites,
+                onClick = { viewModelScope.launch { _actions.send(ItemsAction.Navigate("item/${it.name}")) } }
+            )
+        }
+
+    }
+
+    private val _uiState = flow {
+        emit(ItemsOverviewScreenState.Loading)
+        try {
+            itemsOverview.collect {
+                emit(ItemsOverviewScreenState.Content(items = it))
+            }
+        } catch(ex: Throwable) {
+            emit(ItemsOverviewScreenState.Error(
+                message = "An error occured while fetching the items",
+                retry = { fetchItems()}
+            ))
+        }
+
+    }
+    val uiState =  _uiState.asLiveData()
+
+
+    /* init {
         fetchItems(0,20)
         fetchItems(20,20)
         fetchItems(40,20)
@@ -30,40 +67,45 @@ class ItemsViewModel : ViewModel() {
                 items = _items
             )
         )
-    }
+    } */
 
-    private fun fetchItems(offset: Int=0, limit: Int=20) {
+    private fun fetchItems(offset: Int=0, limit: Int=20): List<Item> {
 
-        _uiState.postValue(ItemsOverviewScreenState.Loading)
-
+        //_uiState.postValue(ItemsOverviewScreenState.Loading)
+        var _items = emptyList<Item>()
         viewModelScope.launch {
-
-            try {
-
                 val itemsOverview = withContext(Dispatchers.IO) {
                     ApiController.itemsApi.getItems(offset = offset,limit = limit)
                 }
                 val items = itemsOverview.results.map {
                     async {
-                        _items.add(
                             (Dispatchers.IO){
                             ApiController.itemsApi.getItem(it.name)
                             }
-                        )
                     }
                 }.awaitAll()
 
-                createContentState()
+                //here they are
+            Log.d("foo2", items.toString())
+            _items = items
 
-            } catch (exception: Throwable) {
-
-                _uiState.postValue(
-                    ItemsOverviewScreenState.Error(
-                        message = exception.message ?: "An error occured when trying to fetch pokemons",
-                        retry = { fetchItems() }
-                    )
-                )
             }
-        }
+        //here they are empty
+        Log.d("foo3", _items.toString())
+        return _items
     }
+
+    sealed class ItemsAction {
+        data class Navigate(val destination: String) : ItemsAction()
+    }
+
+    data class ItemOverview(
+        val category: Category = Category(name = ""),
+        val cost: Int = 0,
+        val name: String ="",
+        val id: Int = 1,
+        val sprites: ItemSprite = ItemSprite(),
+        val names: List<ItemName> = emptyList(),
+        var onClick: () -> Unit
+    )
 }

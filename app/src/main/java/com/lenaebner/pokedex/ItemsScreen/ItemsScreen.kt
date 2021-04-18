@@ -9,12 +9,15 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import androidx.navigation.compose.navigate
+import com.lenaebner.pokedex.ActiveNavController
 import com.lenaebner.pokedex.ItemScreen.ItemsGrid
 import com.lenaebner.pokedex.ScreenStates.ItemsOverviewScreenState
 import com.lenaebner.pokedex.api.models.Item
@@ -22,9 +25,10 @@ import com.lenaebner.pokedex.shared.ErrorScreen
 import com.lenaebner.pokedex.shared.Header
 import com.lenaebner.pokedex.shared.loadingSpinner
 import com.lenaebner.pokedex.viewmodels.ItemsViewModel
+import kotlinx.coroutines.flow.collect
 
 @Composable
-fun Items(items: MutableList<Item>) {
+fun Items(items: List<ItemsViewModel.ItemOverview>) {
 
     Scaffold (
         topBar = {
@@ -40,12 +44,19 @@ fun Items(items: MutableList<Item>) {
 }
 
 @Composable
-fun ItemsScreen() {
-
-    val vm: ItemsViewModel = viewModel()
+fun ItemsScreen(vm: ItemsViewModel) {
 
     val uiState = vm.uiState.observeAsState(initial = ItemsOverviewScreenState.Loading).value
-   ItemsScreen(state = uiState)
+    ItemsScreen(state = uiState)
+
+    val navController = ActiveNavController.current
+    LaunchedEffect(key1 = "items actions") {
+        vm.actions.collect {
+            when(it) {
+                is ItemsViewModel.ItemsAction.Navigate -> navController.navigate(it.destination)
+            }
+        }
+    }
 }
 
 @Composable

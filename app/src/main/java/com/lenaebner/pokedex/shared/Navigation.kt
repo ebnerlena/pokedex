@@ -15,6 +15,7 @@ import com.lenaebner.pokedex.ItemsScreen.Items
 import com.lenaebner.pokedex.ItemsScreen.ItemsScreen
 import com.lenaebner.pokedex.PokedexScreen.PokedexScreen
 import com.lenaebner.pokedex.SinglePokemon.SinglePokemonScreen
+import com.lenaebner.pokedex.viewmodels.ItemsViewModel
 import com.lenaebner.pokedex.viewmodels.PokemonViewModel
 import com.lenaebner.pokedex.viewmodels.PokemonViewModelFactory
 
@@ -32,7 +33,10 @@ fun Navigation() {
             composable("home") { Home() }
             composable("pokedex") { PokedexScreen() }
             composable("moves") { Moves() }
-            composable("items") { ItemsScreen() }
+            composable("items") {
+                val vm: ItemsViewModel = viewModel(key="items")
+                ItemsScreen(vm = vm)
+            }
             composable(
                 "pokemon/{name}",
                 arguments = mutableStateListOf(navArgument("name") { type = NavType.StringType })

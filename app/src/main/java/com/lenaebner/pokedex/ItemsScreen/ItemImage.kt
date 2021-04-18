@@ -16,9 +16,10 @@ import com.google.accompanist.coil.CoilImage
 import com.lenaebner.pokedex.R
 import com.lenaebner.pokedex.api.models.Item
 import com.lenaebner.pokedex.ui.theme.transparentWhite
+import com.lenaebner.pokedex.viewmodels.ItemsViewModel
 
 @Composable
-fun ItemImage(item: Item, modifier: Modifier) {
+fun ItemImage(item: ItemsViewModel.ItemOverview, modifier: Modifier) {
     Column(modifier = modifier
         .padding(2.dp)) {
         CoilImage(
