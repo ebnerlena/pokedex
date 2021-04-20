@@ -7,7 +7,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.navigate
 import com.lenaebner.pokedex.ActiveNavController
@@ -36,12 +38,25 @@ fun Header(textColor: Color, backgroundColor: Color, title: String, icon: ImageV
             }
             Row(modifier = Modifier.fillMaxWidth().align(Alignment.CenterHorizontally),
                 verticalAlignment = Alignment.CenterVertically) {
-                Text(
+                BoxWithConstraints(
+                    modifier = Modifier
+                        .fillMaxWidth().weight(5f)
+                ) {
+                    val size = if(maxWidth > 200.dp) 18.sp else 16.sp
+                    Text(
+                        text = title,
+                        fontSize = size,
+                        color = textColor,
+                        style = MaterialTheme.typography.h1,
+                        modifier = Modifier.padding(start=8.dp, bottom = 8.dp)
+                    )
+                }
+                /*Text(
                     text = title,
                     color = textColor,
                     style = MaterialTheme.typography.h1,
                     modifier = Modifier.padding(start=8.dp, bottom = 8.dp).weight(5f)
-                )
+                ) */
                 if(pokemon != null) {
                     Text(
                         text = '#'+pokemon.id.toString(),
