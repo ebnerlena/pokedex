@@ -24,16 +24,15 @@ import com.lenaebner.pokedex.api.models.Item
 import com.lenaebner.pokedex.ui.theme.transparentGrey
 import com.lenaebner.pokedex.ui.theme.transparentWhite
 import com.lenaebner.pokedex.R
+import com.lenaebner.pokedex.api.models.ItemOverview
 import com.lenaebner.pokedex.viewmodels.ItemsViewModel
 
 
 @Composable
 fun FeaturedItem(
-    item: ItemsViewModel.ItemOverview,
+    item: ItemOverview,
     modifier: Modifier = Modifier,
 ) {
-    val navController = ActiveNavController.current
-
     Card(
         elevation = 2.dp,
         modifier = modifier,
@@ -44,12 +43,6 @@ fun FeaturedItem(
             modifier = Modifier
                 .fillMaxWidth()
                 .clickable(onClick = item.onClick)
-                /*.clickable {
-                    navController.navigate("item/${item.name}") {
-                        popUpTo = navController.graph.startDestination
-                        launchSingleTop = true
-                    }
-                } */
         ) {
             ItemCardHeader(
                 item = item,

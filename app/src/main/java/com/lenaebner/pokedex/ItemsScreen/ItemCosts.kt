@@ -13,10 +13,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.lenaebner.pokedex.api.models.Item
+import com.lenaebner.pokedex.api.models.ItemOverview
 import com.lenaebner.pokedex.viewmodels.ItemsViewModel
 
 @Composable
-fun ItemCosts(item: ItemsViewModel.ItemOverview, modifier: Modifier) {
+fun ItemCosts(item: ItemOverview, modifier: Modifier) {
     Column(modifier = modifier
         .padding(start = 8.dp, end = 4.dp, top = 16.dp)
     ) {

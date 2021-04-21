@@ -21,6 +21,7 @@ import com.lenaebner.pokedex.ActiveNavController
 import com.lenaebner.pokedex.ItemScreen.ItemsGrid
 import com.lenaebner.pokedex.ScreenStates.ItemsOverviewScreenState
 import com.lenaebner.pokedex.api.models.Item
+import com.lenaebner.pokedex.api.models.ItemOverview
 import com.lenaebner.pokedex.shared.ErrorScreen
 import com.lenaebner.pokedex.shared.Header
 import com.lenaebner.pokedex.shared.loadingSpinner
@@ -28,7 +29,7 @@ import com.lenaebner.pokedex.viewmodels.ItemsViewModel
 import kotlinx.coroutines.flow.collect
 
 @Composable
-fun Items(items: List<ItemsViewModel.ItemOverview>) {
+fun Items(items: List<ItemOverview>, backClicked: () -> Unit) {
 
     Scaffold (
         topBar = {
@@ -38,7 +39,7 @@ fun Items(items: List<ItemsViewModel.ItemOverview>) {
                 title = "Items",
                 iconTint = MaterialTheme.colors.secondaryVariant,
                 icon = Icons.Default.ArrowBack,
-                backClicked = {}
+                backClicked = backClicked
             )
         },
         content = { ItemsGrid(items = items) }
@@ -55,7 +56,8 @@ fun ItemsScreen(vm: ItemsViewModel) {
     LaunchedEffect(key1 = "items actions") {
         vm.actions.collect {
             when(it) {
-                is ItemsViewModel.ItemsAction.Navigate -> navController.navigate(it.destination)
+                is ItemsViewModel.ItemsScreenAction.Navigate -> navController.navigate(it.destination)
+                is ItemsViewModel.ItemsScreenAction.NavigateBack -> navController.navigateUp()
             }
         }
     }
@@ -66,7 +68,8 @@ fun ItemsScreen(state: ItemsOverviewScreenState) {
 
     when(state) {
         is ItemsOverviewScreenState.Content -> Items(
-            items = state.items
+            items = state.items,
+            backClicked = state.backClicked
         )
         is ItemsOverviewScreenState.Loading -> loadingSpinner()
         is ItemsOverviewScreenState.Error -> Column(
