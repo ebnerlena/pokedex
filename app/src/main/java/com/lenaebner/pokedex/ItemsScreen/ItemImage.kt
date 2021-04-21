@@ -16,6 +16,7 @@ import com.google.accompanist.coil.CoilImage
 import com.lenaebner.pokedex.R
 import com.lenaebner.pokedex.api.models.Item
 import com.lenaebner.pokedex.api.models.ItemOverview
+import com.lenaebner.pokedex.ui.theme.transparentGrey
 import com.lenaebner.pokedex.ui.theme.transparentWhite
 import com.lenaebner.pokedex.viewmodels.ItemsViewModel
 
@@ -41,7 +42,6 @@ fun ItemImage(item: ItemOverview, modifier: Modifier) {
                 .fillMaxWidth()
                 .weight(2f)
                 .padding(top = 8.dp, start = 8.dp, end = 8.dp, bottom = 0.dp)
-
         )
     }
 }

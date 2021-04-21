@@ -16,7 +16,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import coil.transform.CircleCropTransformation
 import com.google.accompanist.coil.CoilImage
 import com.lenaebner.pokedex.R
@@ -25,7 +27,7 @@ import com.lenaebner.pokedex.api.models.EvolvingPokemons
 import com.lenaebner.pokedex.ui.theme.transparentGrey
 
 @Composable
-fun EvolutionChain(evolutionChainEntries: MutableList<EvolvingPokemons>) {
+fun EvolutionChain(evolutionChainEntries: List<EvolvingPokemons>) {
 
     LazyColumn {
         item {
@@ -104,12 +106,21 @@ fun PokemonEvlove(pokemon: BasicPokemon, modifier: Modifier) {
             )
         }
         Row(modifier = Modifier.align(Alignment.CenterHorizontally)) {
-            Text(text = pokemon.species.name.capitalize(),
-                color = MaterialTheme.colors.secondaryVariant,
-                style = MaterialTheme.typography.h6,
+            BoxWithConstraints(
                 modifier = Modifier
-                    .padding(8.dp)
-            )
+                    .fillMaxWidth()
+            ) {
+                val size = if(maxWidth > 150.dp) 16.sp else 12.sp
+                Text(
+                    text = pokemon.species.name.capitalize(),
+                    color = MaterialTheme.colors.secondaryVariant,
+                    style = MaterialTheme.typography.h6,
+                    modifier = Modifier
+                        .padding(8.dp).fillMaxWidth(),
+                    fontSize = size,
+                    textAlign = TextAlign.Center
+                )
+            }
         }
 
     }
@@ -129,6 +140,7 @@ fun Trigger(triggerText: String, modifier: Modifier) {
             )
         }
         Row(modifier = Modifier.align(Alignment.CenterHorizontally)) {
+
             Text(
                 text = triggerText,
                 color = MaterialTheme.colors.secondaryVariant,
@@ -137,6 +149,5 @@ fun Trigger(triggerText: String, modifier: Modifier) {
                 modifier = Modifier.padding(8.dp)
             )
         }
-
     }
 }

@@ -23,7 +23,7 @@ fun CardNavigation(
     page: String,
     pokemon: Pokemon,
     species: PokemonSpecies?,
-    evolutionChainEntries: MutableList<EvolvingPokemons>,
+    evolutionChainEntries: List<EvolvingPokemons>,
 ) {
     Card(modifier = Modifier
         .padding(top = 0.dp)

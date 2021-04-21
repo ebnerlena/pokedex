@@ -86,7 +86,7 @@ fun SinglePokemonScreen(state: PokemonScreenState) {
 }
 
 @Composable
-fun PokemonScreen(pokemon: Pokemon, species: PokemonSpecies?, evolutionChainEntries: MutableList<EvolvingPokemons>, navigateBack: () -> Unit) {
+fun PokemonScreen(pokemon: Pokemon, species: PokemonSpecies?, evolutionChainEntries: List<EvolvingPokemons>, navigateBack: () -> Unit) {
 
     val color = if (species != null) species.color.name.asPokeColor() else transparentGrey
     PokedexTheme {

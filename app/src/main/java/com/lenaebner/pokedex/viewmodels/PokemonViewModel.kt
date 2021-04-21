@@ -57,7 +57,7 @@ class PokemonViewModel(private val name: String) : ViewModel() {
         }
     }
 
-    private suspend fun fetchEvolutionChain(speciesId: Int): MutableList<EvolvingPokemons> {
+    private suspend fun fetchEvolutionChain(speciesId: Int): List<EvolvingPokemons> {
 
         val evolutionChain = withContext(Dispatchers.IO) {
             async { ApiController.pokeApi.getEvolutionChain(speciesId) }
@@ -75,7 +75,7 @@ class PokemonViewModel(private val name: String) : ViewModel() {
         }.await()
     }
 
-    private suspend fun fetchEvolutionChainPokemons(evolutionChainDetails: EvolutionChainDetails): MutableList<EvolvingPokemons> {
+    private suspend fun fetchEvolutionChainPokemons(evolutionChainDetails: EvolutionChainDetails): List<EvolvingPokemons> {
 
         val pokemons: MutableList<EvolvingPokemons> = mutableListOf()
         var evolves = evolutionChainDetails.chain.evolves_to
@@ -135,7 +135,7 @@ class PokemonViewModel(private val name: String) : ViewModel() {
         } catch (exception: Throwable) {
 
         }
-        return pokemons
+        return pokemons.toList()
     }
 }
 
