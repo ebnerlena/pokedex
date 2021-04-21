@@ -16,11 +16,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
-import androidx.navigation.compose.navigate
 import coil.transform.CircleCropTransformation
 import com.google.accompanist.coil.CoilImage
-import com.lenaebner.pokedex.ActiveNavController
 import com.lenaebner.pokedex.api.models.PokemonWithColor
 import com.lenaebner.pokedex.asPokeColor
 import com.lenaebner.pokedex.ui.theme.transparentGrey
@@ -32,7 +29,7 @@ fun FeaturedPokemon(
     pokemon: PokemonWithColor,
     modifier: Modifier = Modifier,
 ) {
-    val navController = ActiveNavController.current
+
     Card(
         elevation = 2.dp,
         modifier = modifier,
@@ -42,12 +39,7 @@ fun FeaturedPokemon(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .clickable {
-                    navController.navigate("pokemon/${pokemon.pokemon?.name}") {
-                        popUpTo = navController.graph.startDestination
-                        launchSingleTop = true
-                    }
-                }
+                .clickable(onClick = pokemon.onClick)
         ) {
             Row(modifier = Modifier
                 .align(Alignment.CenterHorizontally),

@@ -6,5 +6,6 @@ data class PokemonColor(
 
 data class PokemonWithColor(
     val pokemon: Pokemon?,
-    val color: PokemonColor
+    val color: PokemonColor,
+    val onClick: () -> Unit
 )

@@ -17,15 +17,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
-import androidx.navigation.compose.navigate
 import coil.transform.CircleCropTransformation
 import com.google.accompanist.coil.CoilImage
-import com.lenaebner.pokedex.ActiveNavController
 import com.lenaebner.pokedex.R
 import com.lenaebner.pokedex.api.models.BasicPokemon
 import com.lenaebner.pokedex.api.models.EvolvingPokemons
-import com.lenaebner.pokedex.api.models.Pokemon
 import com.lenaebner.pokedex.ui.theme.transparentGrey
 
 @Composable

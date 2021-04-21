@@ -16,6 +16,7 @@ import com.lenaebner.pokedex.ItemsScreen.ItemsScreen
 import com.lenaebner.pokedex.PokedexScreen.PokedexScreen
 import com.lenaebner.pokedex.SinglePokemon.SinglePokemonScreen
 import com.lenaebner.pokedex.viewmodels.ItemsViewModel
+import com.lenaebner.pokedex.viewmodels.PokedexViewModel
 import com.lenaebner.pokedex.viewmodels.PokemonViewModel
 import com.lenaebner.pokedex.viewmodels.PokemonViewModelFactory
 
@@ -31,7 +32,10 @@ fun Navigation() {
             startDestination = "home"
         ) {
             composable("home") { Home() }
-            composable("pokedex") { PokedexScreen() }
+            composable("pokedex") {
+                val vm : PokedexViewModel = viewModel()
+                PokedexScreen(vm = vm)
+            }
             composable("moves") { Moves() }
             composable("items") {
                 val vm: ItemsViewModel = viewModel(key="items")
