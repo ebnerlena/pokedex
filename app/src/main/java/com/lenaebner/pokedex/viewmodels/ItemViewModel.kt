@@ -5,46 +5,54 @@ import com.lenaebner.pokedex.ApiController
 import com.lenaebner.pokedex.ScreenStates.ItemScreenState
 import com.lenaebner.pokedex.api.models.Item
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 
-class ItemViewModel(private val savedStateHandle: SavedStateHandle) : ViewModel() {
+class ItemViewModel(private val name: String) : ViewModel() {
 
-    private val _uiState = MutableLiveData<ItemScreenState>()
-    val uiState : LiveData<ItemScreenState> = _uiState
+    private val _actions = Channel<ItemScreenAction>(Channel.BUFFERED)
+    val actions = _actions.receiveAsFlow()
 
-    init {
-        val itemName : String = savedStateHandle["name"] ?: "master-ball"
-        fetchItem(itemName)
-    }
-
-    private fun createContentState(item: Item) {
-        _uiState.postValue(
-            ItemScreenState.Content(
-                item = item,
-            )
-        )
-    }
-
-    private fun fetchItem(name: String) {
-
-        _uiState.postValue(ItemScreenState.Loading)
-
-        viewModelScope.launch {
-
-            try {
-                val item = withContext(Dispatchers.IO){
-                    ApiController.itemsApi.getItem(name)
+    private val _uiState = flow {
+        emit(ItemScreenState.Loading)
+        try {
+            emit(ItemScreenState.Content(
+                item = fetchItem(name),
+                backClicked = { viewModelScope.launch {
+                    _actions.send(ItemScreenAction.NavigateBack) }
                 }
-                createContentState(item)
-            } catch (exception: Throwable) {
-                _uiState.postValue(ItemScreenState.Error(
-                    message = exception.message ?: "A error occured when fetching the item",
-                    retry = { fetchItem(name) }
-                ))
-            }
+            ))
+
+        } catch (exception: Throwable) {
+            emit(ItemScreenState.Error(
+                message = exception.message ?: "A error occured when fetching the item",
+                retry = {  }
+            ))
+        }
+    }
+    val uiState : LiveData<ItemScreenState> = _uiState.asLiveData()
+
+    private suspend fun fetchItem(name: String) : Item {
+        return withContext(Dispatchers.IO){
+            ApiController.itemsApi.getItem(name)
         }
     }
 
+    sealed class ItemScreenAction {
+        object NavigateBack : ItemScreenAction()
+    }
 }
+
+class ItemViewModelFactory(private val name: String) : ViewModelProvider.Factory {
+    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+        if (modelClass.isAssignableFrom(ItemViewModel::class.java)) {
+            return ItemViewModel(name) as T
+        }
+        throw IllegalArgumentException("Unknown ViewModel class")
+    }
+}
+

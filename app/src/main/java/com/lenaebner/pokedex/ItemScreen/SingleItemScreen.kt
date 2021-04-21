@@ -26,7 +26,7 @@ import com.lenaebner.pokedex.shared.loadingSpinner
 import com.lenaebner.pokedex.ui.theme.PokedexTheme
 import com.lenaebner.pokedex.ui.theme.transparentGrey
 import com.lenaebner.pokedex.viewmodels.ItemViewModel
-
+import kotlinx.coroutines.flow.collect
 
 
 @ExperimentalFoundationApi
@@ -39,7 +39,7 @@ fun ItemPreview() {
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun SingleItem(item: Item) {
+fun SingleItem(item: Item, backClicked: () -> Unit) {
 
     PokedexTheme {
 
@@ -50,7 +50,7 @@ fun SingleItem(item: Item) {
                     backgroundColor = transparentGrey,
                     title = item.names[7].name,
                     icon = Icons.Default.ArrowBack,
-                    backClicked = {}
+                    backClicked = backClicked
                 )
             },
             content = {
@@ -73,16 +73,28 @@ fun SingleItem(item: Item) {
 }
 
 @Composable
-fun ItemScreen() {
-    val vm: ItemViewModel = viewModel()
+fun ItemScreen(vm: ItemViewModel) {
+
     val uiState = vm.uiState.observeAsState(initial = ItemScreenState.Loading).value
     ItemScreen(state = uiState)
+
+    val navController = ActiveNavController.current
+
+    LaunchedEffect(key1 = "item") {
+        vm.actions.collect {
+            when(it) {
+                is ItemViewModel.ItemScreenAction.NavigateBack -> navController.navigateUp()
+            }
+        }
+    }
 }
+
 @Composable
 fun ItemScreen(state: ItemScreenState) {
     when(state) {
         is ItemScreenState.Content -> SingleItem(
-            item = state.item
+            item = state.item,
+            backClicked = state.backClicked
         )
         is ItemScreenState.Loading -> loadingSpinner()
         is ItemScreenState.Error ->  Column(

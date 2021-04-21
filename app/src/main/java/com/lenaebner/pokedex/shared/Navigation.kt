@@ -15,10 +15,7 @@ import com.lenaebner.pokedex.ItemsScreen.Items
 import com.lenaebner.pokedex.ItemsScreen.ItemsScreen
 import com.lenaebner.pokedex.PokedexScreen.PokedexScreen
 import com.lenaebner.pokedex.SinglePokemon.SinglePokemonScreen
-import com.lenaebner.pokedex.viewmodels.ItemsViewModel
-import com.lenaebner.pokedex.viewmodels.PokedexViewModel
-import com.lenaebner.pokedex.viewmodels.PokemonViewModel
-import com.lenaebner.pokedex.viewmodels.PokemonViewModelFactory
+import com.lenaebner.pokedex.viewmodels.*
 
 @ExperimentalMaterialApi
 @Composable
@@ -48,13 +45,14 @@ fun Navigation() {
                 val name = backStackEntry.arguments?.getString("name") ?: "pikachu"
                 val vm: PokemonViewModel = viewModel(factory = PokemonViewModelFactory(name))
                 SinglePokemonScreen(vm=vm)
-                //SinglePokemonScreen()
             }
             composable(
                 "item/{name}",
                 arguments = mutableStateListOf(navArgument("name") { type = NavType.StringType })
             ) { backStackEntry ->
-                ItemScreen()
+                val name = backStackEntry.arguments?.getString("name") ?: "master-ball"
+                val vm: ItemViewModel = viewModel(factory = ItemViewModelFactory(name))
+                ItemScreen(vm = vm)
             }
         }
     }
