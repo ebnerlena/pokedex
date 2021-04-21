@@ -50,6 +50,7 @@ fun SingleItem(item: Item) {
                     backgroundColor = transparentGrey,
                     title = item.names[7].name,
                     icon = Icons.Default.ArrowBack,
+                    backClicked = {}
                 )
             },
             content = {

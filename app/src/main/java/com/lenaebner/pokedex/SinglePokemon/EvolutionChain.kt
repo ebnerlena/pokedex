@@ -23,6 +23,7 @@ import coil.transform.CircleCropTransformation
 import com.google.accompanist.coil.CoilImage
 import com.lenaebner.pokedex.ActiveNavController
 import com.lenaebner.pokedex.R
+import com.lenaebner.pokedex.api.models.BasicPokemon
 import com.lenaebner.pokedex.api.models.EvolvingPokemons
 import com.lenaebner.pokedex.api.models.Pokemon
 import com.lenaebner.pokedex.ui.theme.transparentGrey
@@ -83,12 +84,10 @@ fun EvolutionEntry(evolveEntry: EvolvingPokemons) {
 }
 
 @Composable
-fun PokemonEvlove(pokemon: Pokemon, modifier: Modifier) {
-
-    val navController = ActiveNavController.current
+fun PokemonEvlove(pokemon: BasicPokemon, modifier: Modifier) {
 
     Column(modifier = modifier
-        .clickable { navController.navigate("pokemon/" + pokemon.name) }
+        .clickable(onClick = pokemon.onClick)
     ) {
         Row(
             modifier = Modifier.align(Alignment.CenterHorizontally),

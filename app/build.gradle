@@ -90,7 +90,7 @@ dependencies {
     implementation "androidx.compose.runtime:runtime:1.0.0-beta04"
 
 
-    def paging_version = "3.0.0"
+    def paging_version = "3.0.0-beta03"
     implementation "androidx.paging:paging-runtime:$paging_version" // For Kotlin use paging-runtime-ktx
     // alternatively - without Android dependencies for testing
     testImplementation "androidx.paging:paging-common:$paging_version" // For Kotlin use paging-common-ktx

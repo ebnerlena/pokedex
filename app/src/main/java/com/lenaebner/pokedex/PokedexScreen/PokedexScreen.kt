@@ -48,7 +48,8 @@ fun Pokedex(pokemons: List<PokemonWithColor>) {
                 backgroundColor = Color.White,
                 title = "Pokedex",
                 iconTint = MaterialTheme.colors.secondaryVariant,
-                icon = Icons.Default.ArrowBack
+                icon = Icons.Default.ArrowBack,
+                backClicked = {}
             )
         },
         content = {

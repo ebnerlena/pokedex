@@ -58,7 +58,7 @@ fun SinglePokemonScreen(vm: PokemonViewModel) {
     LaunchedEffect("actions"){
         vm.actions.collect {
             when(it) {
-                is PokeScreenAction.NavigateBack -> navController.navigate("pokedex")
+                is PokeScreenAction.NavigateBack -> navController.navigateUp()
                 is PokeScreenAction.pokemonClicked -> navController.navigate(it.destination)
             }
         }
@@ -73,6 +73,7 @@ fun SinglePokemonScreen(state: PokemonScreenState) {
             pokemon = state.pokemon,
             species = state.species,
             evolutionChainEntries = state.evolutionChainPokemons,
+            navigateBack = state.backClicked
         )
         is PokemonScreenState.Loading -> loadingSpinner()
         is PokemonScreenState.Error -> Column(
@@ -85,7 +86,7 @@ fun SinglePokemonScreen(state: PokemonScreenState) {
 }
 
 @Composable
-fun PokemonScreen(pokemon: Pokemon, species: PokemonSpecies?, evolutionChainEntries: MutableList<EvolvingPokemons>) {
+fun PokemonScreen(pokemon: Pokemon, species: PokemonSpecies?, evolutionChainEntries: MutableList<EvolvingPokemons>, navigateBack: () -> Unit) {
 
     val color = if (species != null) species.color.name.asPokeColor() else transparentGrey
     PokedexTheme {
@@ -97,7 +98,8 @@ fun PokemonScreen(pokemon: Pokemon, species: PokemonSpecies?, evolutionChainEntr
                     backgroundColor = color,
                     title = pokemon.name.capitalize(),
                     icon = Icons.Default.ArrowBack,
-                    pokemon = pokemon
+                    pokemon = pokemon,
+                    backClicked = navigateBack,
                 )
             },
             content = {

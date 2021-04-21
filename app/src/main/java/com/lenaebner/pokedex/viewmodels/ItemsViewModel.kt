@@ -44,7 +44,7 @@ class ItemsViewModel : ViewModel() {
         } catch(ex: Throwable) {
             emit(ItemsOverviewScreenState.Error(
                 message = "An error occured while fetching the items",
-                retry = { fetchItems()}
+                retry = {}
             ))
         }
 
@@ -69,30 +69,22 @@ class ItemsViewModel : ViewModel() {
         )
     } */
 
-    private fun fetchItems(offset: Int=0, limit: Int=20): List<Item> {
+    private suspend fun fetchItems(offset: Int=0, limit: Int=20): List<Item> {
 
         //_uiState.postValue(ItemsOverviewScreenState.Loading)
         var _items = emptyList<Item>()
-        viewModelScope.launch {
-                val itemsOverview = withContext(Dispatchers.IO) {
-                    ApiController.itemsApi.getItems(offset = offset,limit = limit)
-                }
-                val items = itemsOverview.results.map {
-                    async {
-                            (Dispatchers.IO){
-                            ApiController.itemsApi.getItem(it.name)
-                            }
-                    }
-                }.awaitAll()
 
-                //here they are
-            Log.d("foo2", items.toString())
-            _items = items
-
+            val itemsOverview = withContext(Dispatchers.IO) {
+                ApiController.itemsApi.getItems(offset = offset, limit = limit)
             }
-        //here they are empty
-        Log.d("foo3", _items.toString())
-        return _items
+            var items = itemsOverview.results.map {
+
+                    withContext(Dispatchers.IO) {
+                        ApiController.itemsApi.getItem(it.name)
+                    }
+                }
+        Log.d("foo", items.toString())
+        return  items
     }
 
     sealed class ItemsAction {

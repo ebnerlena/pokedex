@@ -26,7 +26,8 @@ fun Moves () {
                 backgroundColor = Color.White,
                 title = "Moves",
                 iconTint = MaterialTheme.colors.secondaryVariant,
-                icon = Icons.Default.ArrowBack)
+                icon = Icons.Default.ArrowBack,
+                backClicked = {})
         },
         content = { 
             Column(modifier = Modifier.fillMaxSize()) {

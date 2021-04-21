@@ -1,15 +1,13 @@
 package com.lenaebner.pokedex.viewmodels
 
 
-import android.util.Log
 import androidx.lifecycle.*
 import com.lenaebner.pokedex.ApiController
 import com.lenaebner.pokedex.ScreenStates.PokemonScreenState
 import com.lenaebner.pokedex.api.models.*
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
@@ -22,38 +20,23 @@ sealed class PokeScreenAction {
 
 class PokemonViewModel(private val name: String) : ViewModel() {
 
-    private var _pokemon = MutableLiveData<Pokemon>()
-
-    private val _pokemonFlow = flow {
-        emit(fetchPokemon(name))
-    }
-
-    private val _speciesFlow = flow {
-        emit(fetchSpecies())
-    }
-
-    private val _evolutionChainFlow = flow {
-        emit(fetchEvolutionChain())
-    }
-
-    private val _pokeComplete = combine(
-        _pokemonFlow,
-        _speciesFlow,
-        _evolutionChainFlow,
-        transform = { pokemon, species, evolutions ->
-            PokemonSpeciesChain(pokemon, species, evolutions)
-        }
-    )
-
     private val _actions = Channel<PokeScreenAction>(Channel.BUFFERED)
     val actions = _actions.receiveAsFlow()
 
     private val _uiState = flow {
         emit(PokemonScreenState.Loading)
         try {
-            _pokeComplete.collect {
-                emit(createContentState(it))
-            }
+            val poke = fetchPokemon(name)
+            val species = fetchSpecies(poke.id)
+            val evolvingPokemons = fetchEvolutionChain(species.evolution_chain.url.split("/")[6].toInt())
+            emit(
+                PokemonScreenState.Content(
+                    pokemon = poke,
+                    species = species,
+                    evolutionChainPokemons = evolvingPokemons,
+                    backClicked = {  viewModelScope.launch { _actions.send(PokeScreenAction.NavigateBack) } },
+                )
+            )
         } catch (ex: Throwable) {
             emit(
                 PokemonScreenState.Error(
@@ -65,46 +48,31 @@ class PokemonViewModel(private val name: String) : ViewModel() {
 
     val uiState = _uiState.asLiveData()
 
-
-    private fun navigate(destination: String) {
-        viewModelScope.launch {
-            _actions.send(PokeScreenAction.pokemonClicked(destination = destination))
-        }
-    }
-
-    private fun createContentState(pokemonComplete: PokemonSpeciesChain) =
-        PokemonScreenState.Content(
-            pokemon = pokemonComplete.pokemon,
-            species = pokemonComplete.species,
-            evolutionChainPokemons = pokemonComplete.evolutionChainPokemons,
-            backClicked = { viewModelScope.launch { _actions.send(PokeScreenAction.NavigateBack) } },
-            pokemonClicked = {}
-        )
-
-    private suspend fun fetchSpecies(): PokemonSpecies {
-
-        Log.d("foo", "in fetch species with: " + _pokemon.value?.id.toString())
+    private suspend fun fetchSpecies(pokemonId: Int): PokemonSpecies {
 
         return withContext(Dispatchers.IO) {
             ApiController.pokeApi.getPokemonSpecies(
-                _pokemon.value?.id ?: 13
+                pokemonId
             )
         }
     }
 
+    private suspend fun fetchEvolutionChain(speciesId: Int): MutableList<EvolvingPokemons> {
 
-    private suspend fun fetchEvolutionChain(): MutableList<EvolvingPokemons> {
-        val id = 25 //_species.evolution_chain.url.split("/")[6].toInt()
-        val evolutionChain =
-            withContext(Dispatchers.IO) { ApiController.pokeApi.getEvolutionChain(id) }
+        val evolutionChain = withContext(Dispatchers.IO) {
+            async { ApiController.pokeApi.getEvolutionChain(speciesId) }
+        }.await()
 
         //fetch pokemons for Evolution Chain seperatly
         return fetchEvolutionChainPokemons(evolutionChainDetails = evolutionChain)
     }
 
     private suspend fun fetchPokemon(name: String): Pokemon {
-        Log.d("foo", "in fetch pokemon with: " + name)
-        return withContext(Dispatchers.IO) { ApiController.pokeApi.getPokemon(name) }
+        return  withContext(Dispatchers.IO) {
+            async {
+                ApiController.pokeApi.getPokemon(name)
+            }
+        }.await()
     }
 
     private suspend fun fetchEvolutionChainPokemons(evolutionChainDetails: EvolutionChainDetails): MutableList<EvolvingPokemons> {
@@ -123,18 +91,39 @@ class PokemonViewModel(private val name: String) : ViewModel() {
                     else -> "Level up"
                 }
 
+                val pokeFrom = withContext(Dispatchers.IO) {
+                    ApiController.pokeApi.getPokemon(
+                        species?.name.orEmpty()
+                    )
+                }
+                val pokeTo = withContext(Dispatchers.IO) {
+                    ApiController.pokeApi.getPokemon(
+                        evolveEntry.species.name
+                    )
+                }
+
                 pokemons.add(
+
                     EvolvingPokemons(
-                        from = withContext(Dispatchers.IO) {
-                            ApiController.pokeApi.getPokemon(
-                                species?.name.orEmpty()
-                            )
-                        },
-                        to = withContext(Dispatchers.IO) {
-                            ApiController.pokeApi.getPokemon(
-                                evolveEntry.species.name
-                            )
-                        },
+                        from = BasicPokemon(
+                            id= pokeFrom.id,
+                            name = pokeFrom.name,
+                            sprites = pokeFrom.sprites,
+                            species = pokeFrom.species,
+                            onClick = {viewModelScope.launch {
+                                _actions.send(PokeScreenAction.pokemonClicked("pokemon/${pokeFrom.name}")) }
+                            }
+                        ),
+
+                        to = BasicPokemon(
+                            id= pokeTo.id,
+                            name = pokeTo.name,
+                            sprites = pokeTo.sprites,
+                            species = pokeTo.species,
+                            onClick = {viewModelScope.launch {
+                                _actions.send(PokeScreenAction.pokemonClicked("pokemon/${pokeTo.name}")) }
+                            }
+                        ),
                         trigger = triggerText
                     )
                 )
@@ -142,8 +131,6 @@ class PokemonViewModel(private val name: String) : ViewModel() {
                 species = evolves[0].species
                 evolves = evolves[0].evolves_to
             }
-
-            //updateEvolutionChainState(entries = pokemons)
 
         } catch (exception: Throwable) {
 

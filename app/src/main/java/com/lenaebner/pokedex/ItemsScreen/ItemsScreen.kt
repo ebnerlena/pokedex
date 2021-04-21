@@ -37,7 +37,9 @@ fun Items(items: List<ItemsViewModel.ItemOverview>) {
                 backgroundColor = Color.White,
                 title = "Items",
                 iconTint = MaterialTheme.colors.secondaryVariant,
-                icon = Icons.Default.ArrowBack)
+                icon = Icons.Default.ArrowBack,
+                backClicked = {}
+            )
         },
         content = { ItemsGrid(items = items) }
     )

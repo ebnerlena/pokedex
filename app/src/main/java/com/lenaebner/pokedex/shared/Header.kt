@@ -17,18 +17,25 @@ import com.lenaebner.pokedex.api.models.Pokemon
 
 
 @Composable
-fun Header(textColor: Color, backgroundColor: Color, title: String, icon: ImageVector, iconTint: Color = Color.White, pokemon: Pokemon? = null) {
-
+fun Header(
+    textColor: Color,
+    backgroundColor: Color,
+    title: String,
+    icon: ImageVector,
+    iconTint: Color = Color.White,
+    pokemon: Pokemon? = null,
+    backClicked: ()->Unit
+) {
     val navController = ActiveNavController.current
 
     TopAppBar(modifier = Modifier.height(90.dp), backgroundColor = backgroundColor) {
         Column() {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                IconButton(onClick = {
+                IconButton(onClick = backClicked
                     //back navigation not always working
                     // e.g when pressing back from singlepokemon gets back to homescreen instead of pokedexscreen
-                    navController.popBackStack()
-                }) {
+                    //navController.popBackStack()
+                ) {
                     Icon(
                         imageVector = icon,
                         contentDescription = null,
