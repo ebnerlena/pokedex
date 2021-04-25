@@ -10,14 +10,14 @@ data class Item(
     val fling_effect: String? = null,
     val effect_entries: List<EffectEntry> = emptyList(),
     val flavor_text_entries: List<FlavorTextEntryItem> = emptyList(),
-    val sprites: ItemSprite = ItemSprite()
+    val sprites: ItemSprite = ItemSprite(),
+    val names: List<ItemName> = emptyList(),
 )
 
 data class ItemPreview(
     val name: String,
     val url: String
 )
-
 
 data class ItemsList (
     val count: Int = 0,
@@ -31,4 +31,8 @@ data class Attribute(
 
 data class ItemSprite(
     val default: String = ""
+)
+
+data class ItemName(
+    val name: String = ""
 )

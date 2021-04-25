@@ -76,4 +76,25 @@ dependencies {
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+
+    // ViewModel
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.1"
+
+    // compose viewmodel extensions
+    implementation "androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-alpha03"
+
+    // LiveData
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.3.1"
+
+    implementation "androidx.compose.runtime:runtime-livedata:1.0.0-beta04"
+    implementation "androidx.compose.runtime:runtime:1.0.0-beta04"
+
+
+    def paging_version = "3.0.0-beta03"
+    implementation "androidx.paging:paging-runtime:$paging_version" // For Kotlin use paging-runtime-ktx
+    // alternatively - without Android dependencies for testing
+    testImplementation "androidx.paging:paging-common:$paging_version" // For Kotlin use paging-common-ktx
+
+    // optional - RxJava support
+    implementation "androidx.paging:paging-rxjava2:$paging_version" // For Kotlin use paging-rxjava2-ktx
 }
