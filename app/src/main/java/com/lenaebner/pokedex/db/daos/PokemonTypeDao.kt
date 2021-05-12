@@ -7,10 +7,10 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface PokemonTypeDao {
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertType(type: DbPokemonType)
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertPokemonTypeCrossRef(ref: PokemonTypeCrossRef)
 
     @Query("SELECT * from pokemon_type WHERE name = :name")

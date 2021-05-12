@@ -6,21 +6,28 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface PokemonSpeciesDao {
-    @Insert
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertSpecies(species: DbSpecies)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertSpeciesEggGroupCrossRef(ref: SpeciesEggGroupCrossRef)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertEggGroup(eggGroup: DbSpeciesEggGroup)
 
     @Update
     suspend fun updateSpecies(species: DbSpecies)
 
     @Transaction
     @Query("SELECT * FROM pokemon WHERE pokemonId LIKE :id")
-    fun getPokemonWithSpecies(id: Long): Flow<PokemonWithSpecies>
+    fun observePokemonWithSpecies(id: Long): Flow<PokemonWithSpecies>
 
     @Transaction
     @Query("SELECT * FROM species WHERE speciesId LIKE :id")
-    fun getSpeciesWithEvolvingPokemons(id: Long): Flow<SpeciesWithEvolvingPokemons>
+    fun observeSpeciesWithEvolvingPokemons(id: Long): Flow<SpeciesWithEvolvingPokemons>
 
     @Transaction
     @Query("SELECT * FROM species WHERE speciesId LIKE :id")
-    fun getSpeciesWithEggGroups(id: Long): Flow<SpeciesWithEggGroups>
+    fun observeSpeciesWithEggGroups(id: Long): Flow<SpeciesWithEggGroups>
 }

@@ -112,7 +112,7 @@ fun PokemonEvlove(pokemon: BasicPokemon, modifier: Modifier) {
             ) {
                 val size = if(maxWidth > 150.dp) 16.sp else 12.sp
                 Text(
-                    text = pokemon.species.name.capitalize(),
+                    text = pokemon.species.capitalize(),
                     color = MaterialTheme.colors.secondaryVariant,
                     style = MaterialTheme.typography.h6,
                     modifier = Modifier

@@ -1,6 +1,8 @@
 package com.lenaebner.pokedex.repository
 
 import com.lenaebner.pokedex.api.PokemonApi
+import com.lenaebner.pokedex.api.models.ApiEvolutionChainDetails
+import com.lenaebner.pokedex.api.models.EvolutionChainDetail
 import com.lenaebner.pokedex.db.daos.PokemonDao
 import com.lenaebner.pokedex.db.daos.PokemonSpeciesDao
 import com.lenaebner.pokedex.db.daos.PokemonTypeDao
@@ -12,6 +14,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -28,7 +31,7 @@ class PokemonRepository @Inject constructor(
     suspend fun getPokemon(id: Long) : Flow<SinglePokemonComplete> {
         repositoryScope.launch { refreshPokemon( id ) }
 
-        return pokemonDb.getPokemon(id).distinctUntilChanged().filterNotNull().map { p ->
+        return pokemonDb.observePokemon(id).distinctUntilChanged().filterNotNull().map { p ->
             
             SinglePokemonComplete(
                 pokemon = p.asPokemon()
@@ -58,6 +61,7 @@ class PokemonRepository @Inject constructor(
 
             pokemonDb.insertPokemon(poke)
             speciesDb.insertSpecies(species = species.asDbSpecies())
+            insertEvolutionChainPokemons(evolutionChain)
             //refresh EvolutionChainPokes insert them & species
             //db.insertEvolutionChain()
             //db.insertEvolvingPokemons()
@@ -65,7 +69,7 @@ class PokemonRepository @Inject constructor(
 
     }
 
-    /* private suspend fun fetchEvolutionChainPokemons(evolutionChainDetails: EvolutionChainDetails): List<EvolvingPokemons> {
+    private suspend fun insertEvolutionChainPokemons(evolutionChainDetails: ApiEvolutionChainDetails): List<EvolvingPokemons> {
 
         val pokemons: MutableList<EvolvingPokemons> = mutableListOf()
         var evolves = evolutionChainDetails.chain.evolves_to
@@ -97,21 +101,17 @@ class PokemonRepository @Inject constructor(
                         from = BasicPokemon(
                             id= pokeFrom.id.toInt(),
                             name = pokeFrom.name,
-                            sprites = pokeFrom.sprites,
-                            species = pokeFrom.species,
-                            onClick = {repositoryScope.launch {
-                                _actions.send(PokeScreenAction.pokemonClicked("pokemon/${pokeFrom.name}")) }
-                            }
+                            sprites = pokeFrom.sprites?.other?.artwork?.sprite.toString(),
+                            species = pokeFrom.species.name,
+                            onClick = { }
                         ),
 
                         to = BasicPokemon(
                             id= pokeTo.id.toInt(),
                             name = pokeTo.name,
-                            sprites = pokeTo.sprites,
-                            species = pokeTo.species,
-                            onClick = {repositoryScope.launch {
-                                _actions.send(PokeScreenAction.pokemonClicked("pokemon/${pokeTo.name}")) }
-                            }
+                            sprites = pokeTo.sprites?.other?.artwork?.sprite.toString(),
+                            species = pokeTo.species.name,
+                            onClick = {repositoryScope.launch { } }
                         ),
                         trigger = triggerText
                     )
@@ -125,6 +125,6 @@ class PokemonRepository @Inject constructor(
 
         }
         return pokemons.toList()
-    } */
+    }
 
 }

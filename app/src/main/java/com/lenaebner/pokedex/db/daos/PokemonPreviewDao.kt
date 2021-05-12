@@ -38,13 +38,3 @@ interface PokemonPreviewDao {
     suspend fun getPokemon(name: String): DbPokemonPreview
 
 }
-
-data class TypeWithPokemons(
-    @Embedded val type: DbPokemonType,
-    @Relation(
-        parentColumn = "typeId",
-        entityColumn = "pokemonId",
-        associateBy = Junction(PokemonPreviewTypeCrossRef::class)
-    )
-    val types: List<DbPokemon>
-)

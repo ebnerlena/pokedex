@@ -28,19 +28,13 @@ class PokedexRepository @Inject constructor(
     private val repositoryScope = CoroutineScope(context = Dispatchers.IO)
 
     fun getPokemons(from: Int, limit: Int) : Flow<List<PokemonPreview>> {
-        repositoryScope.launch {
-            refresh(from, limit)
-
-            val test = pokemonDb.observeTypeWithPokemons(13)
-            Log.d("foo2", test?.toString())
-        }
+        repositoryScope.launch { refresh(from, limit) }
 
         return pokemonDb.observePokePreviews()
             .distinctUntilChanged()
             .filterNotNull()
             .map {
                 it.map { p ->
-                    Log.d("foo", p.toString())
                     p.asPokemonPreview()
                 }
             }

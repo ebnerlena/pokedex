@@ -33,3 +33,13 @@ data class PokemonPreviewWithTypes(
     )
     val types: List<DbPokemonType>
 )
+
+data class TypeWithPokemons(
+    @Embedded val type: DbPokemonType,
+    @Relation(
+        parentColumn = "typeId",
+        entityColumn = "pokemonId",
+        associateBy = Junction(PokemonTypeCrossRef::class)
+    )
+    val types: List<DbPokemon>
+)

@@ -12,7 +12,6 @@ import com.lenaebner.pokedex.db.entities.*
     PokemonTypeCrossRef::class,
     DbPokemonAbility::class,
     DbPokemonStat::class,
-    PokemonPreviewTypeCrossRef::class,
     PokemonAbilityCrossRef::class,
     DbSpeciesEggGroup::class,
     DbSpecies::class,
@@ -21,7 +20,8 @@ import com.lenaebner.pokedex.db.entities.*
     SpeciesEvolvingPokemonsCrossRef::class,
     PokemonSpeciesCrossRef::class
                      ],
-    exportSchema = true, version = 1)
+    exportSchema = true, version = 2
+)
 abstract class PokedexDatabase : RoomDatabase() {
 
     abstract fun pokemonDao() : PokemonDao
