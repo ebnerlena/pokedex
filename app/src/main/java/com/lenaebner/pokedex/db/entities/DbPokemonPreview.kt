@@ -8,5 +8,6 @@ data class DbPokemonPreview(
     @PrimaryKey val pokemonId: Long,
     val name: String,
     val sprite: String,
-    val color: String
+    val color: String,
+    val speciesId: Long
 )

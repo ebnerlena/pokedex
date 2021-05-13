@@ -31,11 +31,16 @@ fun Navigation() {
                 PokedexScreen(vm = vm)
             }
             composable(
-                "pokemon/{id}",
-                arguments = listOf(navArgument("id") {
+                "pokemon/{pokemonId}?speciesId={speciesId}",
+                arguments = listOf(navArgument("pokemonId") {
                     type = NavType.IntType
                     nullable = false
-                })
+                },
+                navArgument("speciesId") {
+                    type = NavType.IntType
+                    nullable = false
+                },
+                )
             ) { backStackEntry ->
                 //val name = backStackEntry.arguments?.getString("name") ?: "pikachu"
                 val vm: PokemonViewModel = hiltNavGraphViewModel(backStackEntry)

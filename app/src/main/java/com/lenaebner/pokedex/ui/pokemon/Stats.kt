@@ -2,7 +2,7 @@ package com.lenaebner.pokedex.SinglePokemon
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -18,9 +18,12 @@ import com.lenaebner.pokedex.repository.Pokemon
 @Composable
 fun Stats(pokemon: Pokemon) {
     LazyColumn {
-        /* items(pokemon.stats) { stat ->
-            SingleStat(name = stat.stat.name, value = stat.base_stat)
-        } */
+
+        if(pokemon.stats != null) {
+            items(pokemon.stats) { stat ->
+                SingleStat(name = stat.name, value = stat.baseStat)
+            }
+        }
     }
 }
 

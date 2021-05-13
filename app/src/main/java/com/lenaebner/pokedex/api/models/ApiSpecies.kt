@@ -21,6 +21,7 @@ data class ColorName(
 
 data class EggGroup(
     val name: String = "",
+    val url: String = ""
 )
 
 data class GeneraEntry(

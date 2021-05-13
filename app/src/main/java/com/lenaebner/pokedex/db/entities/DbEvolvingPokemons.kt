@@ -4,7 +4,7 @@ import androidx.room.*
 
 @Entity(tableName = "evolving_pokemons")
 data class DbEvolvingPokemons(
-    @PrimaryKey val evolvingPokemonId: Int,
+    @PrimaryKey(autoGenerate = true) val evolvingPokemonId: Int = 0,
     val trigger: String,
     @Embedded(prefix = "from_") val from: BasicPokemon,
     @Embedded(prefix = "to_") val to: BasicPokemon,
@@ -30,5 +30,5 @@ data class SpeciesWithEvolvingPokemons(
         entityColumn = "evolvingPokemonId",
         associateBy = Junction(SpeciesEvolvingPokemonsCrossRef::class)
     )
-    val types: List<DbEvolvingPokemons>
+    val evolvingPokemons: List<DbEvolvingPokemons>
 )

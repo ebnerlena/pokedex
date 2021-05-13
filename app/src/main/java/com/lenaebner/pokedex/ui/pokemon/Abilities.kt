@@ -6,6 +6,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.lenaebner.pokedex.repository.Pokemon
 import com.lenaebner.pokedex.ui.theme.transparentGrey
@@ -23,15 +24,15 @@ fun Abilities(pokemon: Pokemon) {
         )
 
         Row(modifier = Modifier.weight(2f)) {
-            /*pokemon.abilities.forEach {
+            pokemon.abilities?.forEach {
                 Text(
-                    text = it.ability.name.capitalize(),
+                    text = it.capitalize(),
                     color = MaterialTheme.colors.secondaryVariant,
                     style = MaterialTheme.typography.body2,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(vertical = 8.dp, horizontal = 2.dp)
                 )
-            } */
+            }
         }
     }
 }

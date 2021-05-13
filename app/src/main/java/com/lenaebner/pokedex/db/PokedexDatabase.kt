@@ -20,7 +20,7 @@ import com.lenaebner.pokedex.db.entities.*
     SpeciesEvolvingPokemonsCrossRef::class,
     PokemonSpeciesCrossRef::class
                      ],
-    exportSchema = true, version = 2
+    exportSchema = true, version = 5
 )
 abstract class PokedexDatabase : RoomDatabase() {
 

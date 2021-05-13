@@ -4,7 +4,7 @@ import androidx.room.*
 
 @Entity(tableName = "stat")
 data class DbPokemonStat (
-    @PrimaryKey val statId: Long,
+    @PrimaryKey(autoGenerate = true) val statId: Long = 0,
     val name: String,
     val effort: Int,
     val base_stat: Int,
@@ -24,5 +24,5 @@ data class PokemonWithStats(
         parentColumn = "pokemonId",
         entityColumn = "statPokemonId",
     )
-    val types: List<DbPokemonStat>
+    val stats: List<DbPokemonStat>
 )

@@ -6,7 +6,8 @@ data class ApiEvolutionChain(
 )
 
 data class ApiEvolutionChainDetails(
-    val chain: Chain
+    val chain: Chain,
+    val id: Int
 )
 
 data class EvolutionChainDetail(

@@ -55,7 +55,8 @@ class PokedexRepository @Inject constructor(
                     name = apiPoke.name,
                     pokemonId = apiPoke.id,
                     color = dbColor.color.name,
-                    sprite = apiPoke.sprites?.other?.artwork?.sprite.toString()
+                    sprite = apiPoke.sprites?.other?.artwork?.sprite.toString(),
+                    speciesId = id
                 )
                 pokemonDb.insertPokemon(poke)
 

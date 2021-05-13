@@ -23,7 +23,7 @@ fun CardNavigation(
     page: String,
     pokemon: Pokemon,
     species: Species?,
-    evolutionChainEntries: List<EvolvingPokemons>,
+    evolutionChainEntries: List<EvolvingPokemons>?,
 ) {
     Card(modifier = Modifier
         .padding(top = 0.dp)
@@ -73,7 +73,7 @@ fun CardNavigation(
                         "about" -> Description(pokemon = pokemon, species = species)
                         "stats" -> Stats(pokemon)
                         "moves" -> Moves(pokemon)
-                        "evolution" -> EvolutionChain(evolutionChainEntries)
+                        "evolution" -> EvolutionChain(evolutionChainEntries?: emptyList())
                     }
                 }
             }

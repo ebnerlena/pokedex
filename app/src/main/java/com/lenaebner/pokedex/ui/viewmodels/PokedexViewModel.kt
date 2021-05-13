@@ -1,5 +1,6 @@
 package com.lenaebner.pokedex.ui.viewmodels
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lenaebner.pokedex.api.models.PokemonWithColor
@@ -39,7 +40,8 @@ class PokedexViewModel @Inject constructor(
                         sprite = p.sprite,
                         onClick = {
                             viewModelScope.launch {
-                                _actions.send(PokedexScreenAction.pokemonClicked("pokemon/${p.id}"))
+                                _actions.send(PokedexScreenAction.pokemonClicked("pokemon/${p.id}?speciesId=${p.speciesId}"))
+                                Log.d("foo", "clicked on pokemon " +p.id)
                             }
                         }
                     )

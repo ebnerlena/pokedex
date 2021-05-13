@@ -1,12 +1,12 @@
 {
   "formatVersion": 1,
   "database": {
-    "version": 2,
-    "identityHash": "fc017d4585cc32f24502273ecce36f9a",
+    "version": 5,
+    "identityHash": "0e6f07fd9f0d4c849b3380d605c51ab9",
     "entities": [
       {
         "tableName": "pokemon_preview",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`pokemonId` INTEGER NOT NULL, `name` TEXT NOT NULL, `sprite` TEXT NOT NULL, `color` TEXT NOT NULL, PRIMARY KEY(`pokemonId`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`pokemonId` INTEGER NOT NULL, `name` TEXT NOT NULL, `sprite` TEXT NOT NULL, `color` TEXT NOT NULL, `speciesId` INTEGER NOT NULL, PRIMARY KEY(`pokemonId`))",
         "fields": [
           {
             "fieldPath": "pokemonId",
@@ -30,6 +30,12 @@
             "fieldPath": "color",
             "columnName": "color",
             "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "speciesId",
+            "columnName": "speciesId",
+            "affinity": "INTEGER",
             "notNull": true
           }
         ],
@@ -173,7 +179,7 @@
       },
       {
         "tableName": "stat",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`statId` INTEGER NOT NULL, `name` TEXT NOT NULL, `effort` INTEGER NOT NULL, `base_stat` INTEGER NOT NULL, `statPokemonId` INTEGER NOT NULL, PRIMARY KEY(`statId`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`statId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `effort` INTEGER NOT NULL, `base_stat` INTEGER NOT NULL, `statPokemonId` INTEGER NOT NULL)",
         "fields": [
           {
             "fieldPath": "statId",
@@ -210,7 +216,7 @@
           "columnNames": [
             "statId"
           ],
-          "autoGenerate": false
+          "autoGenerate": true
         },
         "indices": [],
         "foreignKeys": []
@@ -471,7 +477,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'fc017d4585cc32f24502273ecce36f9a')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '0e6f07fd9f0d4c849b3380d605c51ab9')"
     ]
   }
 }

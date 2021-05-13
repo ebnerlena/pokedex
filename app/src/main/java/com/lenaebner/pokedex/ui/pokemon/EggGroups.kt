@@ -25,15 +25,15 @@ fun EggGroups(species: Species?) {
         Row(modifier = Modifier.weight(2f)) {
 
             if(species != null) {
-                /* species.egg_groups.forEach {
+                species.egg_groups?.forEach {
                     Text(
-                        text = it.name.capitalize(),
+                        text = it.capitalize(),
                         color = MaterialTheme.colors.secondaryVariant,
                         style = MaterialTheme.typography.body2,
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier.padding(vertical = 8.dp, horizontal = 2.dp)
                     )
-                } */
+                }
             }
         }
 

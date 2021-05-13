@@ -19,9 +19,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.compose.navigate
 import coil.transform.CircleCropTransformation
 import com.google.accompanist.coil.CoilImage
 import com.lenaebner.pokedex.*
+import com.lenaebner.pokedex.PokedexScreen.Type
 import com.lenaebner.pokedex.api.models.PokemonSpecies
 import com.lenaebner.pokedex.repository.EvolvingPokemons
 import com.lenaebner.pokedex.repository.Pokemon
@@ -32,6 +34,7 @@ import com.lenaebner.pokedex.shared.loadingSpinner
 import com.lenaebner.pokedex.ui.screenstates.PokemonScreenState
 import com.lenaebner.pokedex.ui.theme.transparentGrey
 import com.lenaebner.pokedex.ui.theme.transparentWhite
+import com.lenaebner.pokedex.ui.viewmodels.PokemonScreenAction
 import com.lenaebner.pokedex.ui.viewmodels.PokemonViewModel
 import kotlinx.coroutines.flow.collect
 
@@ -50,14 +53,14 @@ fun SinglePokemonScreen(vm: PokemonViewModel) {
     val state = vm.uiState.collectAsState(initial = PokemonScreenState.Loading).value
     SinglePokemonScreen(state = state)
 
-    /* LaunchedEffect("actions"){
+    LaunchedEffect("actions"){
         vm.actions.collect {
             when(it) {
-                is PokeScreenAction.NavigateBack -> navController.navigateUp()
-                is PokeScreenAction.pokemonClicked -> navController.navigate(it.destination)
+                is PokemonScreenAction.NavigateBack -> navController.navigateUp()
+                is PokemonScreenAction.pokemonClicked -> navController.navigate(it.destination)
             }
         }
-    } */
+    }
 }
 
 @Composable
@@ -83,7 +86,7 @@ fun SinglePokemonScreen(state: PokemonScreenState) {
 @Composable
 fun PokemonScreen(pokemon: Pokemon, species: Species?, evolutionChainEntries: List<EvolvingPokemons>, navigateBack: () -> Unit) {
 
-    val color = if (species != null) species.color.name.asPokeColor() else transparentGrey
+    val color = if (species != null) species.color.asPokeColor() else transparentGrey
     PokedexTheme {
 
         Scaffold (
@@ -104,9 +107,9 @@ fun PokemonScreen(pokemon: Pokemon, species: Species?, evolutionChainEntries: Li
                     Row(modifier = Modifier
                         .padding(top=8.dp, start=16.dp)) {
                         Row(modifier = Modifier.weight(1f)) {
-                            /* pokemon.types.forEach { type ->
-                                Type(type = type.type.name)
-                            } */
+                            pokemon.types?.forEach { type ->
+                                Type(type = type)
+                            }
                         }
 
                         Text(

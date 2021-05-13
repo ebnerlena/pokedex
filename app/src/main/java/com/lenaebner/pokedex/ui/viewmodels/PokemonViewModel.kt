@@ -4,7 +4,6 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lenaebner.pokedex.repository.PokemonRepository
-import com.lenaebner.pokedex.repository.Species
 import com.lenaebner.pokedex.ui.screenstates.PokemonScreenState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -34,14 +33,15 @@ class PokemonViewModel @Inject constructor(
 
     init {
         val id = savedStateHandle["pokemonId"] ?: 25
+        val speciesId = savedStateHandle["speciesId"] ?: 10
 
         viewModelScope.launch {
-            pokemonRepository.getPokemon(id.toLong()).collect {
+            pokemonRepository.getPokemon(id.toLong(), speciesId.toLong()).collect {
                 _uiState.emit(
                     PokemonScreenState.Content(
                         pokemon = it.pokemon,
-                        species = Species(),
-                        evolutionChainPokemons = emptyList(),
+                        species = it.species,
+                        evolutionChainPokemons = it.species.evolvingPokemons,
                         backClicked = { viewModelScope.launch { _actions.send(PokemonScreenAction.NavigateBack) } },
                     )
 

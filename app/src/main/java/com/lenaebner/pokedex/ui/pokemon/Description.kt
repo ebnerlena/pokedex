@@ -13,13 +13,12 @@ import com.lenaebner.pokedex.repository.Species
 
 @Composable
 fun Description(pokemon: Pokemon, species: Species?) {
-    val text = if (species?.flavor_text_entries?.isNotEmpty() == true) {
-        species.flavor_text_entries.replace("[\n\r]".toRegex(), " ") }
-    else "loading..."
+    val text = species?.flavor_text_entry ?: "loading..."
 
     LazyColumn(modifier = Modifier.padding(8.dp)) {
         item {
-            Text(text = text,
+            Text(
+                text = text,
                 color = MaterialTheme.colors.secondaryVariant,
                 style = MaterialTheme.typography.h6,
                 modifier = Modifier.padding(8.dp)

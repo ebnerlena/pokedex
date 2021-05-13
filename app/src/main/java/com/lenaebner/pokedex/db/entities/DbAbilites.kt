@@ -21,5 +21,5 @@ data class PokemonWithAbilities(
         entityColumn = "abilityId",
         associateBy = Junction(PokemonAbilityCrossRef::class)
     )
-    val types: List<DbPokemonAbility>
+    val abilites: List<DbPokemonAbility>
 )

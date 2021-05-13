@@ -10,7 +10,8 @@ data class PokemonPreview(
     val name: String,
     val sprite: String,
     val color: String,
-    val types: List<String> = emptyList()
+    val types: List<String> = emptyList(),
+    val speciesId: Long,
 )
 
 fun PokemonPreviewWithTypes.asPokemonPreview() = PokemonPreview(
@@ -18,13 +19,6 @@ fun PokemonPreviewWithTypes.asPokemonPreview() = PokemonPreview(
     name = pokemon.name,
     sprite = pokemon.sprite,
     color = pokemon.color,
-    types = types.map { it.name }
-)
-
-
-fun PokemonWithColor.asDbPokePreview() = DbPokemonPreview(
-    pokemonId = id,
-    name = name,
-    sprite = sprite,
-    color = color
+    types = types.map { it.name },
+    speciesId = pokemon.speciesId
 )

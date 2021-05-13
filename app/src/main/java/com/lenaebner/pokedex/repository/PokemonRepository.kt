@@ -1,13 +1,16 @@
 package com.lenaebner.pokedex.repository
 
+import android.util.Log
+import androidx.compose.runtime.collectAsState
+import com.lenaebner.pokedex.SinglePokemon.SinglePokemonScreen
 import com.lenaebner.pokedex.api.PokemonApi
 import com.lenaebner.pokedex.api.models.ApiEvolutionChainDetails
 import com.lenaebner.pokedex.api.models.EvolutionChainDetail
+import com.lenaebner.pokedex.db.PokedexDatabase
 import com.lenaebner.pokedex.db.daos.PokemonDao
 import com.lenaebner.pokedex.db.daos.PokemonSpeciesDao
 import com.lenaebner.pokedex.db.daos.PokemonTypeDao
-import com.lenaebner.pokedex.db.entities.DbPokemon
-import com.lenaebner.pokedex.db.entities.DbPokemonPreview
+import com.lenaebner.pokedex.db.entities.*
 import com.lenaebner.pokedex.ui.viewmodels.PokemonScreenAction
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -17,38 +20,83 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.properties.Delegates
 
 @Singleton
 class PokemonRepository @Inject constructor(
+    private val db: PokedexDatabase,
     private val api: PokemonApi,
     private val pokemonDb: PokemonDao,
     private val speciesDb: PokemonSpeciesDao,
-    private val typeDb: PokemonTypeDao
 ) {
 
     private val repositoryScope = CoroutineScope(context = Dispatchers.IO)
 
-    suspend fun getPokemon(id: Long) : Flow<SinglePokemonComplete> {
-        repositoryScope.launch { refreshPokemon( id ) }
-
-        return pokemonDb.observePokemon(id).distinctUntilChanged().filterNotNull().map { p ->
-            
-            SinglePokemonComplete(
-                pokemon = p.asPokemon()
-                //species = ,
-                //evolvingPokemons =
-            )
+    suspend fun getPokemon(id: Long, speciesId: Long): Flow<SinglePokemonComplete> {
+        repositoryScope.launch {
+            //db.clearAllTables()
+            refreshPokemon(id)
         }
+
+        val pokemonFlows = listOf(
+            pokemonDb.observePokemonWithSpecies(id),
+            pokemonDb.observePokemonWithAbilities(id),
+            pokemonDb.observePokemonWithStats(id),
+            pokemonDb.observePokemonWithTypes(id),
+            speciesDb.observeSpeciesWithEvolvingPokemons(speciesId),
+            speciesDb.observeSpeciesWithEggGroups(speciesId)
+        )
+
+        //null call problem here when zipping or something like that
+       return combine(pokemonFlows) {
+           val species = it[0] as PokemonWithSpecies
+            val abilites = it[1] as PokemonWithAbilities?
+            val stats = it[2] as PokemonWithStats?
+            val types = it[3] as PokemonWithTypes?
+            val evolvingPokemons = it[4] as SpeciesWithEvolvingPokemons?
+            val eggGroups = it[5] as SpeciesWithEggGroups?
+
+            val _pokemon = Pokemon(
+                id = species?.pokemon?.pokemonId,
+                name = species?.pokemon?.name,
+                sprite = species?.pokemon?.sprite,
+                description = species?.pokemon?.description,
+                weight = species?.pokemon?.weight,
+                height = species?.pokemon?.height,
+                abilities = abilites?.abilites?.map { it.name },
+                types = types?.types?.map { it.name },
+                stats = stats?.stats?.map { it.asUiStat() },
+                speciesId = speciesId.toInt()
+            )
+
+            val _species = Species(
+                name = species?.species?.name,
+                id = species?.species?.speciesId,
+                egg_groups = eggGroups?.eggGroups?.map { it.name } ?: emptyList(),
+                flavor_text_entry = species?.species?.description,
+                evolvingPokemons = evolvingPokemons?.evolvingPokemons?.map { it.asEvolvingPokemon() } ?: emptyList(),
+                color = species?.species?.color,
+                genera = species?.species?.genera
+            )
+
+            return@combine SinglePokemonComplete(
+                pokemon = _pokemon,
+                species = _species
+            )
+        }.filterNotNull()
+
     }
 
     private suspend fun refreshPokemon(id: Long) {
 
         val persitentPokemon = pokemonDb.getPokemon(id)
+
         if(persitentPokemon == null) {
             val apiPoke = api.getPokemon(id)
-            val species = api.getPokemonSpecies(apiPoke.id)
-            val id = species.evolution_chain.url.split("/")[6].toLong()
-            val evolutionChain = api.getEvolutionChain(id)
+            val speciesId = apiPoke.species.url.split("/")[6].toLong()
+            val species = api.getPokemonSpecies(speciesId)
+            val evolutionChainId = species.evolution_chain.url.split("/")[6].toLong()
+            val evolutionChain = api.getEvolutionChain(evolutionChainId)
 
             val poke = DbPokemon (
                 name = apiPoke.name,
@@ -58,18 +106,53 @@ class PokemonRepository @Inject constructor(
                 height = apiPoke.height,
                 weight = apiPoke.weight
             )
-
             pokemonDb.insertPokemon(poke)
             speciesDb.insertSpecies(species = species.asDbSpecies())
-            insertEvolutionChainPokemons(evolutionChain)
-            //refresh EvolutionChainPokes insert them & species
-            //db.insertEvolutionChain()
-            //db.insertEvolvingPokemons()
-        }
 
+            pokemonDb.insertPokemonSpeciesCrossRef( PokemonSpeciesCrossRef(
+                poke.pokemonId.toLong(), species.id.toLong()
+            ))
+
+            // insert egggroups
+            for(eggGroup in species.egg_groups) {
+                speciesDb.insertEggGroup(eggGroup = eggGroup.asDbSpeciesEggGroup())
+
+                speciesDb.insertSpeciesEggGroupCrossRef(
+                    SpeciesEggGroupCrossRef(
+                        eggGroupId = eggGroup.url.split("/")[6].toLong(),
+                        speciesId = species.id.toLong()
+                    )
+                )
+            }
+            // insert stats
+            for(stat in apiPoke.stats) {
+                pokemonDb.insertStat(
+                    stat.asDbPokemonStat(apiPoke.id)
+                ) }
+
+            // insert abilites
+            for(ability in apiPoke.abilities) {
+
+                val abilityId = ability.ability.url.split("/")[6].toLong()
+                val dbAbility = pokemonDb.getPokemonAbility(id)
+
+                if(dbAbility == null) {
+                    pokemonDb.insertAbility(ability = ability.asDbPokemonAbility())
+                    pokemonDb.insertPokemonAbilityCrossRef(
+                        PokemonAbilityCrossRef(
+                            abilityId = abilityId,
+                            pokemonId = apiPoke.id
+                        )
+                    )
+                }
+            }
+
+            // insert evolving pokemons
+            insertEvolutionChainPokemons(evolutionChain, speciesId = speciesId)
+        }
     }
 
-    private suspend fun insertEvolutionChainPokemons(evolutionChainDetails: ApiEvolutionChainDetails): List<EvolvingPokemons> {
+    private suspend fun insertEvolutionChainPokemons(evolutionChainDetails: ApiEvolutionChainDetails, speciesId: Long): List<EvolvingPokemons> {
 
         val pokemons: MutableList<EvolvingPokemons> = mutableListOf()
         var evolves = evolutionChainDetails.chain.evolves_to
@@ -95,25 +178,37 @@ class PokemonRepository @Inject constructor(
                         evolveEntry.species.name
                     )
                 }
-
                 pokemons.add(
                     EvolvingPokemons(
-                        from = BasicPokemon(
+                        from = UiBasicPokemon(
                             id= pokeFrom.id.toInt(),
                             name = pokeFrom.name,
-                            sprites = pokeFrom.sprites?.other?.artwork?.sprite.toString(),
+                            sprite = pokeFrom.sprites?.other?.artwork?.sprite.toString(),
                             species = pokeFrom.species.name,
                             onClick = { }
                         ),
 
-                        to = BasicPokemon(
+                        to = UiBasicPokemon(
                             id= pokeTo.id.toInt(),
                             name = pokeTo.name,
-                            sprites = pokeTo.sprites?.other?.artwork?.sprite.toString(),
+                            sprite = pokeTo.sprites?.other?.artwork?.sprite.toString(),
                             species = pokeTo.species.name,
-                            onClick = {repositoryScope.launch { } }
+                            onClick = {}
                         ),
-                        trigger = triggerText
+                        trigger = triggerText,
+                        id = evolutionChainDetails.id
+                    )
+                )
+
+                speciesDb.insertEvolvingPokemons(pokemons[pokemons.size-1].asDbEvolvingPokemon())
+
+                // find db entry to get id for reference
+                val dbEvolvingPokemons = speciesDb.getEvolvingPokemons(fromId = pokeFrom.id, toId = pokeTo.id, trigger = triggerText)
+
+                speciesDb.insertSpeciesEvolvingPokemonCrossRef(
+                    SpeciesEvolvingPokemonsCrossRef(
+                        speciesId = speciesId,
+                        evolvingPokemonId = dbEvolvingPokemons.evolvingPokemonId.toLong()
                     )
                 )
 
