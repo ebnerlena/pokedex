@@ -49,7 +49,6 @@ fun PokemonScreenPreview() {
 fun SinglePokemonScreen(vm: PokemonViewModel) {
 
     val navController = ActiveNavController.current
-    //val vm : PokemonViewModel = viewModel()
     val state = vm.uiState.collectAsState(initial = PokemonScreenState.Loading).value
     SinglePokemonScreen(state = state)
 

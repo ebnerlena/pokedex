@@ -41,7 +41,6 @@ class PokedexViewModel @Inject constructor(
                         onClick = {
                             viewModelScope.launch {
                                 _actions.send(PokedexScreenAction.pokemonClicked("pokemon/${p.id}?speciesId=${p.speciesId}"))
-                                Log.d("foo", "clicked on pokemon " +p.id)
                             }
                         }
                     )

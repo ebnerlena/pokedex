@@ -1,5 +1,6 @@
 package com.lenaebner.pokedex
 
+import com.lenaebner.pokedex.api.ItemApi
 import com.lenaebner.pokedex.api.PokemonApi
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
@@ -36,7 +37,7 @@ object ApiController {
     @Provides
     fun pokeApi(retrofit: Retrofit) = retrofit.create(PokemonApi::class.java)
 
-   // @Provides
-   // fun itemsApi(retrofit: Retrofit) = retrofit.create(ItemsApi::class.java)
+   @Provides
+   fun itemsApi(retrofit: Retrofit) = retrofit.create(ItemApi::class.java)
 
 }

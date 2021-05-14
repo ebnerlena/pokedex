@@ -18,9 +18,13 @@ import com.lenaebner.pokedex.db.entities.*
     SpeciesEggGroupCrossRef::class,
     DbEvolvingPokemons::class,
     SpeciesEvolvingPokemonsCrossRef::class,
-    PokemonSpeciesCrossRef::class
+    PokemonSpeciesCrossRef::class,
+    DbItemEffect::class,
+    DbItem::class,
+    DbItemAttribute::class,
+    ItemAttributeCrossRef::class
                      ],
-    exportSchema = true, version = 5
+    exportSchema = true, version = 6
 )
 abstract class PokedexDatabase : RoomDatabase() {
 
@@ -28,4 +32,5 @@ abstract class PokedexDatabase : RoomDatabase() {
     abstract fun pokemonPreviewDao() : PokemonPreviewDao
     abstract fun pokemonSpeciesDao() : PokemonSpeciesDao
     abstract fun pokemonTypeDao() : PokemonTypeDao
+    abstract fun itemDao(): ItemDao
 }

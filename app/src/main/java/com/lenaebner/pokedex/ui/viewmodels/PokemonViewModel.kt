@@ -38,42 +38,42 @@ class PokemonViewModel @Inject constructor(
         viewModelScope.launch {
             pokemonRepository.getPokemon(id.toLong(), speciesId.toLong()).collect { pokemon ->
 
-                pokemon.species.evolvingPokemons.map { p ->
 
-                        EvolvingPokemons(
-                            from = UiBasicPokemon(
-                                name = p.from.name,
-                                species = p.from.species,
-                                sprite = p.from.species,
-                                onClick = {
-                                    viewModelScope.launch {
-                                        _actions.send(
-                                            PokemonScreenAction.pokemonClicked("pokemon/${p.from.id}?speciesId=${pokemon.species.id}")
-                                        )
-                                    }
-                                }
-                            ),
-                            to = UiBasicPokemon(
-                                name = p.to.name,
-                                species = p.to.species,
-                                sprite = p.to.species,
-                                onClick = {
-                                    viewModelScope.launch {
-                                        _actions.send(
-                                            PokemonScreenAction.pokemonClicked("pokemon/${p.to.id}?speciesId=${pokemon.species.id}")
-                                        )
-                                    }
-                                }
-                            ),
-                            trigger = p.trigger,
-                            id = p.id
-                        )
-                    }
                 _uiState.emit(
                     PokemonScreenState.Content(
                         pokemon = pokemon.pokemon,
                         species = pokemon.species,
-                        evolutionChainPokemons = pokemon.species.evolvingPokemons,
+                        evolutionChainPokemons = pokemon.species.evolvingPokemons.map { p ->
+
+                            EvolvingPokemons(
+                                from = UiBasicPokemon(
+                                    name = p.from.name,
+                                    species = p.from.species,
+                                    sprite = p.from.sprite,
+                                    onClick = {
+                                        viewModelScope.launch {
+                                            _actions.send(
+                                                PokemonScreenAction.pokemonClicked("pokemon/${p.from.id}?speciesId=${pokemon.species.id}")
+                                            )
+                                        }
+                                    }
+                                ),
+                                to = UiBasicPokemon(
+                                    name = p.to.name,
+                                    species = p.to.species,
+                                    sprite = p.to.sprite,
+                                    onClick = {
+                                        viewModelScope.launch {
+                                            _actions.send(
+                                                PokemonScreenAction.pokemonClicked("pokemon/${p.to.id}?speciesId=${pokemon.species.id}")
+                                            )
+                                        }
+                                    }
+                                ),
+                                trigger = p.trigger,
+                                id = p.id
+                            )
+                        },
                         backClicked = { viewModelScope.launch { _actions.send(PokemonScreenAction.NavigateBack) } },
                     )
                 )

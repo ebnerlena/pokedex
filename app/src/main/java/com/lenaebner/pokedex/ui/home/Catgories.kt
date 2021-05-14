@@ -26,7 +26,7 @@ import com.lenaebner.pokedex.R
 
 @Composable
 fun Categories(
-    categories: List<String> = mutableStateListOf("Pokedex", "Moves", "Items")
+    categories: List<String> = mutableStateListOf("Pokedex","Items")
 ) {
     Column(modifier = Modifier.fillMaxWidth()) {
         CategoriesList(categories = categories, Modifier.weight(1f))

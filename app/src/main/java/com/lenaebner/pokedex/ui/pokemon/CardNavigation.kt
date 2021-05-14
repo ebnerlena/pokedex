@@ -54,10 +54,6 @@ fun CardNavigation(
                     val textColor =  if (currentPage == "evolution") Color.Black else MaterialTheme.colors.secondaryVariant
                     Text(text = "Evolution", color = textColor)
                 }
-                TextButton(onClick = { currentPage = "moves" }) {
-                    val textColor =  if (currentPage == "moves") Color.Black else MaterialTheme.colors.secondaryVariant
-                    Text(text = "Moves", color = textColor)
-                }
             }
 
             Divider(modifier = Modifier
@@ -72,7 +68,6 @@ fun CardNavigation(
                     when (screen) {
                         "about" -> Description(pokemon = pokemon, species = species)
                         "stats" -> Stats(pokemon)
-                        "moves" -> Moves(pokemon)
                         "evolution" -> EvolutionChain(evolutionChainEntries?: emptyList())
                     }
                 }

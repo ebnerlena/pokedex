@@ -9,10 +9,12 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navArgument
 import androidx.navigation.compose.rememberNavController
 import com.lenaebner.pokedex.HomeScreen.Home
+import com.lenaebner.pokedex.ItemsScreen.ItemsScreen
 import com.lenaebner.pokedex.PokedexScreen.PokedexScreen
 import com.lenaebner.pokedex.SinglePokemon.SinglePokemonScreen
 import com.lenaebner.pokedex.ui.viewmodels.PokemonViewModel
 import com.lenaebner.pokedex.ui.viewmodels.PokedexViewModel
+import com.lenaebner.pokedex.viewmodels.ItemsViewModel
 
 
 @Composable
@@ -45,6 +47,10 @@ fun Navigation() {
                 //val name = backStackEntry.arguments?.getString("name") ?: "pikachu"
                 val vm: PokemonViewModel = hiltNavGraphViewModel(backStackEntry)
                 SinglePokemonScreen(vm = vm)
+            }
+            composable("items") {
+                val vm: ItemsViewModel = hiltNavGraphViewModel(it)
+               ItemsScreen(vm = vm)
             }
         }
     }

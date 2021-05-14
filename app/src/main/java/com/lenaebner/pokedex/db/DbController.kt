@@ -35,5 +35,7 @@ object DbController {
     @Provides
     fun pokemonTypeDao(db: PokedexDatabase) = db.pokemonTypeDao()
 
+    @Provides
+    fun itemDao(db: PokedexDatabase) = db.itemDao()
 }
 
