@@ -18,6 +18,7 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import okhttp3.internal.notify
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.properties.Delegates
@@ -39,30 +40,31 @@ class PokemonRepository @Inject constructor(
         }
 
         val pokemonFlows = listOf(
-            pokemonDb.observePokemonWithSpecies(id),
-            pokemonDb.observePokemonWithAbilities(id),
-            pokemonDb.observePokemonWithStats(id),
-            pokemonDb.observePokemonWithTypes(id),
-            speciesDb.observeSpeciesWithEvolvingPokemons(speciesId),
-            speciesDb.observeSpeciesWithEggGroups(speciesId)
+            pokemonDb.observePokemon(id).distinctUntilChanged().filterNotNull(),
+            speciesDb.observeSpecies(speciesId).distinctUntilChanged().filterNotNull(),
+            pokemonDb.observePokemonWithAbilities(id).distinctUntilChanged().filterNotNull(),
+            pokemonDb.observePokemonWithStats(id).distinctUntilChanged().filterNotNull(),
+            pokemonDb.observePokemonWithTypes(id).distinctUntilChanged().filterNotNull(),
+            speciesDb.observeSpeciesWithEvolvingPokemons(speciesId).distinctUntilChanged().filterNotNull(),
+            speciesDb.observeSpeciesWithEggGroups(speciesId).distinctUntilChanged().filterNotNull()
         )
 
-        //null call problem here when zipping or something like that
        return combine(pokemonFlows) {
-           val species = it[0] as PokemonWithSpecies
-            val abilites = it[1] as PokemonWithAbilities?
-            val stats = it[2] as PokemonWithStats?
-            val types = it[3] as PokemonWithTypes?
-            val evolvingPokemons = it[4] as SpeciesWithEvolvingPokemons?
-            val eggGroups = it[5] as SpeciesWithEggGroups?
+           val pokemon = it[0] as DbPokemon
+           val species = it[1] as DbSpecies
+            val abilites = it[2] as PokemonWithAbilities?
+            val stats = it[3] as PokemonWithStats?
+            val types = it[4] as PokemonWithTypes?
+            val evolvingPokemons = it[5] as SpeciesWithEvolvingPokemons?
+            val eggGroups = it[6] as SpeciesWithEggGroups?
 
             val _pokemon = Pokemon(
-                id = species?.pokemon?.pokemonId,
-                name = species?.pokemon?.name,
-                sprite = species?.pokemon?.sprite,
-                description = species?.pokemon?.description,
-                weight = species?.pokemon?.weight,
-                height = species?.pokemon?.height,
+                id = pokemon.pokemonId,
+                name = pokemon?.name,
+                sprite = pokemon?.sprite,
+                description = pokemon?.description,
+                weight = pokemon?.weight,
+                height = pokemon?.height,
                 abilities = abilites?.abilites?.map { it.name },
                 types = types?.types?.map { it.name },
                 stats = stats?.stats?.map { it.asUiStat() },
@@ -70,20 +72,20 @@ class PokemonRepository @Inject constructor(
             )
 
             val _species = Species(
-                name = species?.species?.name,
-                id = species?.species?.speciesId,
+                name = species?.name,
+                id = species?.speciesId,
                 egg_groups = eggGroups?.eggGroups?.map { it.name } ?: emptyList(),
-                flavor_text_entry = species?.species?.description,
+                flavor_text_entry = species?.description,
                 evolvingPokemons = evolvingPokemons?.evolvingPokemons?.map { it.asEvolvingPokemon() } ?: emptyList(),
-                color = species?.species?.color,
-                genera = species?.species?.genera
+                color = species?.color,
+                genera = species?.genera
             )
 
             return@combine SinglePokemonComplete(
                 pokemon = _pokemon,
                 species = _species
             )
-        }.filterNotNull()
+        }.distinctUntilChanged()
 
     }
 

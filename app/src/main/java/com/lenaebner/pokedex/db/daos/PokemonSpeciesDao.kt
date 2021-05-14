@@ -40,6 +40,10 @@ interface PokemonSpeciesDao {
 
     @Transaction
     @Query("SELECT * FROM species WHERE speciesId LIKE :id")
+    fun observeSpecies(id: Long): Flow<DbSpecies>
+
+    @Transaction
+    @Query("SELECT * FROM species WHERE speciesId LIKE :id")
     fun observeSpeciesWithEvolvingPokemons(id: Long): Flow<SpeciesWithEvolvingPokemons>
 
     @Transaction
