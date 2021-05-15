@@ -1,7 +1,8 @@
-package com.lenaebner.pokedex.repository
+package com.lenaebner.pokedex.repository.item
 
 import com.lenaebner.pokedex.api.models.ApiItem
 import com.lenaebner.pokedex.db.entities.DbItem
+import com.lenaebner.pokedex.db.entities.DbItemAttribute
 
 data class ItemPreview(
     val category: String,
@@ -20,7 +21,9 @@ data class Item(
     val sprite: String,
     val description: String,
     val flingEffect: String?,
-    val flingPower: Int?
+    val flingPower: Int?,
+    val effects: List<String> = emptyList(),
+    val attributes: List<String> = emptyList()
 )
 
 fun DbItem.asItem() = Item(
@@ -31,8 +34,7 @@ fun DbItem.asItem() = Item(
     flingEffect = fling_effect,
     flingPower = fling_power,
     sprite = sprite,
-    category = category
-
+    category = category,
 )
 
 fun ApiItem.asDbItem() = DbItem(

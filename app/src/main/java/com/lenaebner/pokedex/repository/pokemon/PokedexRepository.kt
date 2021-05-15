@@ -1,8 +1,6 @@
-package com.lenaebner.pokedex.repository
+package com.lenaebner.pokedex.repository.pokemon
 
-import android.util.Log
 import com.lenaebner.pokedex.api.PokemonApi
-import com.lenaebner.pokedex.db.PokedexDatabase
 import com.lenaebner.pokedex.db.daos.PokemonPreviewDao
 import com.lenaebner.pokedex.db.daos.PokemonTypeDao
 import com.lenaebner.pokedex.db.entities.DbPokemonPreview

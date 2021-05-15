@@ -1,4 +1,4 @@
-package com.lenaebner.pokedex.repository
+package com.lenaebner.pokedex.repository.pokemon
 
 import com.lenaebner.pokedex.api.models.ApiStat
 import com.lenaebner.pokedex.db.entities.DbPokemonStat

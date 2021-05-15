@@ -1,4 +1,4 @@
-package com.lenaebner.pokedex.repository
+package com.lenaebner.pokedex.repository.pokemon
 
 import com.lenaebner.pokedex.db.entities.BasicPokemon
 import com.lenaebner.pokedex.db.entities.DbEvolvingPokemons
@@ -16,14 +16,7 @@ data class UiBasicPokemon(
     val name: String = "Pikachu",
     val sprite: String,
     val species: String,
-    val onClick: () -> Unit
-)
-
-data class EvolvingPokemon(
-    val id: Int = 0,
-    val name: String = "Pikachu",
-    val sprite: String,
-    val species: String,
+    val speciesId: Long,
     val onClick: () -> Unit
 )
 
@@ -45,6 +38,7 @@ fun BasicPokemon.asUiBasicPokemon() = UiBasicPokemon(
     name = name,
     species = speciesName,
     sprite = sprite,
+    speciesId = speciesId,
     onClick = {}
 )
 
@@ -53,4 +47,5 @@ fun UiBasicPokemon.asBasicPokemon() = BasicPokemon(
     name = name,
     speciesName = name,
     sprite = sprite,
+    speciesId = speciesId
 )

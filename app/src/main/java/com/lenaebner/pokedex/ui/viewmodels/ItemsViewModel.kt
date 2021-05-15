@@ -3,8 +3,8 @@ package com.lenaebner.pokedex.viewmodels
 
 import androidx.lifecycle.*
 import com.lenaebner.pokedex.ScreenStates.ItemsOverviewScreenState
-import com.lenaebner.pokedex.repository.ItemPreview
-import com.lenaebner.pokedex.repository.ItemRepository
+import com.lenaebner.pokedex.repository.item.ItemPreview
+import com.lenaebner.pokedex.repository.item.ItemRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel

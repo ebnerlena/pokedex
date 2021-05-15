@@ -16,7 +16,7 @@ import androidx.navigation.compose.navigate
 import com.lenaebner.pokedex.ActiveNavController
 import com.lenaebner.pokedex.ItemScreen.ItemsGrid
 import com.lenaebner.pokedex.ScreenStates.ItemsOverviewScreenState
-import com.lenaebner.pokedex.repository.ItemPreview
+import com.lenaebner.pokedex.repository.item.ItemPreview
 import com.lenaebner.pokedex.shared.ErrorScreen
 import com.lenaebner.pokedex.shared.Header
 import com.lenaebner.pokedex.shared.loadingSpinner

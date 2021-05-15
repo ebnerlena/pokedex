@@ -13,7 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.lenaebner.pokedex.ItemsScreen.FeaturedItem
-import com.lenaebner.pokedex.repository.ItemPreview
+import com.lenaebner.pokedex.repository.item.ItemPreview
 
 
 @OptIn(ExperimentalFoundationApi::class)

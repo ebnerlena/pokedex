@@ -1,10 +1,6 @@
-package com.lenaebner.pokedex.repository
+package com.lenaebner.pokedex.repository.pokemon
 
-import com.lenaebner.pokedex.api.models.ApiAbility
-import com.lenaebner.pokedex.api.models.ApiStat
 import com.lenaebner.pokedex.db.entities.DbPokemon
-import com.lenaebner.pokedex.db.entities.DbPokemonAbility
-import com.lenaebner.pokedex.db.entities.DbPokemonStat
 
 data class Pokemon(
     val name: String = "Pikachu",
@@ -17,7 +13,6 @@ data class Pokemon(
     val types: List<String>? = null,
     val stats: List<UiStat>? = null,
     val speciesId: Int = 0
-    //val moves: List<String>?
 )
 
 data class SinglePokemonComplete(

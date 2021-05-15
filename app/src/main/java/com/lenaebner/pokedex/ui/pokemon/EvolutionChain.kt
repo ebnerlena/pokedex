@@ -22,8 +22,8 @@ import androidx.compose.ui.unit.sp
 import coil.transform.CircleCropTransformation
 import com.google.accompanist.coil.CoilImage
 import com.lenaebner.pokedex.R
-import com.lenaebner.pokedex.repository.EvolvingPokemons
-import com.lenaebner.pokedex.repository.UiBasicPokemon
+import com.lenaebner.pokedex.repository.pokemon.EvolvingPokemons
+import com.lenaebner.pokedex.repository.pokemon.UiBasicPokemon
 import com.lenaebner.pokedex.ui.theme.transparentGrey
 
 @Composable

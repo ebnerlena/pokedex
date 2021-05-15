@@ -1,13 +1,12 @@
-package com.lenaebner.pokedex.repository
+package com.lenaebner.pokedex.repository.item
 
+import android.util.Log
 import com.lenaebner.pokedex.api.ItemApi
 import com.lenaebner.pokedex.db.daos.ItemDao
 import com.lenaebner.pokedex.db.entities.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -26,6 +25,36 @@ class ItemRepository @Inject constructor(
         return itemDb.observeItems()
             .distinctUntilChanged()
             .filterNotNull()
+    }
+
+    fun getItem(id: Long): Flow<Item> {
+        val flows = listOf(
+            itemDb.observeItem(id).distinctUntilChanged().filterNotNull(),
+            itemDb.observeItemWithAttributes(id).distinctUntilChanged().filterNotNull(),
+            itemDb.observeItemWithEffects(id).distinctUntilChanged().filterNotNull()
+        )
+
+        return combine(flows) {
+            val dbItem = it[0] as DbItem
+            val attributes = it[1] as ItemWithAttributes?
+            val effects = it[2] as ItemWithEffects?
+
+
+            val item = Item (
+                name = dbItem.name,
+                sprite = dbItem.sprite,
+                id = dbItem.itemId.toInt(),
+                description = dbItem.description,
+                cost = dbItem.cost,
+                flingPower = dbItem.fling_power,
+                flingEffect = dbItem.fling_effect,
+                category = dbItem.category,
+                attributes = attributes?.attributes?.map { it.name } ?: emptyList(),
+                effects = effects?.effects?.map{ it.shortEffect } ?: emptyList()
+            )
+
+            return@combine item
+        }.distinctUntilChanged()
     }
 
     private suspend fun refresh(from: Int, limit: Int) {
@@ -53,21 +82,23 @@ class ItemRepository @Inject constructor(
                 for(attribute in apiItem.attributes) {
 
                     var dbAttribute = itemDb.getItemAttribute(attribute.name)
+                    val attributeId =  attribute.url.split("/")[6].toLong()
+                    var ref = itemDb.getItemAttributeCrossRef(itemId = apiItem.id, attributeId = attributeId)
 
                     if(dbAttribute == null) {
-                        val attributeId =  attribute.url.split("/")[6].toLong()
+
                         itemDb.insertAttribute(
                             DbItemAttribute(
                                 name = attribute.name,
                                 itemAttributeId = attributeId
                             )
                         )
-
+                    }
+                    if(ref == null) {
                         itemDb.insertItemAttributeCrossRef(
                             ItemAttributeCrossRef(
                                 itemAttributeId = attributeId,
                                 itemId = apiItem.id.toLong()
-
                             )
                         )
                     }

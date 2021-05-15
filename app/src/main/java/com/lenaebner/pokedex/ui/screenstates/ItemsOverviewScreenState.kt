@@ -1,6 +1,6 @@
 package com.lenaebner.pokedex.ScreenStates
 
-import com.lenaebner.pokedex.repository.ItemPreview
+import com.lenaebner.pokedex.repository.item.ItemPreview
 
 
 sealed class ItemsOverviewScreenState {

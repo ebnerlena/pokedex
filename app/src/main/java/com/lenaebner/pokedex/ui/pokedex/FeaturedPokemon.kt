@@ -45,7 +45,7 @@ fun FeaturedPokemon(
                 .align(Alignment.CenterHorizontally),
                 verticalAlignment = Alignment.CenterVertically) {
                 Text(
-                    text = pokemon.name,
+                    text = pokemon.name.capitalize(),
                     style = MaterialTheme.typography.h6,
                     color = Color.White,
                     modifier = Modifier

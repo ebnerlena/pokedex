@@ -14,7 +14,8 @@ data class BasicPokemon(
     val basicPokemonId: Int,
     val name: String,
     val speciesName: String,
-    val sprite: String
+    val sprite: String,
+    val speciesId: Long
 )
 
 @Entity(primaryKeys = ["speciesId", "evolvingPokemonId"], tableName = "species_evolving_pokemons_cross_ref")

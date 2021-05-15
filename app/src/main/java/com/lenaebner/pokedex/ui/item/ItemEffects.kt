@@ -7,7 +7,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.lenaebner.pokedex.repository.Item
+import com.lenaebner.pokedex.repository.item.Item
 
 @Composable
 fun ItemEffects(item: Item) {
@@ -19,13 +19,13 @@ fun ItemEffects(item: Item) {
             modifier = Modifier
                 .padding(horizontal = 8.dp, vertical = 8.dp)
         )
-        /*item.effect_entries.forEach {
+        item.effects.forEach {
             Text(
-                text = it.shortEffect,
+                text = it,
                 color = MaterialTheme.colors.secondaryVariant,
                 style = MaterialTheme.typography.body2,
                 modifier = Modifier.padding(vertical = 8.dp, horizontal = 8.dp)
             )
-        } */
+        }
     }
 }

@@ -1,8 +1,6 @@
-package com.lenaebner.pokedex.repository
+package com.lenaebner.pokedex.repository.pokemon
 
-import androidx.room.PrimaryKey
 import com.lenaebner.pokedex.api.models.ApiSpecies
-import com.lenaebner.pokedex.api.models.ColorName
 import com.lenaebner.pokedex.api.models.EggGroup
 import com.lenaebner.pokedex.db.entities.DbSpecies
 import com.lenaebner.pokedex.db.entities.DbSpeciesEggGroup

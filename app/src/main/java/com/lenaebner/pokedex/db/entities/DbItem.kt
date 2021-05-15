@@ -27,13 +27,14 @@ data class ItemWithEffects(
         parentColumn = "itemId",
         entityColumn = "itemEffectId",
     )
-    val stats: List<DbItemEffect>
+    val effects: List<DbItemEffect>
 )
 
 
 @Entity(tableName = "item_attribute")
 data class DbItemAttribute(
-    @PrimaryKey val itemAttributeId: Long,
+    @PrimaryKey(autoGenerate = true) val attributeId: Long = 0,
+    val itemAttributeId: Long,
     val name: String
 )
 
@@ -51,5 +52,5 @@ data class ItemWithAttributes(
         entityColumn = "itemAttributeId",
         associateBy = Junction(ItemAttributeCrossRef::class)
     )
-    val abilities: List<DbItemAttribute>
+    val attributes: List<DbItemAttribute>
 )

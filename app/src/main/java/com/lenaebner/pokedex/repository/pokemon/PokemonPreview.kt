@@ -1,8 +1,5 @@
-package com.lenaebner.pokedex.repository
+package com.lenaebner.pokedex.repository.pokemon
 
-import com.lenaebner.pokedex.api.models.ApiPokemon
-import com.lenaebner.pokedex.api.models.PokemonWithColor
-import com.lenaebner.pokedex.db.entities.DbPokemonPreview
 import com.lenaebner.pokedex.db.entities.PokemonPreviewWithTypes
 
 data class PokemonPreview(

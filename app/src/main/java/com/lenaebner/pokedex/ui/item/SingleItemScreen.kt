@@ -16,13 +16,13 @@ import androidx.compose.ui.unit.dp
 import com.lenaebner.pokedex.ItemScreen.ItemCard
 import com.lenaebner.pokedex.ItemScreen.ItemHeader
 import com.lenaebner.pokedex.ScreenStates.ItemScreenState
-import com.lenaebner.pokedex.api.models.*
-import com.lenaebner.pokedex.repository.Item
+import com.lenaebner.pokedex.repository.item.Item
 import com.lenaebner.pokedex.shared.ErrorScreen
 import com.lenaebner.pokedex.shared.Header
 import com.lenaebner.pokedex.shared.loadingSpinner
 import com.lenaebner.pokedex.ui.theme.transparentGrey
 import com.lenaebner.pokedex.viewmodels.ItemViewModel
+import kotlinx.coroutines.flow.collect
 
 
 @ExperimentalFoundationApi
@@ -72,18 +72,18 @@ fun SingleItem(item: Item, backClicked: () -> Unit) {
 fun ItemScreen(vm: ItemViewModel) {
 
     
-    //val uiState = vm.uiState.observeAsState(initial = ItemScreenState.Loading).value
-   // ItemScreen(state = uiState)
+    val uiState = vm.uiState.collectAsState(initial = ItemScreenState.Loading).value
+   ItemScreen(state = uiState)
 
     val navController = ActiveNavController.current
 
-    /* LaunchedEffect(key1 = "item") {
+     LaunchedEffect(key1 = "item") {
         vm.actions.collect {
             when(it) {
                 is ItemViewModel.ItemScreenAction.NavigateBack -> navController.navigateUp()
             }
         }
-    } */
+    }
 }
 
 @Composable

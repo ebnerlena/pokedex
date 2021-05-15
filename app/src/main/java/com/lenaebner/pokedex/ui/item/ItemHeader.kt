@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.dp
 import coil.transform.CircleCropTransformation
 import com.google.accompanist.coil.CoilImage
 import com.lenaebner.pokedex.R
-import com.lenaebner.pokedex.repository.Item
+import com.lenaebner.pokedex.repository.item.Item
 
 @Composable
 fun ItemHeader(item: Item, imageRowModifier: Modifier) {

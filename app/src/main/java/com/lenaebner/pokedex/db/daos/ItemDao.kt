@@ -20,13 +20,16 @@ interface ItemDao {
     suspend fun insertAttribute(item: DbItemAttribute)
 
     @Update
-    suspend fun updatItem(item: DbItem)
+    suspend fun updateItem(item: DbItem)
 
     @Query("SELECT * FROM item WHERE itemId LIKE :id")
     suspend fun getItem(id: Long): DbItem
 
     @Query("SELECT * FROM item_attribute WHERE name LIKE :name")
     suspend fun getItemAttribute(name: String): DbItemAttribute
+
+    @Query("SELECT * FROM item_attribute_cross_ref WHERE itemId = :itemId AND itemAttributeId = :attributeId")
+    suspend fun getItemAttributeCrossRef(itemId: Int, attributeId: Long): ItemAttributeCrossRef
 
     @Transaction
     @Query("SELECT * FROM item WHERE itemId LIKE :id")

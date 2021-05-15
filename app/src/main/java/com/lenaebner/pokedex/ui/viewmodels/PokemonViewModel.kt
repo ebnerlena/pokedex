@@ -3,7 +3,9 @@ package com.lenaebner.pokedex.ui.viewmodels
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.lenaebner.pokedex.repository.*
+import com.lenaebner.pokedex.repository.pokemon.EvolvingPokemons
+import com.lenaebner.pokedex.repository.pokemon.PokemonRepository
+import com.lenaebner.pokedex.repository.pokemon.UiBasicPokemon
 import com.lenaebner.pokedex.ui.screenstates.PokemonScreenState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -50,10 +52,11 @@ class PokemonViewModel @Inject constructor(
                                     name = p.from.name,
                                     species = p.from.species,
                                     sprite = p.from.sprite,
+                                    speciesId = p.from.speciesId,
                                     onClick = {
                                         viewModelScope.launch {
                                             _actions.send(
-                                                PokemonScreenAction.pokemonClicked("pokemon/${p.from.id}?speciesId=${pokemon.species.id}")
+                                                PokemonScreenAction.pokemonClicked("pokemon/${p.from.id}?speciesId=${p.from.speciesId}")
                                             )
                                         }
                                     }
@@ -62,10 +65,11 @@ class PokemonViewModel @Inject constructor(
                                     name = p.to.name,
                                     species = p.to.species,
                                     sprite = p.to.sprite,
+                                    speciesId = p.to.speciesId,
                                     onClick = {
                                         viewModelScope.launch {
                                             _actions.send(
-                                                PokemonScreenAction.pokemonClicked("pokemon/${p.to.id}?speciesId=${pokemon.species.id}")
+                                                PokemonScreenAction.pokemonClicked("pokemon/${p.to.id}?speciesId=${p.to.speciesId}")
                                             )
                                         }
                                     }

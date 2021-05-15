@@ -7,7 +7,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.lenaebner.pokedex.repository.Item
+import com.lenaebner.pokedex.repository.item.Item
 
 
 @Composable

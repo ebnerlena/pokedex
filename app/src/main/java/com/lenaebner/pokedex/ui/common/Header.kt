@@ -10,7 +10,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.lenaebner.pokedex.ActiveNavController
-import com.lenaebner.pokedex.repository.Pokemon
+import com.lenaebner.pokedex.repository.pokemon.Pokemon
 
 
 @Composable

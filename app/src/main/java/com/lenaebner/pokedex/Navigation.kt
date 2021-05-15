@@ -14,6 +14,7 @@ import com.lenaebner.pokedex.PokedexScreen.PokedexScreen
 import com.lenaebner.pokedex.SinglePokemon.SinglePokemonScreen
 import com.lenaebner.pokedex.ui.viewmodels.PokemonViewModel
 import com.lenaebner.pokedex.ui.viewmodels.PokedexViewModel
+import com.lenaebner.pokedex.viewmodels.ItemViewModel
 import com.lenaebner.pokedex.viewmodels.ItemsViewModel
 
 
@@ -44,13 +45,22 @@ fun Navigation() {
                 },
                 )
             ) { backStackEntry ->
-                //val name = backStackEntry.arguments?.getString("name") ?: "pikachu"
                 val vm: PokemonViewModel = hiltNavGraphViewModel(backStackEntry)
                 SinglePokemonScreen(vm = vm)
             }
             composable("items") {
                 val vm: ItemsViewModel = hiltNavGraphViewModel(it)
                ItemsScreen(vm = vm)
+            }
+            composable(
+                "item/{itemId}",
+                arguments = listOf(navArgument("itemId") {
+                    type = NavType.IntType
+                    nullable = false
+                } )
+            ) { backStackEntry ->
+                val vm: ItemViewModel = hiltNavGraphViewModel(backStackEntry)
+                ItemScreen(vm = vm)
             }
         }
     }

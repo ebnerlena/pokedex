@@ -9,7 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.lenaebner.pokedex.repository.Item
+import com.lenaebner.pokedex.repository.item.Item
 
 @Composable
 fun ItemAttributes(item: Item, modifier: Modifier) {
@@ -24,14 +24,14 @@ fun ItemAttributes(item: Item, modifier: Modifier) {
         Column(modifier = Modifier
             .weight(2f)
             .padding(vertical = 8.dp)) {
-            /* item.attributes.forEach {
+            item.attributes.forEach {
                 Text(
-                    text = it.name.capitalize(),
+                    text = it.capitalize(),
                     color = MaterialTheme.colors.secondaryVariant,
                     style = MaterialTheme.typography.body2,
                     fontWeight = FontWeight.Bold,
                 )
-            } */
+            }
         }
 
     }

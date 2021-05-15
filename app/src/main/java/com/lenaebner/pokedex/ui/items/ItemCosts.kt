@@ -9,7 +9,7 @@ import androidx.compose.ui.Alignment.Companion.Start
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.lenaebner.pokedex.repository.ItemPreview
+import com.lenaebner.pokedex.repository.item.ItemPreview
 
 
 @Composable

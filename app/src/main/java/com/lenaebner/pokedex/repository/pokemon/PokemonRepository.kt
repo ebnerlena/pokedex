@@ -1,27 +1,18 @@
-package com.lenaebner.pokedex.repository
+package com.lenaebner.pokedex.repository.pokemon
 
-import android.util.Log
-import androidx.compose.runtime.collectAsState
-import com.lenaebner.pokedex.SinglePokemon.SinglePokemonScreen
 import com.lenaebner.pokedex.api.PokemonApi
 import com.lenaebner.pokedex.api.models.ApiEvolutionChainDetails
-import com.lenaebner.pokedex.api.models.EvolutionChainDetail
 import com.lenaebner.pokedex.db.PokedexDatabase
 import com.lenaebner.pokedex.db.daos.PokemonDao
 import com.lenaebner.pokedex.db.daos.PokemonSpeciesDao
-import com.lenaebner.pokedex.db.daos.PokemonTypeDao
 import com.lenaebner.pokedex.db.entities.*
-import com.lenaebner.pokedex.ui.viewmodels.PokemonScreenAction
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import okhttp3.internal.notify
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlin.properties.Delegates
 
 @Singleton
 class PokemonRepository @Inject constructor(
@@ -187,6 +178,7 @@ class PokemonRepository @Inject constructor(
                             name = pokeFrom.name,
                             sprite = pokeFrom.sprites?.other?.artwork?.sprite.toString(),
                             species = pokeFrom.species.name,
+                            speciesId = pokeFrom.species.url.split("/")[6].toLong(),
                             onClick = { }
                         ),
 
@@ -195,6 +187,7 @@ class PokemonRepository @Inject constructor(
                             name = pokeTo.name,
                             sprite = pokeTo.sprites?.other?.artwork?.sprite.toString(),
                             species = pokeTo.species.name,
+                            speciesId = pokeTo.species.url.split("/")[6].toLong(),
                             onClick = {}
                         ),
                         trigger = triggerText,

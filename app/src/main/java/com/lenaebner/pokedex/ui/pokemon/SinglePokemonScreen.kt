@@ -24,10 +24,9 @@ import coil.transform.CircleCropTransformation
 import com.google.accompanist.coil.CoilImage
 import com.lenaebner.pokedex.*
 import com.lenaebner.pokedex.PokedexScreen.Type
-import com.lenaebner.pokedex.api.models.PokemonSpecies
-import com.lenaebner.pokedex.repository.EvolvingPokemons
-import com.lenaebner.pokedex.repository.Pokemon
-import com.lenaebner.pokedex.repository.Species
+import com.lenaebner.pokedex.repository.pokemon.EvolvingPokemons
+import com.lenaebner.pokedex.repository.pokemon.Pokemon
+import com.lenaebner.pokedex.repository.pokemon.Species
 import com.lenaebner.pokedex.shared.ErrorScreen
 import com.lenaebner.pokedex.shared.Header
 import com.lenaebner.pokedex.shared.loadingSpinner

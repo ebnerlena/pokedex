@@ -1,10 +1,9 @@
 package com.lenaebner.pokedex.ui.viewmodels
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lenaebner.pokedex.api.models.PokemonWithColor
-import com.lenaebner.pokedex.repository.PokedexRepository
+import com.lenaebner.pokedex.repository.pokemon.PokedexRepository
 import com.lenaebner.pokedex.ui.screenstates.PokedexScreenState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel

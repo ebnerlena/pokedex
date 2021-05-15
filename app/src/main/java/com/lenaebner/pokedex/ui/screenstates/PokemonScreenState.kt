@@ -1,8 +1,8 @@
 package com.lenaebner.pokedex.ui.screenstates
 
-import com.lenaebner.pokedex.repository.EvolvingPokemons
-import com.lenaebner.pokedex.repository.Pokemon
-import com.lenaebner.pokedex.repository.Species
+import com.lenaebner.pokedex.repository.pokemon.EvolvingPokemons
+import com.lenaebner.pokedex.repository.pokemon.Pokemon
+import com.lenaebner.pokedex.repository.pokemon.Species
 
 sealed class PokemonScreenState {
 

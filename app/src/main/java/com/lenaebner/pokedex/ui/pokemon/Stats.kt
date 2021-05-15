@@ -13,7 +13,7 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.lenaebner.pokedex.repository.Pokemon
+import com.lenaebner.pokedex.repository.pokemon.Pokemon
 
 @Composable
 fun Stats(pokemon: Pokemon) {
