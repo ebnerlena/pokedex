@@ -1,6 +1,7 @@
 package com.lenaebner.pokedex.SinglePokemon
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -14,6 +15,7 @@ import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -21,10 +23,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.transform.CircleCropTransformation
 import com.google.accompanist.coil.CoilImage
+import com.google.accompanist.coil.rememberCoilPainter
+import com.google.accompanist.imageloading.ImageLoadState
 import com.lenaebner.pokedex.R
 import com.lenaebner.pokedex.repository.pokemon.EvolvingPokemons
 import com.lenaebner.pokedex.repository.pokemon.UiBasicPokemon
 import com.lenaebner.pokedex.ui.theme.transparentGrey
+import com.lenaebner.pokedex.ui.theme.transparentWhite
 
 @Composable
 fun EvolutionChain(evolutionChainEntries: List<EvolvingPokemons>) {
@@ -90,20 +95,29 @@ fun PokemonEvlove(pokemon: UiBasicPokemon, modifier: Modifier) {
         Row(
             modifier = Modifier.align(Alignment.CenterHorizontally),
         ) {
-            CoilImage(
-                data = pokemon.sprite,
-                contentDescription = "Pokemon From",
-                loading = {
-                    Image(
-                        painter = painterResource(id = R.drawable.pokemon1),
-                        contentDescription = "Fallback Image"
-                    )
-                },
+            val painter = rememberCoilPainter(
+                request = pokemon.sprite,
                 requestBuilder = {
                     transformations(CircleCropTransformation())
-                },modifier = Modifier
-                    .width(60.dp)
+                },
+                previewPlaceholder = R.drawable.pokemon1
             )
+
+            Image(
+                modifier = Modifier
+                        .width(60.dp),
+                painter = painter,
+                contentDescription = "Evolving Pokemon Image",
+                contentScale = ContentScale.Fit,
+                alignment = Alignment.Center
+            )
+
+            when (painter.loadState) {
+                ImageLoadState.Empty, is ImageLoadState.Loading, is ImageLoadState.Error -> Image(
+                    painter = painterResource(id = R.drawable.pokemon1),
+                    contentDescription = "Fallback Image"
+                )
+            }
         }
         Row(modifier = Modifier.align(Alignment.CenterHorizontally)) {
             BoxWithConstraints(

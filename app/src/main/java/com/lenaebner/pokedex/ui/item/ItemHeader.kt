@@ -1,21 +1,22 @@
 package com.lenaebner.pokedex.ItemScreen
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil.transform.CircleCropTransformation
 import com.google.accompanist.coil.CoilImage
+import com.google.accompanist.coil.rememberCoilPainter
+import com.google.accompanist.imageloading.ImageLoadState
 import com.lenaebner.pokedex.R
 import com.lenaebner.pokedex.repository.item.Item
 
@@ -37,21 +38,34 @@ fun ItemHeader(item: Item, imageRowModifier: Modifier) {
     Row(
         modifier = imageRowModifier
     ) {
-        CoilImage(
-            data = item.sprite,
-            contentDescription = "Item",
-            loading = {
-                Image(
-                    painter = painterResource(id = R.drawable.pokemon3),
-                    contentDescription = "Fallback Image"
-                )
-            },
+
+        val imageModifier = Modifier
+            .fillMaxHeight()
+            .width(100.dp)
+            .padding(top = 0.dp, start = 8.dp, end = 8.dp, bottom = 0.dp)
+
+
+        val painter = rememberCoilPainter(
+            request = item.sprite,
             requestBuilder = {
                 transformations(CircleCropTransformation())
-            },modifier = Modifier
-                .fillMaxHeight()
-                .width(100.dp)
-                .padding(top = 0.dp, start = 8.dp, end = 8.dp, bottom = 0.dp)
+            },
         )
+
+        Image(
+            modifier = imageModifier,
+            painter = painter,
+            contentDescription = "Item Image",
+            contentScale = ContentScale.Fit,
+            alignment = Alignment.Center
+        )
+
+        when (painter.loadState) {
+            ImageLoadState.Empty, is ImageLoadState.Loading, is ImageLoadState.Error -> Image(
+                painter = painterResource(id = R.drawable.pokeball2),
+                modifier = imageModifier,
+                contentDescription = "Fallback Image"
+            )
+        }
     }
 }

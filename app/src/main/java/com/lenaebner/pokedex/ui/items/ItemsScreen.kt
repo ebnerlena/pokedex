@@ -48,7 +48,7 @@ fun ItemsScreen(vm: ItemsViewModel) {
     ItemsScreen(state = uiState)
 
     val navController = ActiveNavController.current
-    LaunchedEffect(key1 = "items actions") {
+    LaunchedEffect(key1 = vm.actions) {
         vm.actions.collect {
             when(it) {
                 is ItemsViewModel.ItemsScreenAction.Navigate -> navController.navigate(it.destination)

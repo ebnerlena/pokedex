@@ -18,6 +18,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import coil.transform.CircleCropTransformation
 import com.google.accompanist.coil.CoilImage
+import com.google.accompanist.coil.rememberCoilPainter
+import com.google.accompanist.imageloading.ImageLoadState
 import com.lenaebner.pokedex.api.models.PokemonWithColor
 import com.lenaebner.pokedex.asPokeColor
 import com.lenaebner.pokedex.ui.theme.transparentGrey
@@ -81,26 +83,34 @@ fun FeaturedPokemon(
                 Column(modifier = Modifier
                     .weight(3f)
                     .padding(2.dp)) {
-                    CoilImage(
-                        data = pokemon.sprite,
-                        contentDescription = "Pikachu",
-                        loading = {
-                            Image(
-                                painter = painterResource(id = R.drawable.pokemon1),
-                                contentDescription = "Fallback Image"
-                            )
-                        },
+
+                    val painter = rememberCoilPainter(
+                        request = pokemon.sprite,
                         requestBuilder = {
                             transformations(CircleCropTransformation())
                         },
-                        contentScale = ContentScale.Fit,
+                        previewPlaceholder = R.drawable.pokemon1
+                    )
+
+                    Image(
                         modifier = Modifier
                             .heightIn(min = 20.dp, max = 80.dp)
                             .fillMaxWidth()
                             .weight(2f)
                             .padding(top = 8.dp, start = 8.dp, end = 8.dp, bottom = 0.dp)
-                            .background(transparentWhite)
+                            .background(transparentWhite),
+                        painter = painter,
+                        contentDescription = "Pokemon Image",
+                        contentScale = ContentScale.Fit,
+                        alignment = Alignment.Center
                     )
+
+                    when (painter.loadState) {
+                        ImageLoadState.Empty, is ImageLoadState.Loading, is ImageLoadState.Error -> Image(
+                            painter = painterResource(id = R.drawable.pokemon1),
+                            contentDescription = "Fallback Image"
+                        )
+                    }
                 }
             }
         }

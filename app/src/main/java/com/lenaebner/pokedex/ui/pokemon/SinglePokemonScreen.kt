@@ -1,7 +1,6 @@
 package com.lenaebner.pokedex.SinglePokemon
 
 import PokedexTheme
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
@@ -21,7 +20,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.navigate
 import coil.transform.CircleCropTransformation
-import com.google.accompanist.coil.CoilImage
+import androidx.compose.foundation.Image
+import androidx.compose.ui.layout.ContentScale
+import com.google.accompanist.coil.rememberCoilPainter
+import com.google.accompanist.imageloading.ImageLoadState
 import com.lenaebner.pokedex.*
 import com.lenaebner.pokedex.PokedexScreen.Type
 import com.lenaebner.pokedex.repository.pokemon.EvolvingPokemons
@@ -51,11 +53,11 @@ fun SinglePokemonScreen(vm: PokemonViewModel) {
     val state = vm.uiState.collectAsState(initial = PokemonScreenState.Loading).value
     SinglePokemonScreen(state = state)
 
-    LaunchedEffect("actions"){
+    LaunchedEffect(vm.actions){
         vm.actions.collect {
             when(it) {
                 is PokemonScreenAction.NavigateBack -> navController.navigateUp()
-                is PokemonScreenAction.pokemonClicked -> navController.navigate(it.destination)
+                is PokemonScreenAction.PokemonClicked -> navController.navigate(it.destination)
             }
         }
     }
@@ -127,23 +129,32 @@ fun PokemonScreen(pokemon: Pokemon, species: Species?, evolutionChainEntries: Li
                             .padding(8.dp)
                             .align(Alignment.CenterHorizontally)
                     ) {
-                        CoilImage(
-                            data = pokemon.sprite,
-                            contentDescription = "Pikachu",
-                            loading = {
-                                Image(
-                                    painter = painterResource(id = R.drawable.pokemon1),
-                                    contentDescription = "Fallback Image"
-                                )
-                            },
+                        val painter = rememberCoilPainter(
+                            request = pokemon.sprite,
                             requestBuilder = {
                                 transformations(CircleCropTransformation())
-                            },modifier = Modifier
+                            },
+                            previewPlaceholder = R.drawable.pokemon1
+                        )
+
+                        Image(
+                            modifier = Modifier
                                 .fillMaxHeight()
                                 .width(120.dp)
-                                .padding(top = 0.dp, start = 8.dp, end = 8.dp, bottom = 0.dp)
-                                .background(transparentWhite)
+                                .padding(horizontal = 0.dp, vertical = 8.dp)
+                                .background(transparentWhite),
+                            painter = painter,
+                            contentDescription = "Pokemon Image",
+                            contentScale = ContentScale.Fit,
+                            alignment = Alignment.Center
                         )
+
+                        when (painter.loadState) {
+                            ImageLoadState.Empty, is ImageLoadState.Loading, is ImageLoadState.Error -> Image(
+                                painter = painterResource(id = R.drawable.pokemon1),
+                                contentDescription = "Fallback Image"
+                            )
+                        }
                     }
                     Row(modifier = Modifier.weight(3f)){
                         CardNavigation(

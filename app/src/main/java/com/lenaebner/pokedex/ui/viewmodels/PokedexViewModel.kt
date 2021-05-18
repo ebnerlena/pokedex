@@ -39,7 +39,7 @@ class PokedexViewModel @Inject constructor(
                         sprite = p.sprite,
                         onClick = {
                             viewModelScope.launch {
-                                _actions.send(PokedexScreenAction.pokemonClicked("pokemon/${p.id}?speciesId=${p.speciesId}"))
+                                _actions.send(PokedexScreenAction.PokemonClicked("pokemon/${p.id}?speciesId=${p.speciesId}"))
                             }
                         }
                     )
@@ -57,6 +57,6 @@ class PokedexViewModel @Inject constructor(
 
     sealed class PokedexScreenAction {
         object NavigateBack : PokedexScreenAction()
-        data class pokemonClicked(val destination: String): PokedexScreenAction()
+        data class PokemonClicked(val destination: String): PokedexScreenAction()
     }
 }

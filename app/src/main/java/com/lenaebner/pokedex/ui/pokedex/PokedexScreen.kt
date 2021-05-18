@@ -64,11 +64,11 @@ fun PokedexScreen(vm: PokedexViewModel) {
 
     val navController = ActiveNavController.current
 
-    LaunchedEffect(key1 = "pokedex actions") {
+    LaunchedEffect(key1 = vm.actions) {
         vm.actions.collect {
             when(it) {
                 is PokedexViewModel.PokedexScreenAction.NavigateBack -> navController.navigateUp()
-                is PokedexViewModel.PokedexScreenAction.pokemonClicked -> navController.navigate(it.destination)
+                is PokedexViewModel.PokedexScreenAction.PokemonClicked -> navController.navigate(it.destination)
             }
         }
     }

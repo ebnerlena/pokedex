@@ -24,7 +24,7 @@ class PokemonRepository @Inject constructor(
 
     private val repositoryScope = CoroutineScope(context = Dispatchers.IO)
 
-    suspend fun getPokemon(id: Long, speciesId: Long): Flow<SinglePokemonComplete> {
+    fun getPokemon(id: Long, speciesId: Long): Flow<SinglePokemonComplete> {
         repositoryScope.launch {
             //db.clearAllTables()
             refreshPokemon(id)
