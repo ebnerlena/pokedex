@@ -3,13 +3,13 @@
     package="com.lenaebner.pokedex">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
+        android:name=".PokedexApplication"
         android:allowBackup="true"
-        android:icon="@drawable/pokeball"
+        android:icon="@drawable/pokeball2"
         android:label="@string/app_name"
-        android:roundIcon="@drawable/pokeball"
+        android:roundIcon="@drawable/pokeball2"
         android:supportsRtl="true"
         android:theme="@style/Theme.Pokedex">
         <activity

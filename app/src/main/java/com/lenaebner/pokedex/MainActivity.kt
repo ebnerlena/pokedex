@@ -1,64 +1,34 @@
 package com.lenaebner.pokedex
 
+import PokedexTheme
 import android.os.Bundle
-import android.util.Log
-
+import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.material.*
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.compositionLocalOf
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.lenaebner.pokedex.HomeScreen.Home
-import com.lenaebner.pokedex.api.PokeApi
-import com.lenaebner.pokedex.shared.Navigation
-import com.lenaebner.pokedex.ui.theme.PokedexTheme
-import com.squareup.moshi.Moshi
-import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import okhttp3.OkHttpClient
-import retrofit2.Retrofit
-import retrofit2.converter.moshi.MoshiConverterFactory
-import java.util.concurrent.TimeUnit
+import dagger.hilt.android.AndroidEntryPoint
+
 
 val ActiveNavController = compositionLocalOf<NavController> {error("No navcontroller found") }
 
-
-class MainActivity : AppCompatActivity() {
-
-    @ExperimentalMaterialApi
+@AndroidEntryPoint
+class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setContent {
-            MaterialTheme {
-                Surface {
+            PokedexTheme {
+                Surface(color = MaterialTheme.colors.background) {
                     Navigation()
                 }
             }
         }
-    }
-}
-
-@ExperimentalMaterialApi
-@Composable
-fun MyApp() {
-
-    PokedexTheme {
-        Navigation()
-    }
-}
-
-@ExperimentalMaterialApi
-@Preview
-@Composable
-fun AppPreview(){
-
-    PokedexTheme() {
-        Navigation()
     }
 }

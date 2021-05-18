@@ -1,0 +1,630 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 7,
+    "identityHash": "dadddf6270438ebcac50ede261d059ca",
+    "entities": [
+      {
+        "tableName": "pokemon_preview",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`pokemonId` INTEGER NOT NULL, `name` TEXT NOT NULL, `sprite` TEXT NOT NULL, `color` TEXT NOT NULL, `speciesId` INTEGER NOT NULL, PRIMARY KEY(`pokemonId`))",
+        "fields": [
+          {
+            "fieldPath": "pokemonId",
+            "columnName": "pokemonId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "sprite",
+            "columnName": "sprite",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "color",
+            "columnName": "color",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "speciesId",
+            "columnName": "speciesId",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "pokemonId"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "pokemon",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`pokemonId` INTEGER NOT NULL, `name` TEXT NOT NULL, `sprite` TEXT NOT NULL, `description` TEXT NOT NULL, `height` INTEGER NOT NULL, `weight` INTEGER NOT NULL, PRIMARY KEY(`pokemonId`))",
+        "fields": [
+          {
+            "fieldPath": "pokemonId",
+            "columnName": "pokemonId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "sprite",
+            "columnName": "sprite",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "description",
+            "columnName": "description",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "height",
+            "columnName": "height",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "weight",
+            "columnName": "weight",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "pokemonId"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "pokemon_type",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`typeId` INTEGER NOT NULL, `name` TEXT NOT NULL, PRIMARY KEY(`typeId`))",
+        "fields": [
+          {
+            "fieldPath": "typeId",
+            "columnName": "typeId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "typeId"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "pokemon_type_cross_ref",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`pokemonId` INTEGER NOT NULL, `typeId` INTEGER NOT NULL, PRIMARY KEY(`pokemonId`, `typeId`))",
+        "fields": [
+          {
+            "fieldPath": "pokemonId",
+            "columnName": "pokemonId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "typeId",
+            "columnName": "typeId",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "pokemonId",
+            "typeId"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "ability",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`abilityId` INTEGER NOT NULL, `name` TEXT NOT NULL, PRIMARY KEY(`abilityId`))",
+        "fields": [
+          {
+            "fieldPath": "abilityId",
+            "columnName": "abilityId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "abilityId"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "stat",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`statId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `effort` INTEGER NOT NULL, `base_stat` INTEGER NOT NULL, `statPokemonId` INTEGER NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "statId",
+            "columnName": "statId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "effort",
+            "columnName": "effort",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "base_stat",
+            "columnName": "base_stat",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "statPokemonId",
+            "columnName": "statPokemonId",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "statId"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "pokemon_ability_cross_ref",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`pokemonId` INTEGER NOT NULL, `abilityId` INTEGER NOT NULL, PRIMARY KEY(`pokemonId`, `abilityId`))",
+        "fields": [
+          {
+            "fieldPath": "pokemonId",
+            "columnName": "pokemonId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "abilityId",
+            "columnName": "abilityId",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "pokemonId",
+            "abilityId"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "egg_group",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`eggGroupId` INTEGER NOT NULL, `name` TEXT NOT NULL, PRIMARY KEY(`eggGroupId`))",
+        "fields": [
+          {
+            "fieldPath": "eggGroupId",
+            "columnName": "eggGroupId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "eggGroupId"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "species",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`speciesId` INTEGER NOT NULL, `name` TEXT NOT NULL, `color` TEXT NOT NULL, `description` TEXT NOT NULL, `genera` TEXT NOT NULL, PRIMARY KEY(`speciesId`))",
+        "fields": [
+          {
+            "fieldPath": "speciesId",
+            "columnName": "speciesId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "color",
+            "columnName": "color",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "description",
+            "columnName": "description",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "genera",
+            "columnName": "genera",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "speciesId"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "species_egg_group_cross_ref",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`eggGroupId` INTEGER NOT NULL, `speciesId` INTEGER NOT NULL, PRIMARY KEY(`speciesId`, `eggGroupId`))",
+        "fields": [
+          {
+            "fieldPath": "eggGroupId",
+            "columnName": "eggGroupId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "speciesId",
+            "columnName": "speciesId",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "speciesId",
+            "eggGroupId"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "evolving_pokemons",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`evolvingPokemonId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `trigger` TEXT NOT NULL, `from_basicPokemonId` INTEGER NOT NULL, `from_name` TEXT NOT NULL, `from_speciesName` TEXT NOT NULL, `from_sprite` TEXT NOT NULL, `to_basicPokemonId` INTEGER NOT NULL, `to_name` TEXT NOT NULL, `to_speciesName` TEXT NOT NULL, `to_sprite` TEXT NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "evolvingPokemonId",
+            "columnName": "evolvingPokemonId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "trigger",
+            "columnName": "trigger",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "from.basicPokemonId",
+            "columnName": "from_basicPokemonId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "from.name",
+            "columnName": "from_name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "from.speciesName",
+            "columnName": "from_speciesName",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "from.sprite",
+            "columnName": "from_sprite",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "to.basicPokemonId",
+            "columnName": "to_basicPokemonId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "to.name",
+            "columnName": "to_name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "to.speciesName",
+            "columnName": "to_speciesName",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "to.sprite",
+            "columnName": "to_sprite",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "evolvingPokemonId"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "species_evolving_pokemons_cross_ref",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`speciesId` INTEGER NOT NULL, `evolvingPokemonId` INTEGER NOT NULL, PRIMARY KEY(`speciesId`, `evolvingPokemonId`))",
+        "fields": [
+          {
+            "fieldPath": "speciesId",
+            "columnName": "speciesId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "evolvingPokemonId",
+            "columnName": "evolvingPokemonId",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "speciesId",
+            "evolvingPokemonId"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "pokemon_species_cross_ref",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`pokemonId` INTEGER NOT NULL, `speciesId` INTEGER NOT NULL, PRIMARY KEY(`pokemonId`, `speciesId`))",
+        "fields": [
+          {
+            "fieldPath": "pokemonId",
+            "columnName": "pokemonId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "speciesId",
+            "columnName": "speciesId",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "pokemonId",
+            "speciesId"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "item_effect",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`itemEffectId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `shortEffect` TEXT NOT NULL, `itemId` INTEGER NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "itemEffectId",
+            "columnName": "itemEffectId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "shortEffect",
+            "columnName": "shortEffect",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "itemId",
+            "columnName": "itemId",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "itemEffectId"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "item",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`itemId` INTEGER NOT NULL, `name` TEXT NOT NULL, `sprite` TEXT NOT NULL, `category` TEXT NOT NULL, `cost` INTEGER NOT NULL, `fling_power` INTEGER, `fling_effect` TEXT, `description` TEXT NOT NULL, PRIMARY KEY(`itemId`))",
+        "fields": [
+          {
+            "fieldPath": "itemId",
+            "columnName": "itemId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "sprite",
+            "columnName": "sprite",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "category",
+            "columnName": "category",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "cost",
+            "columnName": "cost",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "fling_power",
+            "columnName": "fling_power",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "fling_effect",
+            "columnName": "fling_effect",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "description",
+            "columnName": "description",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "itemId"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "item_attribute",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`itemAttributeId` INTEGER NOT NULL, `name` TEXT NOT NULL, PRIMARY KEY(`itemAttributeId`))",
+        "fields": [
+          {
+            "fieldPath": "itemAttributeId",
+            "columnName": "itemAttributeId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "itemAttributeId"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "item_attribute_cross_ref",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`itemId` INTEGER NOT NULL, `itemAttributeId` INTEGER NOT NULL, PRIMARY KEY(`itemId`, `itemAttributeId`))",
+        "fields": [
+          {
+            "fieldPath": "itemId",
+            "columnName": "itemId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "itemAttributeId",
+            "columnName": "itemAttributeId",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "itemId",
+            "itemAttributeId"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      }
+    ],
+    "views": [],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'dadddf6270438ebcac50ede261d059ca')"
+    ]
+  }
+}
