@@ -17,11 +17,10 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import coil.transform.CircleCropTransformation
-import com.google.accompanist.coil.CoilImage
 import com.google.accompanist.coil.rememberCoilPainter
 import com.google.accompanist.imageloading.ImageLoadState
-import com.lenaebner.pokedex.api.models.PokemonWithColor
 import com.lenaebner.pokedex.asPokeColor
+import com.lenaebner.pokedex.ui.pokedex.PokemonWithColor
 import com.lenaebner.pokedex.ui.theme.transparentGrey
 import com.lenaebner.pokedex.ui.theme.transparentWhite
 

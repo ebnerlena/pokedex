@@ -17,10 +17,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.navigate
 import com.lenaebner.pokedex.ActiveNavController
-import com.lenaebner.pokedex.api.models.PokemonWithColor
 import com.lenaebner.pokedex.shared.ErrorScreen
 import com.lenaebner.pokedex.shared.Header
 import com.lenaebner.pokedex.shared.loadingSpinner
+import com.lenaebner.pokedex.ui.pokedex.PokemonWithColor
 import com.lenaebner.pokedex.ui.screenstates.PokedexScreenState
 import com.lenaebner.pokedex.ui.viewmodels.PokedexViewModel
 import kotlinx.coroutines.flow.collect

@@ -61,7 +61,6 @@ fun Navigation() {
             ) { backStackEntry ->
                 val vm: ItemViewModel = hiltNavGraphViewModel(backStackEntry)
                 ItemScreen(vm = vm)
-            }
-        }
+            }        }
     }
 }

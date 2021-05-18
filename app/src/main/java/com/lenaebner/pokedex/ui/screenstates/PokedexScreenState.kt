@@ -1,6 +1,6 @@
 package com.lenaebner.pokedex.ui.screenstates
 
-import com.lenaebner.pokedex.api.models.PokemonWithColor
+import com.lenaebner.pokedex.ui.pokedex.PokemonWithColor
 
 sealed class PokedexScreenState {
     object Loading: PokedexScreenState()

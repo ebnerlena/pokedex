@@ -1,4 +1,5 @@
-package com.lenaebner.pokedex.api.models
+package com.lenaebner.pokedex.ui.pokedex
+
 
 data class PokemonWithColor(
     val name: String,
@@ -8,3 +9,4 @@ data class PokemonWithColor(
     val color: String,
     val onClick: () -> Unit
 )
+
