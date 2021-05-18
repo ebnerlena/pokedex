@@ -21,17 +21,13 @@ fun Header(
     icon: ImageVector,
     iconTint: Color = Color.White,
     pokemon: Pokemon? = null,
-    backClicked: ()->Unit
+    backClicked: () -> Unit
 ) {
-    val navController = ActiveNavController.current
 
     TopAppBar(modifier = Modifier.height(90.dp), backgroundColor = backgroundColor) {
         Column() {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 IconButton(onClick = backClicked
-                    //back navigation not always working
-                    // e.g when pressing back from singlepokemon gets back to homescreen instead of pokedexscreen
-                    //navController.popBackStack()
                 ) {
                     Icon(
                         imageVector = icon,
@@ -55,12 +51,6 @@ fun Header(
                         modifier = Modifier.padding(start=8.dp, bottom = 8.dp)
                     )
                 }
-                /*Text(
-                    text = title,
-                    color = textColor,
-                    style = MaterialTheme.typography.h1,
-                    modifier = Modifier.padding(start=8.dp, bottom = 8.dp).weight(5f)
-                ) */
                 if(pokemon != null) {
                     Text(
                         text = '#'+pokemon.id.toString(),

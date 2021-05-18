@@ -11,7 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.lenaebner.pokedex.ui.theme.transparentGrey
 import com.lenaebner.pokedex.repository.item.ItemPreview
-
+import com.lenaebner.pokedex.ui.theme.pokeGrey
 
 
 @Composable
@@ -24,7 +24,7 @@ fun FeaturedItem(
         elevation = 2.dp,
         modifier = modifier,
         shape = RoundedCornerShape(16.dp),
-        backgroundColor = transparentGrey
+        backgroundColor = pokeGrey
     ) {
         Column(
             modifier = Modifier

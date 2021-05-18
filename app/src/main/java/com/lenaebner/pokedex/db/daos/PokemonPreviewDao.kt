@@ -14,7 +14,7 @@ interface PokemonPreviewDao {
     suspend fun insertPokemons(vararg pokemons: DbPokemonPreview)
 
     @Transaction
-    @Query("SELECT * FROM pokemon_preview LIMIT 30")
+    @Query("SELECT * FROM pokemon_preview LIMIT 200")
     fun observePokePreviews(): Flow<List<PokemonPreviewWithTypes>>
 
     @Transaction

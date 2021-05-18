@@ -29,7 +29,7 @@ class PokedexViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            pokedexRepository.getPokemons(1, 30).collect {
+            pokedexRepository.getPokemons(1, 200).collect {
                 val pokemons = it.map { p ->
                     PokemonWithColor(
                         name = p.name,

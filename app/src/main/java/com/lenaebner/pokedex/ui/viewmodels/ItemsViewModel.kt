@@ -25,7 +25,7 @@ class ItemsViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            itemRepository.getItems(1,30).collect {
+            itemRepository.getItems(1,200).collect {
                 val items = it.map { item ->
                     ItemPreview(
                         id = item.itemId.toInt(),

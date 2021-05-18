@@ -36,11 +36,11 @@ interface ItemDao {
     fun observeItem(id: Long): Flow<DbItem>
 
     @Transaction
-    @Query("SELECT * FROM item LIMIT 50")
+    @Query("SELECT * FROM item LIMIT 100")
     fun observeItems(): Flow<List<DbItem>>
 
 
-    @Query("SELECT * FROM item LIMIT 50")
+    @Query("SELECT * FROM item LIMIT 100")
     suspend fun getAll(): List<DbItem>
 
     @Transaction
