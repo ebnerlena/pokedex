@@ -7,11 +7,15 @@ data class ApiItem(
     val name: String ="",
     val id: Int = 1,
     val fling_power: Int? = null,
-    val fling_effect: String? = null,
+    val fling_effect: ApiFlingEffect? = null,
     val effect_entries: List<EffectEntry> = emptyList(),
     val flavor_text_entries: List<FlavorTextEntryItem> = emptyList(),
     val sprites: ItemSprite = ItemSprite(),
     val names: List<ItemName> = emptyList(),
+)
+
+data class ApiFlingEffect(
+    val name: String
 )
 
 data class ApiItemPreview(
@@ -34,5 +38,10 @@ data class ItemSprite(
 )
 
 data class ItemName(
+    val language: Language,
     val name: String = ""
+)
+
+data class Language(
+    val name: String
 )

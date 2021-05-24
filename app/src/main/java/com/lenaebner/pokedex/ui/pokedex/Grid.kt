@@ -1,5 +1,6 @@
 package com.lenaebner.pokedex.PokedexScreen
 
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Spacer
@@ -29,6 +30,7 @@ fun PokemonsGrid(pokemons: List<PokemonWithColor>) {
                 modifier = Modifier
                     .padding(vertical = 6.dp, horizontal = 6.dp)
                     .background(MaterialTheme.colors.background)
+                    .animateContentSize()
             )
             Spacer(modifier = Modifier.size(4.dp))
         }

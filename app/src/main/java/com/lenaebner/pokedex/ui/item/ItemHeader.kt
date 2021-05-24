@@ -59,13 +59,5 @@ fun ItemHeader(item: Item, imageRowModifier: Modifier) {
             contentScale = ContentScale.Fit,
             alignment = Alignment.Center
         )
-
-        when (painter.loadState) {
-            ImageLoadState.Empty, is ImageLoadState.Loading, is ImageLoadState.Error -> Image(
-                painter = painterResource(id = R.drawable.pokeball2),
-                modifier = imageModifier,
-                contentDescription = "Fallback Image"
-            )
-        }
     }
 }

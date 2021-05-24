@@ -25,5 +25,6 @@ data class EggGroup(
 )
 
 data class GeneraEntry(
-    val genus: String = ""
+    val genus: String = "",
+    val language: Language
 )
