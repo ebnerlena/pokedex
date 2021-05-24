@@ -66,7 +66,6 @@ class ItemRepository @Inject constructor(
             //item not yet in database
             if(dbItem == null) {
                 val apiItem = api.getItem(i)
-
                 itemDb.insertItem(apiItem.asDbItem())
 
                 //Create effects and attributes if they do not exist yet

@@ -38,12 +38,12 @@ fun DbItem.asItem() = Item(
 )
 
 fun ApiItem.asDbItem() = DbItem(
-    name = names[7].name,
+    name = names.find {name -> name.language.name == "en"}?.name ?: "Item",
     category = category.name,
     cost = cost,
-    fling_effect = fling_effect,
+    fling_effect = fling_effect?.name,
     fling_power = fling_power,
     sprite = sprites.default,
     itemId = id.toLong(),
-    description = flavor_text_entries[7].text
+    description = flavor_text_entries.find { entry -> entry.language.name == "en" }?.text ?: "Item Description"
 )

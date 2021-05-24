@@ -1,5 +1,6 @@
 package com.lenaebner.pokedex.SinglePokemon
 
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.MaterialTheme
@@ -21,7 +22,7 @@ fun Description(pokemon: Pokemon, species: Species?) {
                 text = text,
                 color = MaterialTheme.colors.secondaryVariant,
                 style = MaterialTheme.typography.h6,
-                modifier = Modifier.padding(8.dp)
+                modifier = Modifier.padding(8.dp).animateContentSize()
             )
         }
 

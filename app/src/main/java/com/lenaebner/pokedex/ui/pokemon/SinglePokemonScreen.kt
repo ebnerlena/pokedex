@@ -1,6 +1,7 @@
 package com.lenaebner.pokedex.SinglePokemon
 
 import PokedexTheme
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
@@ -134,12 +135,12 @@ fun PokemonScreen(pokemon: Pokemon, species: Species?, evolutionChainEntries: Li
                             requestBuilder = {
                                 transformations(CircleCropTransformation())
                             },
-                            previewPlaceholder = R.drawable.pokemon1
                         )
 
                         Image(
                             modifier = Modifier
                                 .fillMaxHeight()
+                                .animateContentSize()
                                 .width(120.dp)
                                 .padding(horizontal = 0.dp, vertical = 8.dp)
                                 .background(transparentWhite),
@@ -148,13 +149,6 @@ fun PokemonScreen(pokemon: Pokemon, species: Species?, evolutionChainEntries: Li
                             contentScale = ContentScale.Fit,
                             alignment = Alignment.Center
                         )
-
-                        when (painter.loadState) {
-                            ImageLoadState.Empty, is ImageLoadState.Loading, is ImageLoadState.Error -> Image(
-                                painter = painterResource(id = R.drawable.pokemon1),
-                                contentDescription = "Fallback Image"
-                            )
-                        }
                     }
                     Row(modifier = Modifier.weight(3f)){
                         CardNavigation(

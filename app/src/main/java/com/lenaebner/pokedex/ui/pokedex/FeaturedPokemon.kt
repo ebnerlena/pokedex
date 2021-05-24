@@ -88,7 +88,6 @@ fun FeaturedPokemon(
                         requestBuilder = {
                             transformations(CircleCropTransformation())
                         },
-                        previewPlaceholder = R.drawable.pokemon1
                     )
 
                     Image(
@@ -103,13 +102,6 @@ fun FeaturedPokemon(
                         contentScale = ContentScale.Fit,
                         alignment = Alignment.Center
                     )
-
-                    when (painter.loadState) {
-                        ImageLoadState.Empty, is ImageLoadState.Loading, is ImageLoadState.Error -> Image(
-                            painter = painterResource(id = R.drawable.pokemon1),
-                            contentDescription = "Fallback Image"
-                        )
-                    }
                 }
             }
         }

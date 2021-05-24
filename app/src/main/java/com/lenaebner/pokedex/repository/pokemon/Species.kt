@@ -19,8 +19,8 @@ fun ApiSpecies.asDbSpecies() = DbSpecies(
     speciesId = id,
     name = name,
     color = color.name,
-    description = flavor_text_entries[7].flavor_text.replace("[\n\r]".toRegex(), " ") ,
-    genera = genera[7].genus
+    description = flavor_text_entries.find{entry -> entry.language.name == "en"}?.flavor_text?.replace("[\n\r]".toRegex(), " ") ?: "" ,
+    genera = genera.find{g -> g.language.name == "en"}?.genus ?: "Genera"
 )
 
 fun DbSpecies.asSpecies() = Species(

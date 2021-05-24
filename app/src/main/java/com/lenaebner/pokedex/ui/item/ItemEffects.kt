@@ -1,5 +1,6 @@
 package com.lenaebner.pokedex.ItemScreen
 
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
@@ -24,7 +25,7 @@ fun ItemEffects(item: Item) {
                 text = it,
                 color = MaterialTheme.colors.secondaryVariant,
                 style = MaterialTheme.typography.body2,
-                modifier = Modifier.padding(vertical = 8.dp, horizontal = 8.dp)
+                modifier = Modifier.padding(vertical = 8.dp, horizontal = 8.dp).animateContentSize()
             )
         }
     }
