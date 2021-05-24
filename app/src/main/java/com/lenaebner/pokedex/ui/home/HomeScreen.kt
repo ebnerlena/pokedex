@@ -9,8 +9,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.lenaebner.pokedex.ui.viewmodels.SearchViewModel
 
-
+/*
 //just for visual preview - cause nav not working like that
 @Preview
 @Composable
@@ -26,10 +27,10 @@ fun SearchbarPreview() {
     PokedexTheme {
         Searchbar()
     }
-}
+} */
 
 @Composable
-fun Home() {
+fun Home(vm: SearchViewModel) {
     Scaffold(
         topBar = {
             Row {
@@ -46,7 +47,7 @@ fun Home() {
     ){
 
         Column() {
-            Searchbar()
+            Searchbar(vm = vm)
             Spacer(modifier = Modifier.height(8.dp))
             Categories()
         }

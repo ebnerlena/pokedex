@@ -14,6 +14,7 @@ import com.lenaebner.pokedex.PokedexScreen.PokedexScreen
 import com.lenaebner.pokedex.SinglePokemon.SinglePokemonScreen
 import com.lenaebner.pokedex.ui.viewmodels.PokemonViewModel
 import com.lenaebner.pokedex.ui.viewmodels.PokedexViewModel
+import com.lenaebner.pokedex.ui.viewmodels.SearchViewModel
 import com.lenaebner.pokedex.viewmodels.ItemViewModel
 import com.lenaebner.pokedex.viewmodels.ItemsViewModel
 
@@ -28,7 +29,10 @@ fun Navigation() {
             navController = navController,
             startDestination = "home"
         ) {
-            composable("home") { Home() }
+            composable("home") {
+                val vm: SearchViewModel = hiltNavGraphViewModel(it)
+                Home(vm = vm)
+            }
             composable("pokedex") {
                 val vm: PokedexViewModel = hiltNavGraphViewModel(it)
                 PokedexScreen(vm = vm)

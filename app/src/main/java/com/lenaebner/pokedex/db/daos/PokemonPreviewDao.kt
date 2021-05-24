@@ -2,6 +2,8 @@ package com.lenaebner.pokedex.db.daos
 
 import androidx.room.*
 import com.lenaebner.pokedex.db.entities.*
+import com.lenaebner.pokedex.repository.pokemon.PokemonPreview
+import com.lenaebner.pokedex.repository.pokemon.SearchPokemonPreview
 import kotlinx.coroutines.flow.Flow
 
 
@@ -20,6 +22,10 @@ interface PokemonPreviewDao {
     @Transaction
     @Query("SELECT * FROM  pokemon_type where typeId = :id")
     fun observeTypeWithPokemons(id: Long): Flow<List<TypeWithPokemons>>
+
+    @Transaction
+    @Query("SELECT * FROM  pokemon_preview where name LIKE :query LIMIT 4")
+    fun findPokemons(query: String): Flow<List<DbPokemonPreview>>
 
     @Update
     suspend fun updatePokemon(pokemon: DbPokemonPreview)

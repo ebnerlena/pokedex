@@ -24,7 +24,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            PokedexTheme {
+            PokedexTheme(darkTheme = false) {
                 Surface(color = MaterialTheme.colors.background) {
                     Navigation()
                 }

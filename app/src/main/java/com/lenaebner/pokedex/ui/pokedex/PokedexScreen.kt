@@ -42,7 +42,7 @@ fun Pokedex(pokemons: List<PokemonWithColor>, backClicked: () -> Unit) {
         topBar = {
             Header(
                 textColor = MaterialTheme.colors.secondaryVariant,
-                backgroundColor = Color.White,
+                backgroundColor = MaterialTheme.colors.background,
                 title = "Pokedex",
                 iconTint = MaterialTheme.colors.secondaryVariant,
                 icon = Icons.Default.ArrowBack,

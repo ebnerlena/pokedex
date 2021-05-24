@@ -38,6 +38,18 @@ class PokedexRepository @Inject constructor(
             }
     }
 
+    fun findPokemons(query: String): Flow<List<SearchPokemonPreview>> {
+        return pokemonDb.findPokemons(query)
+            .distinctUntilChanged()
+            .filterNotNull()
+            .map {
+                it.map { p ->
+                    p.asSearchPokemonPreview()
+                }
+            }
+    }
+
+
     private suspend fun refresh(from: Int, limit: Int) {
         val persistentPokemons = pokemonDb.getAll()
 
