@@ -1,7 +1,5 @@
 package com.lenaebner.pokedex.HomeScreen
 
-import androidx.compose.animation.Animatable
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.layout.*

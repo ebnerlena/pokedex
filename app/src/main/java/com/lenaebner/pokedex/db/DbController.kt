@@ -19,9 +19,9 @@ object DbController {
              PokedexDatabase::class.java,
              "pokemons.db"
          )
+        .createFromAsset("prefetched.db")
         .fallbackToDestructiveMigration()
         .build()
-
 
     @Provides
     fun pokePreviewDao(db: PokedexDatabase) = db.pokemonPreviewDao()
