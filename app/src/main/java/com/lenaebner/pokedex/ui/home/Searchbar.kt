@@ -1,14 +1,11 @@
 package com.lenaebner.pokedex.HomeScreen
 
-import android.util.Log
 import androidx.compose.animation.animateContentSize
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -19,28 +16,23 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.focusModifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.focus.FocusState
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import androidx.navigation.compose.navigate
 import com.lenaebner.pokedex.ActiveNavController
-import com.lenaebner.pokedex.R
 import com.lenaebner.pokedex.repository.pokemon.SearchPokemonPreview
 import com.lenaebner.pokedex.ui.screenstates.SearchState
-import com.lenaebner.pokedex.ui.theme.textColorLight
 import com.lenaebner.pokedex.ui.theme.transparentGrey
 import com.lenaebner.pokedex.ui.viewmodels.SearchViewModel
 
 
 @Composable
-fun Searchbar(vm: SearchViewModel) {
+fun Searchbar(vm: SearchViewModel, onFocusChanged: (FocusState) -> Unit = {}) {
     Column() {
 
         var query = remember { mutableStateOf("") }
@@ -81,7 +73,10 @@ fun Searchbar(vm: SearchViewModel) {
                     .fillMaxWidth()
                     .background(
                         color = MaterialTheme.colors.background
-                    ),
+                    )
+                    .onFocusChanged{
+                        onFocusChanged(it)
+                    }
             )
         }
 
@@ -106,7 +101,8 @@ fun SearchPokemomResult(pokemon: SearchPokemonPreview) {
         modifier = Modifier
             .clickable {
                 navController.navigate("pokemon/${pokemon.id}?speciesId=${pokemon.speciesId}")
-            }.padding(horizontal = 16.dp, vertical = 4.dp),
+            }
+            .padding(horizontal = 16.dp, vertical = 4.dp),
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically
 
@@ -122,7 +118,9 @@ fun SearchPokemomResult(pokemon: SearchPokemonPreview) {
     }
 
     Divider(
-        Modifier.height(2.dp).padding(horizontal = 16.dp),
-        color = MaterialTheme.colors.secondaryVariant
+        Modifier
+            .height(2.dp)
+            .padding(horizontal = 16.dp),
+        color = transparentGrey
     )
 }

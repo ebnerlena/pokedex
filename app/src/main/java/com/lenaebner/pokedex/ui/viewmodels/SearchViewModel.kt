@@ -22,12 +22,20 @@ class SearchViewModel @Inject constructor(
 
         viewModelScope.launch {
 
-            pokedexRepository.findPokemons(query).collect {
+            if(query == "%") {
                 _results.emit(
                     SearchState.Content(
-                        pokemons = it,
+                        pokemons = emptyList(),
                     )
                 )
+            } else {
+                pokedexRepository.findPokemons(query).collect {
+                    _results.emit(
+                        SearchState.Content(
+                            pokemons = it,
+                        )
+                    )
+                }
             }
 
         }
