@@ -84,10 +84,7 @@ fun FeaturedPokemon(
                     .padding(2.dp)) {
 
                     val painter = rememberCoilPainter(
-                        request = pokemon.sprite,
-                        requestBuilder = {
-                            transformations(CircleCropTransformation())
-                        },
+                        request = pokemon.sprite
                     )
 
                     Image(

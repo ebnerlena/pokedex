@@ -2,6 +2,7 @@ package com.lenaebner.pokedex.SinglePokemon
 
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
@@ -11,12 +12,14 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import com.lenaebner.pokedex.repository.pokemon.EvolvingPokemons
 import com.lenaebner.pokedex.repository.pokemon.Pokemon
 import com.lenaebner.pokedex.repository.pokemon.Species
 
 
+@ExperimentalMaterialApi
 @Composable
 fun CardNavigation(
     page: String,
@@ -34,6 +37,7 @@ fun CardNavigation(
     ) {
 
         var currentPage by rememberSaveable { mutableStateOf(page) }
+        val swipeableState = rememberSwipeableState(page)
 
         Column(modifier = Modifier.padding(bottom = 16.dp)) {
 
