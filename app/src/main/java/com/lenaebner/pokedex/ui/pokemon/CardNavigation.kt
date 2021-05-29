@@ -37,7 +37,6 @@ fun CardNavigation(
     ) {
 
         var currentPage by rememberSaveable { mutableStateOf(page) }
-        val swipeableState = rememberSwipeableState(page)
 
         Column(modifier = Modifier.padding(bottom = 16.dp)) {
 
