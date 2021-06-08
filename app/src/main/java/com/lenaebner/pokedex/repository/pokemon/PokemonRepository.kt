@@ -150,66 +150,71 @@ class PokemonRepository @Inject constructor(
         val pokemons: MutableList<EvolvingPokemons> = mutableListOf()
         var evolves = evolutionChainDetails.chain.evolves_to
         var species = evolutionChainDetails.chain.species
+        var entries = evolves
 
         try {
-            while (evolves.isNotEmpty()) {
-                val evolveEntry = evolves[0]
-                val details = evolveEntry.evolution_details[0]
-                val triggerText = when (details.trigger.name) {
-                    "level-up" -> if (details.min_happiness != null) "Hpy: " + details.min_happiness else "Lvl: " + evolveEntry.evolution_details[0].min_level
-                    "use-item" -> details.item?.name?.capitalize() ?: "Item"
-                    else -> "Level up"
+            entries.forEachIndexed { idx, evolveStep, ->
+                evolves = evolutionChainDetails.chain.evolves_to
+                while (evolves.isNotEmpty()) {
+                    val evolveEntry = evolves[idx]
+                    val details = evolveEntry.evolution_details[0]
+                    val triggerText = when (details.trigger.name) {
+                        "level-up" -> if (details.min_happiness != null) "Hpy: " + details.min_happiness else "Lvl: " + evolveEntry.evolution_details[0].min_level
+                        "use-item" -> details.item?.name?.capitalize() ?: "Item"
+                        else -> "Level up"
+                    }
+
+                    val pokeFrom = withContext(Dispatchers.IO) {
+                        api.getPokemon(
+                            species?.name.orEmpty()
+                        )
+                    }
+                    val pokeTo = withContext(Dispatchers.IO) {
+                        api.getPokemon(
+                            evolveEntry.species.name
+                        )
+                    }
+                    pokemons.add(
+                        EvolvingPokemons(
+                            from = UiBasicPokemon(
+                                id= pokeFrom.id.toInt(),
+                                name = pokeFrom.name,
+                                sprite = pokeFrom.sprites?.other?.artwork?.sprite.toString(),
+                                species = pokeFrom.species.name,
+                                speciesId = pokeFrom.species.url.split("/")[6].toLong(),
+                                onClick = { }
+                            ),
+
+                            to = UiBasicPokemon(
+                                id= pokeTo.id.toInt(),
+                                name = pokeTo.name,
+                                sprite = pokeTo.sprites?.other?.artwork?.sprite.toString(),
+                                species = pokeTo.species.name,
+                                speciesId = pokeTo.species.url.split("/")[6].toLong(),
+                                onClick = {}
+                            ),
+                            trigger = triggerText,
+                            id = evolutionChainDetails.id
+                        )
+                    )
+
+                    speciesDb.insertEvolvingPokemons(pokemons[pokemons.size-1].asDbEvolvingPokemon())
+
+                    // find db entry to get id for reference
+                    val dbEvolvingPokemons = speciesDb.getEvolvingPokemons(fromId = pokeFrom.id, toId = pokeTo.id, trigger = triggerText)
+
+                    speciesDb.insertSpeciesEvolvingPokemonCrossRef(
+                        SpeciesEvolvingPokemonsCrossRef(
+                            speciesId = speciesId,
+                            evolvingPokemonId = dbEvolvingPokemons.evolvingPokemonId.toLong()
+                        )
+                    )
+
+                    species = evolves[idx].species
+                    evolves = evolves[idx].evolves_to
                 }
-
-                val pokeFrom = withContext(Dispatchers.IO) {
-                    api.getPokemon(
-                        species?.name.orEmpty()
-                    )
-                }
-                val pokeTo = withContext(Dispatchers.IO) {
-                    api.getPokemon(
-                        evolveEntry.species.name
-                    )
-                }
-                pokemons.add(
-                    EvolvingPokemons(
-                        from = UiBasicPokemon(
-                            id= pokeFrom.id.toInt(),
-                            name = pokeFrom.name,
-                            sprite = pokeFrom.sprites?.other?.artwork?.sprite.toString(),
-                            species = pokeFrom.species.name,
-                            speciesId = pokeFrom.species.url.split("/")[6].toLong(),
-                            onClick = { }
-                        ),
-
-                        to = UiBasicPokemon(
-                            id= pokeTo.id.toInt(),
-                            name = pokeTo.name,
-                            sprite = pokeTo.sprites?.other?.artwork?.sprite.toString(),
-                            species = pokeTo.species.name,
-                            speciesId = pokeTo.species.url.split("/")[6].toLong(),
-                            onClick = {}
-                        ),
-                        trigger = triggerText,
-                        id = evolutionChainDetails.id
-                    )
-                )
-
-                speciesDb.insertEvolvingPokemons(pokemons[pokemons.size-1].asDbEvolvingPokemon())
-
-                // find db entry to get id for reference
-                val dbEvolvingPokemons = speciesDb.getEvolvingPokemons(fromId = pokeFrom.id, toId = pokeTo.id, trigger = triggerText)
-
-                speciesDb.insertSpeciesEvolvingPokemonCrossRef(
-                    SpeciesEvolvingPokemonsCrossRef(
-                        speciesId = speciesId,
-                        evolvingPokemonId = dbEvolvingPokemons.evolvingPokemonId.toLong()
-                    )
-                )
-
-                species = evolves[0].species
-                evolves = evolves[0].evolves_to
             }
+
 
         } catch (exception: Throwable) {
 

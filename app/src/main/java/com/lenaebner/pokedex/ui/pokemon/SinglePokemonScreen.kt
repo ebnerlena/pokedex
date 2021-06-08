@@ -131,10 +131,7 @@ fun PokemonScreen(pokemon: Pokemon, species: Species?, evolutionChainEntries: Li
                             .align(Alignment.CenterHorizontally)
                     ) {
                         val painter = rememberCoilPainter(
-                            request = pokemon.sprite,
-                            requestBuilder = {
-                                transformations(CircleCropTransformation())
-                            },
+                            request = pokemon.sprite
                         )
 
                         Image(

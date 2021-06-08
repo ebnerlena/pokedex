@@ -1,5 +1,6 @@
 package com.lenaebner.pokedex.shared
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
@@ -36,11 +37,14 @@ fun Header(
                     )
                 }
             }
-            Row(modifier = Modifier.fillMaxWidth().align(Alignment.CenterHorizontally),
+            Row(modifier = Modifier
+                .fillMaxWidth()
+                .align(Alignment.CenterHorizontally),
                 verticalAlignment = Alignment.CenterVertically) {
                 BoxWithConstraints(
                     modifier = Modifier
-                        .fillMaxWidth().weight(5f)
+                        .fillMaxWidth()
+                        .weight(5f)
                 ) {
                     val size = if(maxWidth > 200.dp) 18.sp else 16.sp
                     Text(
@@ -56,7 +60,9 @@ fun Header(
                         text = '#'+pokemon.id.toString(),
                         color = textColor,
                         style = MaterialTheme.typography.h5,
-                        modifier = Modifier.padding(end=8.dp, bottom = 8.dp).weight(1f)
+                        modifier = Modifier
+                            .padding(end = 8.dp, bottom = 8.dp)
+                            .weight(1f)
                     )
                 }
             }

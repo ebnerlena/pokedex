@@ -1,35 +1,49 @@
 package com.lenaebner.pokedex.HomeScreen
 
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusState
+import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
+import com.lenaebner.pokedex.ui.home.SearchPokemomResult
+import com.lenaebner.pokedex.ui.screenstates.SearchState
+
 
 
 @Composable
-fun Searchbar() {
+fun Searchbar(onFocusChanged: (FocusState) -> Unit = {}, onQueryChanged: (String) -> Unit = {} ) {
     Column() {
+
+        var query by remember { mutableStateOf("") }
 
         Row(modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp)){
-            OutlinedTextField(
-                value = "query", onValueChange = { /*TODO*/ }, label = { Text(text = "Search") },
+            TextField(
+                value = query,
+                onValueChange = { newValue ->
+                    query = newValue
+                    //vm.onQueryChanged("$newValue%")
+                    onQueryChanged("$newValue%")
+                },
+                textStyle = TextStyle(
+                    color = MaterialTheme.colors.secondaryVariant
+                ),
+                label = { Text(
+                    text = "Search",
+                    color = MaterialTheme.colors.secondaryVariant
+                ) },
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Text,
                     imeAction = ImeAction.Done,
@@ -41,22 +55,20 @@ fun Searchbar() {
                         tint = MaterialTheme.colors.secondaryVariant
                     )
                 },
+                colors = TextFieldDefaults.textFieldColors(
+                    backgroundColor = MaterialTheme.colors.background
+                ),
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(
-                        color = MaterialTheme.colors.onSecondary
+                        color = MaterialTheme.colors.background
                     )
+                    .onFocusChanged{
+                        onFocusChanged(it)
+                    }
             )
-        }
-
-        LazyColumn {
-            /* itemsIndexed(
-                 items = items retrieved from query
-                 https://morioh.com/p/74d132a326d7
-                 https://github.com/mitchtabian/MVVMRecipeApp/tree/searchview-toolbar
-             ){index, recipe ->
-                 RecipeCard(recipe = recipe, onClick = {})
-             } */
         }
     }
 }
+
+

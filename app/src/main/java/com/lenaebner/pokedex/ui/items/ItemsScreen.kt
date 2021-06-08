@@ -30,7 +30,7 @@ fun Items(items: List<ItemPreview>, backClicked: () -> Unit) {
         topBar = {
             Header(
                 textColor = MaterialTheme.colors.secondaryVariant,
-                backgroundColor = Color.White,
+                backgroundColor = MaterialTheme.colors.background,
                 title = "Items",
                 iconTint = MaterialTheme.colors.secondaryVariant,
                 icon = Icons.Default.ArrowBack,

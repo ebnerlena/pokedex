@@ -17,6 +17,7 @@ import com.lenaebner.pokedex.repository.pokemon.Pokemon
 import com.lenaebner.pokedex.repository.pokemon.Species
 
 
+@ExperimentalMaterialApi
 @Composable
 fun CardNavigation(
     page: String,

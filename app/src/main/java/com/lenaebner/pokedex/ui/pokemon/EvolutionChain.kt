@@ -97,9 +97,6 @@ fun PokemonEvlove(pokemon: UiBasicPokemon, modifier: Modifier) {
         ) {
             val painter = rememberCoilPainter(
                 request = pokemon.sprite,
-                requestBuilder = {
-                    transformations(CircleCropTransformation())
-                },
                 previewPlaceholder = R.drawable.pokemon1
             )
 
