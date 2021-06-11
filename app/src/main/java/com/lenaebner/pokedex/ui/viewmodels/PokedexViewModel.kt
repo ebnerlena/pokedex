@@ -2,22 +2,27 @@ package com.lenaebner.pokedex.ui.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.*
+import com.lenaebner.pokedex.db.PokedexDatabase
+import com.lenaebner.pokedex.db.daos.PokemonPreviewDao
+import com.lenaebner.pokedex.repository.PokedexRemoteMediator
 import com.lenaebner.pokedex.repository.pokemon.PokedexRepository
+import com.lenaebner.pokedex.repository.pokemon.asPokemonPreview
 import com.lenaebner.pokedex.ui.pokedex.PokemonWithColor
 import com.lenaebner.pokedex.ui.screenstates.PokedexScreenState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
+@ExperimentalPagingApi
 @HiltViewModel
 class PokedexViewModel @Inject constructor(
-    private val pokedexRepository: PokedexRepository
+    private val pokedexRepository: PokedexRepository,
+    private val pokedexDb : PokemonPreviewDao,
+    private val pokedexRemoteMediator: PokedexRemoteMediator
 ): ViewModel() {
 
     private val _actions = Channel<PokedexScreenAction>(Channel.BUFFERED)
@@ -27,8 +32,36 @@ class PokedexViewModel @Inject constructor(
 
     val uiState : StateFlow<PokedexScreenState> = _uiState
 
-    init {
+    val pokemons : Flow<PagingData<PokemonWithColor>> = Pager(
+        pagingSourceFactory = { pokedexDb.getPokemonPreviewsPaged() },
+        config = PagingConfig(pageSize = 25, initialLoadSize = 50),
+        remoteMediator = pokedexRemoteMediator
+    ).flow.map{
+        it.map{ p ->
+            val poke = p.asPokemonPreview()
+            PokemonWithColor(
+                name = poke.name,
+                color = poke.color,
+                id = poke.id,
+                types = poke.types,
+                sprite = poke.sprite,
+                onClick = {
+                    viewModelScope.launch {
+                        _actions.send(PokedexScreenAction.PokemonClicked(
+                            destination = "pokemon/${poke.id}?speciesId=${poke.speciesId}")
+                        )
+                    }
+                }
+            )
+        }
+    }.cachedIn(viewModelScope)
+
+
+    /* init {
+
+
         viewModelScope.launch {
+
             pokedexRepository.getPokemons(1, 200).collect {
                 val pokemons = it.map { p ->
                     PokemonWithColor(
@@ -53,7 +86,7 @@ class PokedexViewModel @Inject constructor(
                 )
             }
         }
-    }
+    } */
 
     sealed class PokedexScreenAction {
         object NavigateBack : PokedexScreenAction()

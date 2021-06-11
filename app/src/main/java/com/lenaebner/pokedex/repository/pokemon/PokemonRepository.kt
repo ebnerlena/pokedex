@@ -95,7 +95,7 @@ class PokemonRepository @Inject constructor(
                 name = apiPoke.name,
                 pokemonId = apiPoke.id.toInt(),
                 sprite = apiPoke.sprites?.other?.artwork?.sprite.toString(),
-                description = species.flavor_text_entries[7].flavor_text.replace("[\n\r]".toRegex(), " "), //TODO: weg lassen? wiel eh in species
+                description = species.flavor_text_entries[7].flavor_text.replace("[\n\r]".toRegex(), " "),
                 height = apiPoke.height,
                 weight = apiPoke.weight
             )

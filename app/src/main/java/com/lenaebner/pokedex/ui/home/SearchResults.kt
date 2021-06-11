@@ -16,7 +16,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.navigation.compose.navigate
 import com.lenaebner.pokedex.ActiveNavController
 import com.lenaebner.pokedex.repository.pokemon.SearchPokemonPreview
 import com.lenaebner.pokedex.ui.screenstates.SearchState

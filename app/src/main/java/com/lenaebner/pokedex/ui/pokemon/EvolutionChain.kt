@@ -21,15 +21,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil.transform.CircleCropTransformation
-import com.google.accompanist.coil.CoilImage
 import com.google.accompanist.coil.rememberCoilPainter
 import com.google.accompanist.imageloading.ImageLoadState
 import com.lenaebner.pokedex.R
 import com.lenaebner.pokedex.repository.pokemon.EvolvingPokemons
 import com.lenaebner.pokedex.repository.pokemon.UiBasicPokemon
 import com.lenaebner.pokedex.ui.theme.transparentGrey
-import com.lenaebner.pokedex.ui.theme.transparentWhite
 
 @Composable
 fun EvolutionChain(evolutionChainEntries: List<EvolvingPokemons>) {

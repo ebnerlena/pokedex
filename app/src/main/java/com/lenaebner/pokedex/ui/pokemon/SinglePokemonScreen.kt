@@ -10,21 +10,17 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.*
-import com.lenaebner.pokedex.R
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.compose.navigate
-import coil.transform.CircleCropTransformation
 import androidx.compose.foundation.Image
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.ui.layout.ContentScale
 import com.google.accompanist.coil.rememberCoilPainter
-import com.google.accompanist.imageloading.ImageLoadState
 import com.lenaebner.pokedex.*
 import com.lenaebner.pokedex.PokedexScreen.Type
 import com.lenaebner.pokedex.repository.pokemon.EvolvingPokemons
@@ -84,6 +80,7 @@ fun SinglePokemonScreen(state: PokemonScreenState) {
     }
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun PokemonScreen(pokemon: Pokemon, species: Species?, evolutionChainEntries: List<EvolvingPokemons>, navigateBack: () -> Unit) {
 

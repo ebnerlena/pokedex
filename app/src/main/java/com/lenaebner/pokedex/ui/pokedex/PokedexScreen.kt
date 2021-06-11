@@ -2,8 +2,12 @@ package com.lenaebner.pokedex.PokedexScreen
 
 
 import PokedexTheme
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
+import android.util.Log
+import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.icons.Icons
@@ -12,10 +16,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.compose.navigate
+import androidx.paging.ExperimentalPagingApi
+import androidx.paging.LoadState
+import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.items
 import com.lenaebner.pokedex.ActiveNavController
 import com.lenaebner.pokedex.shared.ErrorScreen
 import com.lenaebner.pokedex.shared.Header
@@ -51,16 +58,28 @@ fun Pokedex(pokemons: List<PokemonWithColor>, backClicked: () -> Unit) {
         },
         content = {
 
-            PokemonsGrid(pokemons = pokemons)
+            //PokemonsGrid(pokemons = pokemons)
         }
     )
 }
 
+@OptIn(ExperimentalPagingApi::class)
 @Composable
 fun PokedexScreen(vm: PokedexViewModel) {
-    
-    val uiState = vm.uiState.collectAsState().value
-    PokedexScreen(state = uiState)
+
+    val lazyPagingItems = vm.pokemons.collectAsLazyPagingItems()
+
+    if (lazyPagingItems.loadState.refresh == LoadState.Loading) {
+        CircularProgressIndicator(
+            modifier = Modifier
+                .fillMaxSize()
+                .wrapContentSize()
+        )
+    }
+    PokemonsGrid(lazyPagingItems)
+
+    //val uiState = vm.uiState.collectAsState().value
+    //PokedexScreen(state = uiState)
 
     val navController = ActiveNavController.current
 

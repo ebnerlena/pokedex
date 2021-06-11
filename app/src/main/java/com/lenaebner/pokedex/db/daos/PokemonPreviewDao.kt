@@ -1,15 +1,14 @@
 package com.lenaebner.pokedex.db.daos
 
+import androidx.paging.PagingSource
 import androidx.room.*
 import com.lenaebner.pokedex.db.entities.*
-import com.lenaebner.pokedex.repository.pokemon.PokemonPreview
-import com.lenaebner.pokedex.repository.pokemon.SearchPokemonPreview
 import kotlinx.coroutines.flow.Flow
 
 
 @Dao
 interface PokemonPreviewDao {
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertPokemon(pokemon: DbPokemonPreview)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -35,6 +34,12 @@ interface PokemonPreviewDao {
 
     @Query("SELECT * from pokemon_preview ORDER BY pokemonId DESC")
     suspend  fun getAll(): List<DbPokemonPreview>
+
+    @Query("SELECT Count(pokemonId) from pokemon_preview")
+    suspend  fun getNumberOfPokemons(): Int
+
+    @Query("SELECT * from pokemon_preview ORDER BY pokemonId ASC")
+    fun getPokemonPreviewsPaged(): PagingSource<Int, PokemonPreviewWithTypes>
 
     @Transaction
     @Query("SELECT * FROM pokemon_preview WHERE pokemonId LIKE :pokemonId")

@@ -10,9 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.navigation.compose.navigate
 import com.lenaebner.pokedex.ActiveNavController
 import com.lenaebner.pokedex.ItemScreen.ItemsGrid
 import com.lenaebner.pokedex.ScreenStates.ItemsOverviewScreenState
