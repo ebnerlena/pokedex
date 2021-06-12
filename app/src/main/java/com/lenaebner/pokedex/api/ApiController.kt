@@ -12,21 +12,25 @@ import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import java.util.concurrent.TimeUnit
+import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
 object ApiController {
 
+    @Singleton
     @Provides
     fun okHttpClient() = OkHttpClient.Builder()
         .readTimeout(60, TimeUnit.SECONDS)
         .build()
 
+    @Singleton
     @Provides
-   fun moshi() = Moshi.Builder()
+    fun moshi() = Moshi.Builder()
         .add(KotlinJsonAdapterFactory())
         .build()
 
+    @Singleton
     @Provides
     fun retrofit(client: OkHttpClient, moshi: Moshi) = Retrofit.Builder()
         .client(client)
@@ -34,10 +38,12 @@ object ApiController {
         .addConverterFactory(MoshiConverterFactory.create(moshi))
         .build()
 
+    @Singleton
     @Provides
     fun pokeApi(retrofit: Retrofit) = retrofit.create(PokemonApi::class.java)
 
-   @Provides
-   fun itemsApi(retrofit: Retrofit) = retrofit.create(ItemApi::class.java)
+    @Singleton
+    @Provides
+    fun itemApi(retrofit: Retrofit) = retrofit.create(ItemApi::class.java)
 
 }

@@ -2,9 +2,6 @@ package com.lenaebner.pokedex.db
 
 import android.content.Context
 import androidx.room.Room
-import com.lenaebner.pokedex.api.PokemonApi
-import com.lenaebner.pokedex.db.daos.PokemonPreviewDao
-import com.lenaebner.pokedex.db.daos.PokemonTypeDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -24,13 +21,14 @@ object DbController {
              PokedexDatabase::class.java,
              "pokemons.db"
          )
-        //.createFromAsset("prefetched.db")
+        .createFromAsset("prefetched.db")
         .fallbackToDestructiveMigration()
         .build()
 
     @Singleton
     @Provides
     fun pokePreviewDao(db: PokedexDatabase) = db.pokemonPreviewDao()
+
     @Singleton
     @Provides
     fun pokemonDao(db: PokedexDatabase) = db.pokemonDao()

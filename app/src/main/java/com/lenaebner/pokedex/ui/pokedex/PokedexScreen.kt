@@ -1,6 +1,7 @@
 package com.lenaebner.pokedex.PokedexScreen
 
 
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.icons.Icons
@@ -10,7 +11,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
-import androidx.paging.compose.collectAsLazyPagingItems
 import com.lenaebner.pokedex.ActiveNavController
 import com.lenaebner.pokedex.shared.Header
 import com.lenaebner.pokedex.shared.LoadingSpinner
@@ -20,7 +20,7 @@ import kotlinx.coroutines.flow.collect
 
 
 @Composable
-fun Pokedex(pokemons: LazyPagingItems<PokemonWithColor>, backClicked: () -> Unit) {
+fun Pokedex(pokemons: LazyPagingItems<PokemonWithColor>, backClicked: () -> Unit, lazyListState: LazyListState) {
 
     Scaffold (
         topBar = {
@@ -39,7 +39,7 @@ fun Pokedex(pokemons: LazyPagingItems<PokemonWithColor>, backClicked: () -> Unit
                 LoadingSpinner()
             }
             else {
-                PokemonsGrid(pokemons = pokemons)
+                PokemonsGrid(pokemons = pokemons, lazyListState)
             }
         }
     )
@@ -47,19 +47,10 @@ fun Pokedex(pokemons: LazyPagingItems<PokemonWithColor>, backClicked: () -> Unit
 
 @OptIn(ExperimentalPagingApi::class)
 @Composable
-fun PokedexScreen(vm: PokedexViewModel) {
+fun PokedexScreen(lazyListState: LazyListState, lazyPagingItems: LazyPagingItems<PokemonWithColor>) {
 
-    val lazyPagingItems = vm.pokemons.collectAsLazyPagingItems()
+    //val lazyPagingItems = vm.pokemons.collectAsLazyPagingItems()
     val navController = ActiveNavController.current
 
-    Pokedex(pokemons = lazyPagingItems, backClicked = { navController.navigateUp() })
-
-    LaunchedEffect(key1 = vm.actions) {
-        vm.actions.collect {
-            when(it) {
-                is PokedexViewModel.PokedexScreenAction.NavigateBack -> navController.navigateUp()
-                is PokedexViewModel.PokedexScreenAction.PokemonClicked -> navController.navigate(it.destination)
-            }
-        }
-    }
+    Pokedex(pokemons = lazyPagingItems, backClicked = { navController.navigateUp() }, lazyListState)
 }

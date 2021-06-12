@@ -4,8 +4,8 @@ import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.paging.compose.items
 import androidx.compose.foundation.lazy.GridCells
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyVerticalGrid
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme
@@ -19,10 +19,12 @@ import com.lenaebner.pokedex.ui.pokedex.PokemonWithColor
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun PokemonsGrid(pokemons: LazyPagingItems<PokemonWithColor>) {
+fun PokemonsGrid(pokemons: LazyPagingItems<PokemonWithColor>, lazyListState: LazyListState) {
 
     LazyVerticalGrid(
-        cells = GridCells.Fixed(2), modifier = Modifier.padding(4.dp)
+        cells = GridCells.Fixed(2),
+        modifier = Modifier.padding(4.dp),
+        state = lazyListState
     ) {
         items(pokemons.itemCount) { index ->
 

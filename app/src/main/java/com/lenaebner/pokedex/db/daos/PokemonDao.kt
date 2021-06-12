@@ -36,6 +36,14 @@ interface PokemonDao {
     suspend fun getPokemonWithAbility(id: Long): PokemonWithAbilities
 
     @Transaction
+    @Query("SELECT * FROM pokemon_ability_cross_ref WHERE abilityId LIKE :abilityId AND pokemonId LIKE :pokemonId")
+    suspend fun getPokemonAbilityCrossRef(abilityId: Long, pokemonId: Long): PokemonAbilityCrossRef
+
+    @Transaction
+    @Query("SELECT * FROM pokemon_species_cross_ref WHERE speciesId LIKE :speciesId AND pokemonId LIKE :pokemonId")
+    suspend fun getPokemonSpeciesCrossRef(speciesId: Long, pokemonId: Long): PokemonSpeciesCrossRef
+
+    @Transaction
     @Query("SELECT * FROM pokemon WHERE pokemonId LIKE :id")
     suspend fun getPokemonWithTypes(id: Long): PokemonWithTypes
 

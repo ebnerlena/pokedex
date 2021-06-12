@@ -25,8 +25,13 @@ interface PokemonSpeciesDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertSpeciesEggGroupCrossRef(ref: SpeciesEggGroupCrossRef)
 
-    @Query("SELECT * FROM egg_group WHERE eggGroupId LIKE :id")
-    suspend fun getEggGroup(id: Int): DbSpeciesEggGroup
+    @Query("SELECT * FROM egg_group WHERE eggGroupId LIKE :eggGroupId")
+    suspend fun getEggGroup(eggGroupId: Long): DbSpeciesEggGroup
+
+    @Transaction
+    @Query("SELECT * FROM species_egg_group_cross_ref WHERE speciesId LIKE :speciesId AND eggGroupId LIKE :eggGroupId")
+    suspend fun getSpeciesEggGroupCrossRef(speciesId: Long, eggGroupId: Long): SpeciesEggGroupCrossRef
+
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertEggGroup(eggGroup: DbSpeciesEggGroup)

@@ -38,6 +38,7 @@ interface PokemonPreviewDao {
     @Query("SELECT Count(pokemonId) from pokemon_preview")
     suspend  fun getNumberOfPokemons(): Int
 
+    @Transaction
     @Query("SELECT * from pokemon_preview ORDER BY pokemonId ASC")
     fun getPokemonPreviewsPaged(): PagingSource<Int, PokemonPreviewWithTypes>
 

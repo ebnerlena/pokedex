@@ -20,7 +20,6 @@ data class PokemonMove(
 )
 
 data class PokemonPreview(
-    val id: Long = 1,
     val name: String = "",
     val url: String = ""
 )

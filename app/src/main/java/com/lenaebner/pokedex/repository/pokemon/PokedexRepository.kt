@@ -1,6 +1,5 @@
 package com.lenaebner.pokedex.repository.pokemon
 
-import android.util.Log
 import androidx.paging.*
 import com.lenaebner.pokedex.api.PokemonApi
 import com.lenaebner.pokedex.api.models.ApiPokemon
@@ -9,14 +8,10 @@ import com.lenaebner.pokedex.db.daos.PokemonTypeDao
 import com.lenaebner.pokedex.db.entities.DbPokemonPreview
 import com.lenaebner.pokedex.db.entities.DbPokemonType
 import com.lenaebner.pokedex.db.entities.PokemonTypeCrossRef
-import com.lenaebner.pokedex.repository.PokedexRemoteMediator
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Singleton
 
