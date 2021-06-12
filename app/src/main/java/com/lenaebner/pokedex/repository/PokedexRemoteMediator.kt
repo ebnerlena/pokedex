@@ -1,6 +1,5 @@
 package com.lenaebner.pokedex.repository
 
-import android.util.Log
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadType
 import androidx.paging.PagingState
@@ -26,37 +25,38 @@ class PokedexRemoteMediator @Inject constructor(
         state: PagingState<Int, PokemonPreviewWithTypes>
     ): MediatorResult {
 
-
-        val offset = when (loadType) {
-            //No Data is present so start from 0
-            LoadType.REFRESH -> 0
-            //We are only supporting paging forward, therefore we don't support Prepend
-            LoadType.PREPEND -> return MediatorResult.Success(endOfPaginationReached = true)
-            LoadType.APPEND -> state.lastItemOrNull()?.pokemon?.pokemonId?.toInt() ?: 0
-        }
-
-        val response = api.getPokemons(
-            limit = when (loadType) {
-                LoadType.REFRESH -> state.config.initialLoadSize
-                else -> state.config.pageSize
-            },
-            offset = offset
-        )
-        coroutineScope {
-            launch(Dispatchers.IO) {
-                response.results.map {
-                    async {
-                        var dbPokemon = database.getPokemon(it.name)
-                        if(dbPokemon == null) {
-                            var apiPokemon = api.getPokemon(it.name)
-                            pokedexRepository.persistPokemon(apiPoke = apiPokemon)
-                        }
-                    }
-                }.awaitAll()
+        return try {
+            val offset = when (loadType) {
+                LoadType.REFRESH -> 0
+                LoadType.PREPEND -> return MediatorResult.Success(endOfPaginationReached = true)
+                LoadType.APPEND -> state.lastItemOrNull()?.pokemon?.pokemonId?.toInt() ?: 0
             }
-        }
 
-        return MediatorResult.Success(endOfPaginationReached = response.next == null)
+            val response = api.getPokemons(
+                limit = when (loadType) {
+                    LoadType.REFRESH -> state.config.initialLoadSize
+                    else -> state.config.pageSize
+                },
+                offset = offset
+            )
+            coroutineScope {
+                launch(Dispatchers.IO) {
+                    response.results.map {
+                        async {
+                            var dbPokemon = database.getPokemon(it.name)
+                            if (dbPokemon == null) {
+                                var apiPokemon = api.getPokemon(it.name)
+                                pokedexRepository.persistPokemon(apiPoke = apiPokemon)
+                            }
+                        }
+                    }.awaitAll()
+                }
+            }
+
+            return MediatorResult.Success(endOfPaginationReached = response.next == null)
+        } catch(e: Throwable) {
+            return MediatorResult.Error(e)
+        }
     }
 
     override suspend fun initialize(): InitializeAction {
@@ -66,5 +66,4 @@ class PokedexRemoteMediator @Inject constructor(
             InitializeAction.LAUNCH_INITIAL_REFRESH
         }
     }
-
 }

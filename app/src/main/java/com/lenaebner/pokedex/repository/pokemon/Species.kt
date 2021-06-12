@@ -23,14 +23,6 @@ fun ApiSpecies.asDbSpecies() = DbSpecies(
     genera = genera.find{g -> g.language.name == "en"}?.genus ?: "Genera"
 )
 
-fun DbSpecies.asSpecies() = Species(
-    name = name,
-    id = speciesId,
-    color = color,
-    flavor_text_entry = description,
-    genera = genera
-)
-
 fun EggGroup.asDbSpeciesEggGroup() = DbSpeciesEggGroup(
     name = name,
     eggGroupId = url.split("/")[6].toInt()

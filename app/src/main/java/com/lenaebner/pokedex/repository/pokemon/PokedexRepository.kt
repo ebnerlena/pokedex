@@ -27,31 +27,6 @@ class PokedexRepository @Inject constructor(
     private val pokemonDb: PokemonPreviewDao,
     private val typeDb: PokemonTypeDao,
 ) {
-    private val repositoryScope = CoroutineScope(context = Dispatchers.IO)
-
-    /*fun pokemons(pageSize: Int = 25): Flow<PagingData<PokemonPreview>> = Pager(
-        config = PagingConfig(pageSize = pageSize),
-        remoteMediator = remoteMediator,
-        pagingSourceFactory = { pokemonDb.getPokemonPreviewsPaged() }
-    ).flow.map { pagingData ->
-        pagingData.map { pokemon ->
-            pokemon.asPokemonPreview()
-        }
-    } */
-
-
-    fun getPokemons(from: Int, limit: Int) : Flow<List<PokemonPreview>> {
-        repositoryScope.launch { refresh(from, limit) }
-
-        return pokemonDb.observePokePreviews()
-            .distinctUntilChanged()
-            .filterNotNull()
-            .map {
-                it.map { p ->
-                    p.asPokemonPreview()
-                }
-            }
-    }
 
     fun findPokemons(query: String): Flow<List<SearchPokemonPreview>> {
         return pokemonDb.findPokemons(query)
@@ -62,21 +37,6 @@ class PokedexRepository @Inject constructor(
                     p.asSearchPokemonPreview()
                 }
             }
-    }
-
-
-    private suspend fun refresh(from: Int, limit: Int) {
-        val persistentPokemons = pokemonDb.getAll()
-
-        for (i in from..from+limit) {
-            var poke = persistentPokemons.find { p -> p.pokemonId.toInt() == i }
-
-            //pokemon not yet in database
-            if(poke == null) {
-                val apiPoke = api.getPokemon(i.toLong())
-                persistPokemon(apiPoke = apiPoke)
-            }
-        }
     }
 
     suspend fun persistPokemon(apiPoke: ApiPokemon){

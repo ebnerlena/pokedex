@@ -1,15 +1,12 @@
 package com.lenaebner.pokedex.PokedexScreen
 
 
-import androidx.compose.foundation.layout.*
-import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.ui.Modifier
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
@@ -40,7 +37,8 @@ fun Pokedex(pokemons: LazyPagingItems<PokemonWithColor>, backClicked: () -> Unit
 
             if (pokemons.loadState.refresh == LoadState.Loading) {
                 LoadingSpinner()
-            } else {
+            }
+            else {
                 PokemonsGrid(pokemons = pokemons)
             }
         }
