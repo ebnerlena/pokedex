@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.dp
 
 
 @Composable
-fun loadingSpinner() {
+fun LoadingSpinner() {
     PokedexTheme {
 
         Column(
@@ -49,5 +49,5 @@ fun loadingSpinner() {
 @Preview
 @Composable
 fun loadingSpinnerPreview() {
-    loadingSpinner()
+    LoadingSpinner()
 }

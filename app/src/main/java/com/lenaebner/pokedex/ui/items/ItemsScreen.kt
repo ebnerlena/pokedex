@@ -17,7 +17,7 @@ import com.lenaebner.pokedex.ScreenStates.ItemsOverviewScreenState
 import com.lenaebner.pokedex.repository.item.ItemPreview
 import com.lenaebner.pokedex.shared.ErrorScreen
 import com.lenaebner.pokedex.shared.Header
-import com.lenaebner.pokedex.shared.loadingSpinner
+import com.lenaebner.pokedex.shared.LoadingSpinner
 import com.lenaebner.pokedex.viewmodels.ItemsViewModel
 import kotlinx.coroutines.flow.collect
 
@@ -64,7 +64,7 @@ fun ItemsScreen(state: ItemsOverviewScreenState) {
             items = state.items,
             backClicked = state.backClicked
         )
-        is ItemsOverviewScreenState.Loading -> loadingSpinner()
+        is ItemsOverviewScreenState.Loading -> LoadingSpinner()
         is ItemsOverviewScreenState.Error -> Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(space = 8.dp)

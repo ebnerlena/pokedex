@@ -28,13 +28,14 @@ import com.lenaebner.pokedex.repository.pokemon.Pokemon
 import com.lenaebner.pokedex.repository.pokemon.Species
 import com.lenaebner.pokedex.shared.ErrorScreen
 import com.lenaebner.pokedex.shared.Header
-import com.lenaebner.pokedex.shared.loadingSpinner
+import com.lenaebner.pokedex.shared.LoadingSpinner
 import com.lenaebner.pokedex.ui.screenstates.PokemonScreenState
 import com.lenaebner.pokedex.ui.theme.transparentGrey
 import com.lenaebner.pokedex.ui.theme.transparentWhite
 import com.lenaebner.pokedex.ui.viewmodels.PokemonScreenAction
 import com.lenaebner.pokedex.ui.viewmodels.PokemonViewModel
 import kotlinx.coroutines.flow.collect
+import java.util.*
 
 @Preview
 @Composable
@@ -70,7 +71,7 @@ fun SinglePokemonScreen(state: PokemonScreenState) {
             evolutionChainEntries = state.evolutionChainPokemons,
             navigateBack = state.backClicked
         )
-        is PokemonScreenState.Loading -> loadingSpinner()
+        is PokemonScreenState.Loading -> LoadingSpinner()
         is PokemonScreenState.Error -> Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(space = 8.dp)
@@ -92,7 +93,11 @@ fun PokemonScreen(pokemon: Pokemon, species: Species?, evolutionChainEntries: Li
                 Header(
                     textColor = Color.White,
                     backgroundColor = color,
-                    title = pokemon.name.capitalize(),
+                    title = pokemon.name.replaceFirstChar {
+                        if (it.isLowerCase()) it.titlecase(
+                            Locale.getDefault()
+                        ) else it.toString()
+                    },
                     icon = Icons.Default.ArrowBack,
                     pokemon = pokemon,
                     backClicked = navigateBack,
