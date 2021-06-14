@@ -50,7 +50,7 @@ fun Home(vm: SearchViewModel) {
 
         Column() {
             Searchbar(
-                onFocusChanged = { focusState ->  isSearching = focusState == FocusState.Active },
+                onFocusChanged = { focusState ->  isSearching = focusState.isFocused },
                 onQueryChanged = { newValue -> vm.onQueryChanged("$newValue%") }
             )
             SearchResults(results = results)

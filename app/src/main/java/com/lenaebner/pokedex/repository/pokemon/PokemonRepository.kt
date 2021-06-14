@@ -65,7 +65,7 @@ class PokemonRepository @Inject constructor(
             val _species = Species(
                 name = species?.name,
                 id = species?.speciesId,
-                egg_groups = eggGroups?.eggGroups?.map { it.name } ?: emptyList(),
+                egg_groups = eggGroups?.eggGroups?.map { it.name },
                 flavor_text_entry = species?.description,
                 evolvingPokemons = evolvingPokemons?.evolvingPokemons?.map { it.asEvolvingPokemon() } ?: emptyList(),
                 color = species?.color,
@@ -95,12 +95,17 @@ class PokemonRepository @Inject constructor(
                 name = apiPoke.name,
                 pokemonId = apiPoke.id.toInt(),
                 sprite = apiPoke.sprites?.other?.artwork?.sprite.toString(),
-                description = species.flavor_text_entries[7].flavor_text.replace("[\n\r]".toRegex(), " "), //TODO: weg lassen? wiel eh in species
+                description = species.flavor_text_entries[7].flavor_text.replace("[\n\r]".toRegex(), " "),
                 height = apiPoke.height,
                 weight = apiPoke.weight
             )
             pokemonDb.insertPokemon(poke)
-            speciesDb.insertSpecies(species = species.asDbSpecies())
+
+            val dbSpecies = speciesDb.getSpecies(speciesId)
+
+            if(dbSpecies == null) {
+                speciesDb.insertSpecies(species = species.asDbSpecies())
+            }
 
             pokemonDb.insertPokemonSpeciesCrossRef( PokemonSpeciesCrossRef(
                 poke.pokemonId.toLong(), species.id.toLong()
@@ -108,20 +113,29 @@ class PokemonRepository @Inject constructor(
 
             // insert egggroups
             for(eggGroup in species.egg_groups) {
-                speciesDb.insertEggGroup(eggGroup = eggGroup.asDbSpeciesEggGroup())
 
-                speciesDb.insertSpeciesEggGroupCrossRef(
-                    SpeciesEggGroupCrossRef(
-                        eggGroupId = eggGroup.url.split("/")[6].toLong(),
-                        speciesId = species.id.toLong()
+                val eggGroupId = eggGroup.url.split("/")[6].toLong()
+                val dbEggGroup = speciesDb.getEggGroup(eggGroupId)
+                val dbEggGroupRef = speciesDb.getSpeciesEggGroupCrossRef(eggGroupId = eggGroupId, speciesId = speciesId)
+
+                if(dbEggGroup == null) {
+                    speciesDb.insertEggGroup(eggGroup = eggGroup.asDbSpeciesEggGroup())
+                }
+                if(dbEggGroupRef == null) {
+                    speciesDb.insertSpeciesEggGroupCrossRef(
+                        SpeciesEggGroupCrossRef(
+                            eggGroupId = eggGroupId,
+                            speciesId = species.id.toLong()
+                        )
                     )
-                )
+                }
             }
             // insert stats
             for(stat in apiPoke.stats) {
                 pokemonDb.insertStat(
                     stat.asDbPokemonStat(apiPoke.id)
-                ) }
+                )
+            }
 
             // insert abilites
             for(ability in apiPoke.abilities) {
@@ -129,8 +143,13 @@ class PokemonRepository @Inject constructor(
                 val abilityId = ability.ability.url.split("/")[6].toLong()
                 val dbAbility = pokemonDb.getPokemonAbility(id)
 
+                var ref = pokemonDb.getPokemonAbilityCrossRef(abilityId = id, pokemonId = apiPoke.id)
+
                 if(dbAbility == null) {
                     pokemonDb.insertAbility(ability = ability.asDbPokemonAbility())
+                }
+
+                if(ref == null) {
                     pokemonDb.insertPokemonAbilityCrossRef(
                         PokemonAbilityCrossRef(
                             abilityId = abilityId,

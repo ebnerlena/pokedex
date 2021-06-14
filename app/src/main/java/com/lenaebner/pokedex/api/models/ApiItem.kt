@@ -20,12 +20,13 @@ data class ApiFlingEffect(
 
 data class ApiItemPreview(
     val name: String,
-    val url: String
+    val url: String,
 )
 
 data class ApiItemsList (
     val count: Int = 0,
-    val results: List<ApiItemPreview>
+    val results: List<ApiItemPreview>,
+    val next: String?
 )
 
 data class Attribute(

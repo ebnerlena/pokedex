@@ -24,7 +24,7 @@ import com.lenaebner.pokedex.db.entities.*
     DbItemAttribute::class,
     ItemAttributeCrossRef::class
                      ],
-    exportSchema = true, version = 11
+    exportSchema = true, version = 1
 )
 abstract class PokedexDatabase : RoomDatabase() {
 

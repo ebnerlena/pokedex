@@ -1,7 +1,6 @@
 package com.lenaebner.pokedex.SinglePokemon
 
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -10,6 +9,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.lenaebner.pokedex.repository.pokemon.Pokemon
 import com.lenaebner.pokedex.ui.theme.transparentGrey
+import java.util.*
 
 @Composable
 fun Abilities(pokemon: Pokemon) {
@@ -23,14 +23,18 @@ fun Abilities(pokemon: Pokemon) {
                 .weight(1.2f)
         )
 
-        Row(modifier = Modifier.weight(2f)) {
+        Column(
+            modifier = Modifier
+                .weight(2f)
+                .padding(vertical = 8.dp)
+        ) {
             pokemon.abilities?.forEach {
+
                 Text(
-                    text = it.capitalize(),
+                    text = it.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.ROOT) else it.toString() },
                     color = MaterialTheme.colors.secondaryVariant,
                     style = MaterialTheme.typography.body2,
                     fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(vertical = 8.dp, horizontal = 2.dp)
                 )
             }
         }

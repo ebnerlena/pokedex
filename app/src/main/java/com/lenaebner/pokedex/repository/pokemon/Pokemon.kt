@@ -1,6 +1,5 @@
 package com.lenaebner.pokedex.repository.pokemon
 
-import com.lenaebner.pokedex.db.entities.DbPokemon
 
 data class Pokemon(
     val name: String = "Pikachu",
@@ -18,20 +17,8 @@ data class Pokemon(
 data class SinglePokemonComplete(
     val pokemon: Pokemon,
     val species: Species,
-    //val evolvingPokemons: EvolvingPokemons
 )
 
-fun DbPokemon.asPokemon() = Pokemon(
-    name = name,
-    id = pokemonId,
-    sprite = sprite,
-    description = description,
-    height = height,
-    weight = weight,
-    abilities = null,
-    types = null,
-    stats = null,
-)
 
 
 

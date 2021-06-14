@@ -10,21 +10,18 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.*
-import com.lenaebner.pokedex.R
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.compose.navigate
-import coil.transform.CircleCropTransformation
 import androidx.compose.foundation.Image
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.ui.layout.ContentScale
 import com.google.accompanist.coil.rememberCoilPainter
-import com.google.accompanist.imageloading.ImageLoadState
+import com.google.accompanist.pager.ExperimentalPagerApi
 import com.lenaebner.pokedex.*
 import com.lenaebner.pokedex.PokedexScreen.Type
 import com.lenaebner.pokedex.repository.pokemon.EvolvingPokemons
@@ -32,14 +29,17 @@ import com.lenaebner.pokedex.repository.pokemon.Pokemon
 import com.lenaebner.pokedex.repository.pokemon.Species
 import com.lenaebner.pokedex.shared.ErrorScreen
 import com.lenaebner.pokedex.shared.Header
-import com.lenaebner.pokedex.shared.loadingSpinner
+import com.lenaebner.pokedex.shared.LoadingSpinner
 import com.lenaebner.pokedex.ui.screenstates.PokemonScreenState
 import com.lenaebner.pokedex.ui.theme.transparentGrey
 import com.lenaebner.pokedex.ui.theme.transparentWhite
 import com.lenaebner.pokedex.ui.viewmodels.PokemonScreenAction
 import com.lenaebner.pokedex.ui.viewmodels.PokemonViewModel
+import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.flow.collect
+import java.util.*
 
+@OptIn(InternalCoroutinesApi::class)
 @Preview
 @Composable
 fun PokemonScreenPreview() {
@@ -47,6 +47,7 @@ fun PokemonScreenPreview() {
 }
 
 
+@OptIn(InternalCoroutinesApi::class)
 @Composable
 fun SinglePokemonScreen(vm: PokemonViewModel) {
 
@@ -64,6 +65,8 @@ fun SinglePokemonScreen(vm: PokemonViewModel) {
     }
 }
 
+@InternalCoroutinesApi
+@OptIn(ExperimentalPagerApi::class)
 @Composable
 fun SinglePokemonScreen(state: PokemonScreenState) {
 
@@ -74,7 +77,7 @@ fun SinglePokemonScreen(state: PokemonScreenState) {
             evolutionChainEntries = state.evolutionChainPokemons,
             navigateBack = state.backClicked
         )
-        is PokemonScreenState.Loading -> loadingSpinner()
+        is PokemonScreenState.Loading -> LoadingSpinner()
         is PokemonScreenState.Error -> Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(space = 8.dp)
@@ -84,6 +87,9 @@ fun SinglePokemonScreen(state: PokemonScreenState) {
     }
 }
 
+@InternalCoroutinesApi
+@ExperimentalPagerApi
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun PokemonScreen(pokemon: Pokemon, species: Species?, evolutionChainEntries: List<EvolvingPokemons>, navigateBack: () -> Unit) {
 
@@ -95,7 +101,11 @@ fun PokemonScreen(pokemon: Pokemon, species: Species?, evolutionChainEntries: Li
                 Header(
                     textColor = Color.White,
                     backgroundColor = color,
-                    title = pokemon.name.capitalize(),
+                    title = pokemon.name.replaceFirstChar {
+                        if (it.isLowerCase()) it.titlecase(
+                            Locale.getDefault()
+                        ) else it.toString()
+                    },
                     icon = Icons.Default.ArrowBack,
                     pokemon = pokemon,
                     backClicked = navigateBack,
@@ -149,7 +159,6 @@ fun PokemonScreen(pokemon: Pokemon, species: Species?, evolutionChainEntries: Li
                     }
                     Row(modifier = Modifier.weight(3f)){
                         CardNavigation(
-                            page = "about",
                             pokemon = pokemon,
                             species = species,
                             evolutionChainEntries = evolutionChainEntries

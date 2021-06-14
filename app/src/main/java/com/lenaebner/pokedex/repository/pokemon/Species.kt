@@ -9,7 +9,7 @@ data class Species(
     val id: Int = 0,
     val name: String = "",
     val color: String = "",
-    val egg_groups: List<String> = emptyList(),
+    val egg_groups: List<String>? = null,
     val evolvingPokemons: List<EvolvingPokemons> = emptyList(),
     val flavor_text_entry: String = "",
     val genera: String = "",
@@ -21,14 +21,6 @@ fun ApiSpecies.asDbSpecies() = DbSpecies(
     color = color.name,
     description = flavor_text_entries.find{entry -> entry.language.name == "en"}?.flavor_text?.replace("[\n\r]".toRegex(), " ") ?: "" ,
     genera = genera.find{g -> g.language.name == "en"}?.genus ?: "Genera"
-)
-
-fun DbSpecies.asSpecies() = Species(
-    name = name,
-    id = speciesId,
-    color = color,
-    flavor_text_entry = description,
-    genera = genera
 )
 
 fun EggGroup.asDbSpeciesEggGroup() = DbSpeciesEggGroup(

@@ -1,13 +1,15 @@
 package com.lenaebner.pokedex
 
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.*
-import androidx.hilt.navigation.compose.hiltNavGraphViewModel
-
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navArgument
 import androidx.navigation.compose.rememberNavController
+import androidx.paging.ExperimentalPagingApi
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.lenaebner.pokedex.HomeScreen.Home
 import com.lenaebner.pokedex.ItemsScreen.ItemsScreen
 import com.lenaebner.pokedex.PokedexScreen.PokedexScreen
@@ -17,12 +19,42 @@ import com.lenaebner.pokedex.ui.viewmodels.PokedexViewModel
 import com.lenaebner.pokedex.ui.viewmodels.SearchViewModel
 import com.lenaebner.pokedex.viewmodels.ItemViewModel
 import com.lenaebner.pokedex.viewmodels.ItemsViewModel
+import kotlinx.coroutines.flow.collect
 
 
+@OptIn(ExperimentalPagingApi::class)
 @Composable
 fun Navigation() {
 
+    // workaround for keeping grid position when navigating
+    val lazyItemsListState = rememberLazyListState()
+    val lazyPokemonsListState = rememberLazyListState()
+
+    val itemsVM: ItemsViewModel = hiltViewModel()
+    val items = itemsVM.items.collectAsLazyPagingItems()
+
+    val pokedexVM: PokedexViewModel = hiltViewModel()
+    val pokemons = pokedexVM.pokemons.collectAsLazyPagingItems()
+
     val navController = rememberNavController()
+
+    LaunchedEffect(key1 = itemsVM.actions) {
+        itemsVM.actions.collect {
+            when(it) {
+                is ItemsViewModel.ItemsScreenAction.Navigate -> navController.navigate(it.destination)
+                is ItemsViewModel.ItemsScreenAction.NavigateBack -> navController.navigateUp()
+            }
+        }
+    }
+
+    LaunchedEffect(key1 = pokedexVM.actions) {
+        pokedexVM.actions.collect {
+            when(it) {
+                is PokedexViewModel.PokedexScreenAction.NavigateBack -> navController.navigateUp()
+                is PokedexViewModel.PokedexScreenAction.PokemonClicked -> navController.navigate(it.destination)
+            }
+        }
+    }
 
     CompositionLocalProvider(ActiveNavController provides navController) {
         NavHost(
@@ -30,12 +62,11 @@ fun Navigation() {
             startDestination = "home"
         ) {
             composable("home") {
-                val vm: SearchViewModel = hiltNavGraphViewModel(it)
+                val vm: SearchViewModel = hiltViewModel(it)
                 Home(vm = vm)
             }
             composable("pokedex") {
-                val vm: PokedexViewModel = hiltNavGraphViewModel(it)
-                PokedexScreen(vm = vm)
+                PokedexScreen(lazyListState = lazyPokemonsListState, lazyPagingItems = pokemons)
             }
             composable(
                 "pokemon/{pokemonId}?speciesId={speciesId}",
@@ -49,12 +80,11 @@ fun Navigation() {
                 },
                 )
             ) { backStackEntry ->
-                val vm: PokemonViewModel = hiltNavGraphViewModel(backStackEntry)
+                val vm: PokemonViewModel = hiltViewModel(backStackEntry)
                 SinglePokemonScreen(vm = vm)
             }
-            composable("items") {
-                val vm: ItemsViewModel = hiltNavGraphViewModel(it)
-               ItemsScreen(vm = vm)
+            composable("items") { backStackEntry ->
+               ItemsScreen(lazyListState = lazyItemsListState, lazyPagingItems = items)
             }
             composable(
                 "item/{itemId}",
@@ -63,8 +93,9 @@ fun Navigation() {
                     nullable = false
                 } )
             ) { backStackEntry ->
-                val vm: ItemViewModel = hiltNavGraphViewModel(backStackEntry)
+                val vm: ItemViewModel = hiltViewModel(backStackEntry)
                 ItemScreen(vm = vm)
-            }        }
+            }
+        }
     }
 }
