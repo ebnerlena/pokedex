@@ -8,7 +8,7 @@ An app to find pokemons
 - using MVI pattern - viewmodels and screenstates
 - using SQLite as database
 - using repositories and flows to load data efficiently
-
+- using Paging to efficiently load data either from network or database with remoteMediator
 
 ## Features
 - Home Screen
@@ -16,4 +16,11 @@ An app to find pokemons
 - Single Pokemon Screen (About, Stats, Evolution Chain)
 - Items Screen
 - Single Item Screen
+- Pokemon Search by Name
+
+## Feature For Future
+- better search (also types, abilities...)
+- better animations
+- other screen? moves?
+- dynamic color finding with https://developer.android.com/training/material/palette-colors
 
