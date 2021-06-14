@@ -65,7 +65,7 @@ class PokemonRepository @Inject constructor(
             val _species = Species(
                 name = species?.name,
                 id = species?.speciesId,
-                egg_groups = eggGroups?.eggGroups?.map { it.name } ?: emptyList(),
+                egg_groups = eggGroups?.eggGroups?.map { it.name },
                 flavor_text_entry = species?.description,
                 evolvingPokemons = evolvingPokemons?.evolvingPokemons?.map { it.asEvolvingPokemon() } ?: emptyList(),
                 color = species?.color,

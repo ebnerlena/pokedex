@@ -9,7 +9,7 @@ data class Species(
     val id: Int = 0,
     val name: String = "",
     val color: String = "",
-    val egg_groups: List<String> = emptyList(),
+    val egg_groups: List<String>? = null,
     val evolvingPokemons: List<EvolvingPokemons> = emptyList(),
     val flavor_text_entry: String = "",
     val genera: String = "",

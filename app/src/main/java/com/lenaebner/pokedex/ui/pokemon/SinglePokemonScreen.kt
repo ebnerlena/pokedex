@@ -21,6 +21,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.ui.layout.ContentScale
 import com.google.accompanist.coil.rememberCoilPainter
+import com.google.accompanist.pager.ExperimentalPagerApi
 import com.lenaebner.pokedex.*
 import com.lenaebner.pokedex.PokedexScreen.Type
 import com.lenaebner.pokedex.repository.pokemon.EvolvingPokemons
@@ -34,9 +35,11 @@ import com.lenaebner.pokedex.ui.theme.transparentGrey
 import com.lenaebner.pokedex.ui.theme.transparentWhite
 import com.lenaebner.pokedex.ui.viewmodels.PokemonScreenAction
 import com.lenaebner.pokedex.ui.viewmodels.PokemonViewModel
+import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.flow.collect
 import java.util.*
 
+@OptIn(InternalCoroutinesApi::class)
 @Preview
 @Composable
 fun PokemonScreenPreview() {
@@ -44,6 +47,7 @@ fun PokemonScreenPreview() {
 }
 
 
+@OptIn(InternalCoroutinesApi::class)
 @Composable
 fun SinglePokemonScreen(vm: PokemonViewModel) {
 
@@ -61,6 +65,8 @@ fun SinglePokemonScreen(vm: PokemonViewModel) {
     }
 }
 
+@InternalCoroutinesApi
+@OptIn(ExperimentalPagerApi::class)
 @Composable
 fun SinglePokemonScreen(state: PokemonScreenState) {
 
@@ -81,6 +87,8 @@ fun SinglePokemonScreen(state: PokemonScreenState) {
     }
 }
 
+@InternalCoroutinesApi
+@ExperimentalPagerApi
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun PokemonScreen(pokemon: Pokemon, species: Species?, evolutionChainEntries: List<EvolvingPokemons>, navigateBack: () -> Unit) {
@@ -151,7 +159,6 @@ fun PokemonScreen(pokemon: Pokemon, species: Species?, evolutionChainEntries: Li
                     }
                     Row(modifier = Modifier.weight(3f)){
                         CardNavigation(
-                            page = "about",
                             pokemon = pokemon,
                             species = species,
                             evolutionChainEntries = evolutionChainEntries

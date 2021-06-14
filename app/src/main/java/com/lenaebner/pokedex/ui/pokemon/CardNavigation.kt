@@ -3,24 +3,31 @@ package com.lenaebner.pokedex.SinglePokemon
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.google.accompanist.pager.ExperimentalPagerApi
+import com.google.accompanist.pager.HorizontalPager
+import com.google.accompanist.pager.pagerTabIndicatorOffset
+import com.google.accompanist.pager.rememberPagerState
 import com.lenaebner.pokedex.repository.pokemon.EvolvingPokemons
 import com.lenaebner.pokedex.repository.pokemon.Pokemon
 import com.lenaebner.pokedex.repository.pokemon.Species
+import com.lenaebner.pokedex.ui.theme.transparentGrey
+import kotlinx.coroutines.InternalCoroutinesApi
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 
 
+@InternalCoroutinesApi
+@ExperimentalPagerApi
 @ExperimentalMaterialApi
 @Composable
 fun CardNavigation(
-    page: String,
     pokemon: Pokemon,
     species: Species?,
     evolutionChainEntries: List<EvolvingPokemons>?,
@@ -34,44 +41,41 @@ fun CardNavigation(
         elevation = 2.dp
     ) {
 
-        var currentPage by rememberSaveable { mutableStateOf(page) }
+        val pages = listOf("About", "Stats", "Evolution")
+        val pagerState = rememberPagerState(pageCount = pages.size)
+        val coroutineScope = rememberCoroutineScope()
 
         Column(modifier = Modifier.padding(bottom = 16.dp)) {
 
-            Row(horizontalArrangement = Arrangement.SpaceEvenly, modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 8.dp)
-                .weight(1f)) {
-                TextButton(onClick = { currentPage = "about" }) {
-                    val textColor =  if (currentPage == "about") Color.Black else MaterialTheme.colors.secondaryVariant
-                    Text(text = "About", color = textColor)
-                }
-                TextButton(onClick = { currentPage = "stats" }) {
-                    val textColor =  if (currentPage == "stats") Color.Black else MaterialTheme.colors.secondaryVariant
-                    Text(text = "Base Stats", color = textColor)
-                }
-                TextButton(onClick = { currentPage = "evolution" }) {
-                    val textColor =  if (currentPage == "evolution") Color.Black else MaterialTheme.colors.secondaryVariant
-                    Text(text = "Evolution", color = textColor)
+            TabRow(
+                selectedTabIndex = pagerState.currentPage,
+                indicator = { tabPositions ->
+                    TabRowDefaults.Indicator(
+                        Modifier.pagerTabIndicatorOffset(pagerState, tabPositions)
+                    )
+                },
+                backgroundColor = Color.White
+            ) {
+                // Add tabs for all of our pages
+                pages.forEachIndexed { index, title ->
+                    Tab(
+                        text = { Text(text = title) },
+                        selected = pagerState.currentPage == index,
+                        onClick = { coroutineScope.launch { pagerState.scrollToPage(index) } },
+                        selectedContentColor = Color.Black,
+                        unselectedContentColor = transparentGrey
+                    )
                 }
             }
 
-            Divider(modifier = Modifier
-                .height(3.dp)
-                .padding(3.dp)
-                .background(MaterialTheme.colors.secondaryVariant),
-                color = MaterialTheme.colors.secondaryVariant
-            )
-
-            Row(Modifier.weight(5f)) {
-                Crossfade(targetState = currentPage) { screen ->
-                    when (screen) {
-                        "about" -> Description(pokemon = pokemon, species = species)
-                        "stats" -> Stats(pokemon)
-                        "evolution" -> EvolutionChain(evolutionChainEntries?: emptyList())
-                    }
+            HorizontalPager(state = pagerState) { page ->
+                when(page) {
+                    0 -> Description(pokemon = pokemon, species = species)
+                    1 -> Stats(pokemon)
+                    2 -> EvolutionChain(evolutionChainEntries?: emptyList())
                 }
             }
+
         }
 
     }

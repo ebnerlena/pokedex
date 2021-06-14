@@ -1,11 +1,12 @@
 package com.lenaebner.pokedex.repository
 
-import android.util.Log
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadType
 import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
+import androidx.room.withTransaction
 import com.lenaebner.pokedex.api.ItemApi
+import com.lenaebner.pokedex.db.PokedexDatabase
 import com.lenaebner.pokedex.db.daos.ItemDao
 import com.lenaebner.pokedex.db.entities.DbItem
 import com.lenaebner.pokedex.repository.item.ItemRepository
@@ -18,6 +19,7 @@ import javax.inject.Singleton
 class ItemsRemoteMediator @Inject constructor(
     private val api: ItemApi,
     private val database: ItemDao,
+    private val db: PokedexDatabase,
     private val itemRepository: ItemRepository
 ) : RemoteMediator<Int, DbItem>() {
 
@@ -41,21 +43,22 @@ class ItemsRemoteMediator @Inject constructor(
                 },
                 offset = offset
             )
-
-            coroutineScope {
-                // Problem here if using async item attributes get inserted multiple times
-                //launch(Dispatchers.IO) {
+            db.withTransaction {
+                coroutineScope {
+                    // Problem here if using async item attributes get inserted multiple times
+                    //launch(Dispatchers.IO) {
                     response.results.map {
                         //async {
-                            var dbItem = database.getItemByName(it.name)
+                        val dbItem = database.getItemByName(it.name)
 
-                            if (dbItem == null) {
-                                var apiItem = api.getItem(it.name)
-                                itemRepository.persistenItem(apiItem = apiItem)
-                            }
+                        if (dbItem == null) {
+                            val apiItem = api.getItem(it.name)
+                            itemRepository.persistenItem(apiItem = apiItem)
+                        }
                         //}
                     }
-                //}.awaitAll()
+                    //}.awaitAll()
+                }
             }
 
             return MediatorResult.Success(endOfPaginationReached = response.next == null)

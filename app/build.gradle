@@ -104,4 +104,9 @@ dependencies {
 
     //paging compose
     implementation "androidx.paging:paging-compose:1.0.0-alpha10"
+
+    implementation "com.google.accompanist:accompanist-pager:0.11.1"
+
+    // If using indicators, also depend on
+    implementation "com.google.accompanist:accompanist-pager-indicators:0.11.1"
 }

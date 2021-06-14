@@ -4,7 +4,9 @@ import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadType
 import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
+import androidx.room.withTransaction
 import com.lenaebner.pokedex.api.PokemonApi
+import com.lenaebner.pokedex.db.PokedexDatabase
 import com.lenaebner.pokedex.db.daos.PokemonPreviewDao
 import com.lenaebner.pokedex.db.entities.PokemonPreviewWithTypes
 import com.lenaebner.pokedex.repository.pokemon.PokedexRepository
@@ -17,6 +19,7 @@ import javax.inject.Singleton
 class PokedexRemoteMediator @Inject constructor(
     private val api: PokemonApi,
     private val database: PokemonPreviewDao,
+    private val db: PokedexDatabase,
     private val pokedexRepository: PokedexRepository
 ) : RemoteMediator<Int, PokemonPreviewWithTypes>() {
 
@@ -39,17 +42,20 @@ class PokedexRemoteMediator @Inject constructor(
                 },
                 offset = offset
             )
-            coroutineScope {
-                launch(Dispatchers.IO) {
-                    response.results.map {
-                        async {
-                            var dbPokemon = database.getPokemon(it.name)
-                            if (dbPokemon == null) {
-                                var apiPokemon = api.getPokemon(it.name)
-                                pokedexRepository.persistPokemon(apiPoke = apiPokemon)
+
+            db.withTransaction {
+                coroutineScope {
+                    launch(Dispatchers.IO) {
+                        response.results.map {
+                            async {
+                                val dbPokemon = database.getPokemon(it.name)
+                                if (dbPokemon == null) {
+                                    val apiPokemon = api.getPokemon(it.name)
+                                    pokedexRepository.persistPokemon(apiPoke = apiPokemon)
+                                }
                             }
-                        }
-                    }.awaitAll()
+                        }.awaitAll()
+                    }
                 }
             }
 
